@@ -25,9 +25,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
-import bskyblock.addin.warps.config.Settings;
 import bskyblock.addin.warps.database.object.Warps;
-import bskyblock.addin.warps.event.WarpCreateEvent;
+import bskyblock.addin.warps.event.WarpInitiateEvent;
 import bskyblock.addin.warps.event.WarpListEvent;
 import bskyblock.addin.warps.event.WarpRemoveEvent;
 import us.tastybento.bskyblock.BSkyBlock;
@@ -96,7 +95,7 @@ public class WarpSigns extends AddonHelper implements Listener {
                                 // Player removed sign
                                 removeWarp(s.getLocation());
                                 Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(plugin, s.getLocation(), player.getUniqueId()));
-                            } else if (player.isOp()  || player.hasPermission(Settings.PERMPREFIX + "mod.removesign")) {
+                            } else if (player.isOp()  || player.hasPermission(us.tastybento.bskyblock.config.Settings.PERMPREFIX + "mod.removesign")) {
                                 // Op or mod removed sign
                                 Util.sendMessage(player, ChatColor.GREEN + plugin.getLocale(player.getUniqueId()).get("warps.removed"));
                                 removeWarp(s.getLocation());
@@ -133,7 +132,7 @@ public class WarpSigns extends AddonHelper implements Listener {
                 if (title.equalsIgnoreCase(plugin.getLocale().get("warps.welcomeLine"))) {
                     //plugin.getLogger().info("DEBUG: Welcome sign detected");
                     // Welcome sign detected - check permissions
-                    if (!(VaultHelper.hasPerm(player, Settings.PERMPREFIX + "island.addwarp"))) {
+                    if (!(VaultHelper.hasPerm(player, us.tastybento.bskyblock.config.Settings.PERMPREFIX + "island.addwarp"))) {
                         Util.sendMessage(player, ChatColor.RED + plugin.getLocale(player.getUniqueId()).get("warps.error.no-permission"));
                         return;
                     }
@@ -239,6 +238,9 @@ public class WarpSigns extends AddonHelper implements Listener {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        for (Entry<UUID, Location> en : warpList.entrySet()) {
+            plugin.getLogger().info("DEBUG: " + en.getKey() + " " + en.getValue());
+        }
         Iterator<Entry<UUID, Location>> it = warpList.entrySet().iterator();
         while (it.hasNext()) {
             Entry<UUID, Location> en = it.next();
@@ -280,7 +282,7 @@ public class WarpSigns extends AddonHelper implements Listener {
             public void run() {
                 plugin.getWarpPanel().addWarp(playerUUID);
                 plugin.getWarpPanel().updatePanel();
-                Bukkit.getPluginManager().callEvent(new WarpCreateEvent(plugin, loc, playerUUID));
+                Bukkit.getPluginManager().callEvent(new WarpInitiateEvent(plugin, loc, playerUUID));
             }});
         return true;
     }
@@ -437,4 +439,5 @@ public class WarpSigns extends AddonHelper implements Listener {
         return "";
     }
 
+    
 }

@@ -43,23 +43,27 @@ public class Warp extends JavaPlugin {
         }
         // Local locales
         localeManager = new LocaleManager(this);
-        // Start warp signs
-        warpSigns = new WarpSigns(this, bSkyBlock);
-        getServer().getPluginManager().registerEvents(warpSigns, this);
-        // Start the warp panel and register it for clicks
-        warpPanel = new WarpPanel(this);
-        getServer().getPluginManager().registerEvents(warpPanel, this);
-        // Register commands
-        new Commands(this);
+        // We have to wait for the worlds to load, so we do the rest 1 tick later
+        getServer().getScheduler().runTask(this, () -> {
+            // Start warp signs
+            warpSigns = new WarpSigns(this, bSkyBlock);
+            getServer().getPluginManager().registerEvents(warpSigns, this);
+            // Start the warp panel and register it for clicks
+            warpPanel = new WarpPanel(this);
+            getServer().getPluginManager().registerEvents(warpPanel, this);
+            // Register commands
+            new Commands(this);
+        });
         // Done
     }
 
     @Override
     public void onDisable(){
         // Save the warps
-        warpSigns.saveWarpList();
+        if (warpSigns != null)
+            warpSigns.saveWarpList();
     }
-    
+
     /**
      * Get the locale for this player
      * @param sender
@@ -77,7 +81,7 @@ public class Warp extends JavaPlugin {
     public BSBLocale getLocale(UUID uuid) {
         return localeManager.getLocale(uuid);
     }
-    
+
     /**
      * @return default locale object
      */
