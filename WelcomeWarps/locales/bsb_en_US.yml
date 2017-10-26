@@ -1,0 +1,29 @@
+###########################################################################################
+# This is a YML file. Be careful when editing. Check your edits in a YAML checker like    #
+# the one at http://yaml-online-parser.appspot.com                                        #
+###########################################################################################
+
+### Credits ###
+# Tastybento: maintainer
+# Poslovitch: maintainer
+#
+# This translation is adapted to version : [alpha-0.0.1]
+
+warps:
+  welcomeLine: "[Welcome]"
+  removed: "Warp sign removed"
+  success: "Success!"
+  sign-removed: "Warp sign removed!"
+  title: "Warp Signs"
+  previous: "Previous page"
+  next: "Next page"
+  warpToPlayersSign: "Warping to [player]'s sign"
+  warpTip: "Place a warp sign with [Welcome] on the top"
+  error:
+    no-remove: "You cannot remove that sign!"
+    not-enough-level: "Your island level is not high enough!"
+    no-permission: "You do not have permission to do that!"
+    not-on-island: "You must be on your island to do that!"
+    duplicate: "Duplicate sign placed"
+    no-warps-yet: "There are no warps available yet"
+  
