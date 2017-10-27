@@ -225,6 +225,7 @@ public class WarpSigns extends AddonHelper implements Listener {
      */
     public void loadWarpList() {
         plugin.getLogger().info("Loading warps...");
+        warpList = new HashMap<>();
         try {
             Warps warps = handler.loadObject("warps");
             // If there's nothing there, start fresh

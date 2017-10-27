@@ -1,5 +1,6 @@
 package bskyblock.addin.warps.database.object;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -10,7 +11,7 @@ import us.tastybento.bskyblock.database.objects.DataObject;
 public class Warps extends DataObject {
     
     private String uniqueId = "warps";
-    private Map<UUID, Location> warpSigns; 
+    private Map<UUID, Location> warpSigns = new HashMap<>(); 
 
     @Override
     public String getUniqueId() {
@@ -23,6 +24,8 @@ public class Warps extends DataObject {
     }
 
     public Map<UUID, Location> getWarpSigns() {
+    		if (warpSigns == null)
+    			return new HashMap<>();
         return warpSigns;
     }
 
