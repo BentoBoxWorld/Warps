@@ -239,9 +239,10 @@ public class WarpSigns extends AddonHelper implements Listener {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        /*
         for (Entry<UUID, Location> en : warpList.entrySet()) {
             plugin.getLogger().info("DEBUG: " + en.getKey() + " " + en.getValue());
-        }
+        }*/
         Iterator<Entry<UUID, Location>> it = warpList.entrySet().iterator();
         while (it.hasNext()) {
             Entry<UUID, Location> en = it.next();
