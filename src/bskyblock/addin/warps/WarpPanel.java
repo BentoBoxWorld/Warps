@@ -123,7 +123,8 @@ public class WarpPanel extends AddonHelper implements Listener {
         // The player that clicked the item
         final Player player = (Player) event.getWhoClicked();
         String title = inventory.getTitle();
-        if (!inventory.getTitle().startsWith(plugin.getLocale(player.getUniqueId()).get("warps.title") + " #")) {
+        // The title must be the same for all locales because the warp panels are common
+        if (!inventory.getTitle().startsWith(plugin.getLocale().get("warps.title") + " #")) {
             return;
         }
         event.setCancelled(true);
