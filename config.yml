@@ -2,3 +2,6 @@
 # 0 or negative values will disable this restriction
 # 10 is default
 warplevelrestriction: 10
+
+welcomeLine: [WELCOME]
+

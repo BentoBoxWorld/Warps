@@ -3,5 +3,3 @@ main: bskyblock.addin.warps.Warp
 version: 0.1
 
 authors: [tastybento]
-
-depend: [BSkyBlock]

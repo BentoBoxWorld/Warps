@@ -8,7 +8,7 @@ import org.bukkit.Location;
 
 import us.tastybento.bskyblock.database.objects.DataObject;
 
-public class Warps extends DataObject {
+public class WarpsDO extends DataObject {
     
     private String uniqueId = "warps";
     private Map<UUID, Location> warpSigns = new HashMap<>(); 
@@ -33,7 +33,7 @@ public class Warps extends DataObject {
         this.warpSigns = warpSigns;
     }
 
-    public Warps save(Map<UUID, Location> warpList) {
+    public WarpsDO save(Map<UUID, Location> warpList) {
         this.warpSigns = warpList;
         return this;
     }

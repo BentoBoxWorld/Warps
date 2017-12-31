@@ -1,58 +1,51 @@
 package bskyblock.addin.warps;
 
-import java.util.UUID;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import bskyblock.addin.warps.commands.Commands;
-import bskyblock.addin.warps.config.LocaleManager;
+import bskyblock.addin.warps.commands.WarpCommand;
+import bskyblock.addin.warps.commands.WarpsCommand;
 import bskyblock.addin.warps.config.PluginConfig;
 import us.tastybento.bskyblock.BSkyBlock;
-import us.tastybento.bskyblock.config.BSBLocale;
+import us.tastybento.bskyblock.api.addons.Addon;
+import us.tastybento.bskyblock.api.commands.CompositeCommand;
+import us.tastybento.bskyblock.config.Settings;
 
 /**
  * Addin to BSkyBlock that enables welcome warp signs
  * @author tastybento
  *
  */
-public class Warp extends JavaPlugin {
+public class Warp extends Addon {
 
     // The BSkyBlock plugin instance.
     private BSkyBlock bSkyBlock;
 
-    // Locale manager for this plugin
-    private LocaleManager localeManager;
-
     // Warp panel object
-    private WarpPanel warpPanel;
+    private WarpPanelManager warpPanelManager;
 
     // Warps signs object
-    private WarpSigns warpSigns;
+    private WarpSignsManager warpSignsManager;
 
     @Override
     public void onEnable() {
         // Load the plugin's config
         new PluginConfig(this);
         // Get the BSkyBlock plugin. This will be available because this plugin depends on it in plugin.yml.
-        bSkyBlock = BSkyBlock.getPlugin();
+        bSkyBlock = BSkyBlock.getInstance();
         // Check if it is enabled - it might be loaded, but not enabled.
         if (!bSkyBlock.isEnabled()) {
             this.setEnabled(false);
             return;
         }
-        // Local locales
-        localeManager = new LocaleManager(this);
         // We have to wait for the worlds to load, so we do the rest 1 tick later
-        getServer().getScheduler().runTask(this, () -> {
+        getServer().getScheduler().runTask(this.getBSkyBlock(), () -> {
             // Start warp signs
-            warpSigns = new WarpSigns(this, bSkyBlock);
-            getServer().getPluginManager().registerEvents(warpSigns, this);
-            // Start the warp panel and register it for clicks
-            warpPanel = new WarpPanel(this);
-            getServer().getPluginManager().registerEvents(warpPanel, this);
+            warpSignsManager = new WarpSignsManager(this, bSkyBlock);
+            warpPanelManager = new WarpPanelManager(this);
+            // Load the listener
+            getServer().getPluginManager().registerEvents(warpSignsManager, bSkyBlock);
             // Register commands
-            new Commands(this);
+            CompositeCommand bsbIslandCmd = (CompositeCommand) BSkyBlock.getInstance().getCommandsManager().getCommand(Settings.ISLANDCOMMAND);
+            new WarpCommand(this, bsbIslandCmd);
+            new WarpsCommand(this, bsbIslandCmd);
         });
         // Done
     }
@@ -60,41 +53,20 @@ public class Warp extends JavaPlugin {
     @Override
     public void onDisable(){
         // Save the warps
-        if (warpSigns != null)
-            warpSigns.saveWarpList();
+        if (warpSignsManager != null)
+            warpSignsManager.saveWarpList();
     }
 
     /**
-     * Get the locale for this player
-     * @param sender
-     * @return Locale object for sender
+     * Get warp panel manager
+     * @return
      */
-    public BSBLocale getLocale(CommandSender sender) {
-        return localeManager.getLocale(sender);
+    public WarpPanelManager getWarpPanelManager() {
+        return warpPanelManager;
     }
-
-    /**
-     * Get the locale for this UUID
-     * @param uuid
-     * @return Locale object for UUID
-     */
-    public BSBLocale getLocale(UUID uuid) {
-        return localeManager.getLocale(uuid);
-    }
-
-    /**
-     * @return default locale object
-     */
-    public BSBLocale getLocale() {
-        return localeManager.getLocale();
-    }
-
-    public WarpPanel getWarpPanel() {
-        return warpPanel;
-    }
-
-    public WarpSigns getWarpSigns() {
-        return warpSigns;
+    
+    public WarpSignsManager getWarpSignsManager() {
+        return warpSignsManager;
     }
 
 }
