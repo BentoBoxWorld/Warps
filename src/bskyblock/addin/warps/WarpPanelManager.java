@@ -21,7 +21,7 @@ import us.tastybento.bskyblock.api.panels.builders.PanelItemBuilder;
 public class WarpPanelManager {
 
     private static final boolean DEBUG = true;
-    private static final int PANEL_MAX_SIZE = 47;
+    private static final int PANEL_MAX_SIZE = 52;
     private Warp plugin;
     // This is a cache of heads, so they don't need to be created everytime
     private HashMap<UUID, PanelItem> cachedWarps;
@@ -50,9 +50,9 @@ public class WarpPanelManager {
 
     private PanelItem getPanelItem(UUID warpOwner) {
         return new PanelItemBuilder()
+                .setIcon(getSkull(warpOwner))
                 .setName(plugin.getBSkyBlock().getPlayers().getName(warpOwner))
                 .setDescription(plugin.getWarpSignsManager().getSignText(warpOwner))
-                .setIcon(getSkull(warpOwner))
                 .setClickHandler(new ClickHandler() {
 
                     @Override
@@ -97,7 +97,9 @@ public class WarpPanelManager {
         } else if (index > (warps.size() / PANEL_MAX_SIZE)) {
             index = warps.size() / PANEL_MAX_SIZE;
         }
-        PanelBuilder panelBuilder = new PanelBuilder().setUser(user).setName(user.getTranslation("panel.title"));
+        // TODO use when locales are done.
+        //PanelBuilder panelBuilder = new PanelBuilder().setUser(user).setName(user.getTranslation("panel.title", "[number]", String.valueOf(index + 1)));
+        PanelBuilder panelBuilder = new PanelBuilder().setUser(user).setName(user.getTranslation("panel.title") + " " + String.valueOf(index + 1));
         int i = index * PANEL_MAX_SIZE;
         for (; i < (index * PANEL_MAX_SIZE + PANEL_MAX_SIZE) && i < warps.size(); i++) {
             UUID owner = warps.get(i);
@@ -117,6 +119,7 @@ public class WarpPanelManager {
 
                         @Override
                         public boolean onClick(User user, ClickType click) {
+                            user.closeInventory();
                             showWarpPanel(user, panelNum+1);
                             return true;
                         }
@@ -126,12 +129,13 @@ public class WarpPanelManager {
         if (i > PANEL_MAX_SIZE) {
             // Previous
             panelBuilder.addItem(new PanelItemBuilder()
-                    .setName("Next")
+                    .setName("Previous")
                     .setIcon(new ItemStack(Material.SIGN))
                     .setClickHandler(new ClickHandler() {
 
                         @Override
                         public boolean onClick(User user, ClickType click) {
+                            user.closeInventory();
                             showWarpPanel(user, panelNum-1);
                             return true;
                         }
@@ -139,5 +143,10 @@ public class WarpPanelManager {
                     }).build());
         }
         panelBuilder.build();
+    }
+
+
+    public void remove(UUID uuid) {
+        cachedWarps.remove(uuid);    
     }
 }

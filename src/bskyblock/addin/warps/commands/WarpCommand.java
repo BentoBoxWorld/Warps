@@ -1,6 +1,9 @@
 package bskyblock.addin.warps.commands;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -9,6 +12,12 @@ import us.tastybento.bskyblock.api.commands.CompositeCommand;
 import us.tastybento.bskyblock.api.commands.User;
 import us.tastybento.bskyblock.config.Settings;
 
+/**
+ * The /is warp <name> command
+ * 
+ * @author ben
+ *
+ */
 public class WarpCommand extends CompositeCommand {
 
     private Warp plugin;
@@ -22,6 +31,20 @@ public class WarpCommand extends CompositeCommand {
     public void setup() {
         this.setPermission(Settings.PERMPREFIX + "island.warp");
         this.setOnlyPlayer(true);
+        this.setParameters("warp.help.parameters");
+        this.setDescription("warp.help.description");
+    }
+    
+    @Override
+    public Optional<List<String>> tabComplete(User user, String alias, LinkedList<String> args) {
+        List<String> options = new ArrayList<>();
+        final Set<UUID> warpList = plugin.getWarpSignsManager().listWarps();
+
+        for (UUID warp : warpList) {
+            options.add(plugin.getBSkyBlock().getPlayers().getName(warp));
+        }
+        
+        return Optional.of(options);
     }
 
     @Override

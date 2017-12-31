@@ -9,12 +9,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -222,6 +224,21 @@ public class WarpSignsManager implements Listener {
                 it.remove();
             }
         }
+        if (warpList.size() < 100) {
+            // TEST CODE
+            for (int i = 0; i < 300; i++) {
+                UUID rand = UUID.randomUUID();
+                int x = RandomUtils.nextInt(100000) - RandomUtils.nextInt(100000);
+                int z = RandomUtils.nextInt(100000) - RandomUtils.nextInt(100000);
+                Block b = IslandWorld.getIslandWorld().getBlockAt(x, 119, z);
+                b.setType(Material.STONE);
+                b.getRelative(BlockFace.UP).setType(Material.SIGN_POST);
+                Sign sign = (Sign)b.getRelative(BlockFace.UP).getState();
+                sign.setLine(0, ChatColor.GREEN + plugin.getConfig().getString("welcomeLine"));
+                sign.update();
+                warpList.put(rand, new Location(IslandWorld.getIslandWorld(), x, 120, z));
+            }
+        }
     }
 
     /**
@@ -387,20 +404,20 @@ public class WarpSignsManager implements Listener {
             Entry<UUID, Location> en = it.next();
             if (en.getValue().equals(loc)) {
                 // Inform player
-                User p = User.getInstance(plugin.getServer().getPlayer(en.getKey()));
-                if (p != null) {
+                User user = User.getInstance(plugin.getServer().getPlayer(en.getKey()));
+                if (user != null) {
                     // Inform the player
-                    p.sendMessage("warps.sign-removed");
-                } 
+                    user.sendMessage("warps.sign-removed");
+                }
+                plugin.getWarpPanelManager().remove(en.getKey());
                 it.remove();
             }
         }
         saveWarpList();
     }
-    
+
     /**
-     * Removes a warp when the welcome sign is destroyed. Called by
-     * WarpSigns.java.
+     * Remove warp sign owned by UUID
      * 
      * @param uuid
      */
@@ -410,6 +427,7 @@ public class WarpSignsManager implements Listener {
             warpList.remove(uuid);
         }
         saveWarpList();
+        plugin.getWarpPanelManager().remove(uuid);
     }
 
     /**
@@ -440,12 +458,31 @@ public class WarpSignsManager implements Listener {
         Location signLocation = getWarp(uuid);
         if (signLocation == null) {
             plugin.getWarpSignsManager().removeWarp(uuid);
-        } else          
+        } else { 
+            if (DEBUG)
+                Bukkit.getLogger().info("DEBUG: getting sign text");
             // Get the sign info if it exists
             if (signLocation.getBlock().getType().equals(Material.SIGN_POST) || signLocation.getBlock().getType().equals(Material.WALL_SIGN)) {
+                if (DEBUG)
+                    Bukkit.getLogger().info("DEBUG: sign is a sign");
                 Sign sign = (Sign)signLocation.getBlock().getState();
                 result.addAll(Arrays.asList(sign.getLines()));
+                if (DEBUG)
+                    Bukkit.getLogger().info("DEBUG: " + result.toString());
             }
+            // Clean up - remove the [WELCOME] line
+            result.remove(0);
+            // Remove any trailing blank lines
+            ListIterator<String> it = result.listIterator(result.size());
+            while (it.hasPrevious()) {
+                String line = it.previous();
+                if (line.isEmpty())
+                    it.remove();
+                else
+                    break;
+            }
+        }
+        
         return result;
     }
 
@@ -538,9 +575,11 @@ public class WarpSignsManager implements Listener {
 
         Island island = plugin.getBSkyBlock().getIslands().getIsland(owner);
         boolean pvp = false;
-        if ((warpSpot.getWorld().equals(IslandWorld.getIslandWorld()) && island.getFlag(SettingsFlag.PVP_OVERWORLD)) 
-                || (warpSpot.getWorld().equals(IslandWorld.getNetherWorld()) && island.getFlag(SettingsFlag.PVP_NETHER))) {
-            pvp = true;
+        if (island != null) {
+            if ((warpSpot.getWorld().equals(IslandWorld.getIslandWorld()) && island.getFlag(SettingsFlag.PVP_OVERWORLD)) 
+                    || (warpSpot.getWorld().equals(IslandWorld.getNetherWorld()) && island.getFlag(SettingsFlag.PVP_NETHER))) {
+                pvp = true;
+            }
         }
         // Find out which direction the warp is facing
         Block b = warpSpot.getBlock();
