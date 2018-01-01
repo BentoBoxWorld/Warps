@@ -20,7 +20,7 @@ import us.tastybento.bskyblock.api.panels.builders.PanelItemBuilder;
 
 public class WarpPanelManager {
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final int PANEL_MAX_SIZE = 52;
     private Warp plugin;
     // This is a cache of heads, so they don't need to be created everytime
@@ -87,6 +87,11 @@ public class WarpPanelManager {
         return playerSkull;
     }
 
+    /**
+     * Show the warp panel for the user
+     * @param user
+     * @param index
+     */
     public void showWarpPanel(User user, int index) { 
         List<UUID> warps = new ArrayList<>(plugin.getWarpSignsManager().getSortedWarps());
         if (DEBUG) {
@@ -99,7 +104,10 @@ public class WarpPanelManager {
         }
         // TODO use when locales are done.
         //PanelBuilder panelBuilder = new PanelBuilder().setUser(user).setName(user.getTranslation("panel.title", "[number]", String.valueOf(index + 1)));
-        PanelBuilder panelBuilder = new PanelBuilder().setUser(user).setName(user.getTranslation("panel.title") + " " + String.valueOf(index + 1));
+        PanelBuilder panelBuilder = new PanelBuilder()
+                .setUser(user)
+                .setName(user.getTranslation("panel.title") + " " + String.valueOf(index + 1));
+        
         int i = index * PANEL_MAX_SIZE;
         for (; i < (index * PANEL_MAX_SIZE + PANEL_MAX_SIZE) && i < warps.size(); i++) {
             UUID owner = warps.get(i);

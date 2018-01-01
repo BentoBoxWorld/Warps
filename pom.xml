@@ -53,6 +53,11 @@
 			<artifactId>bskyblock</artifactId>
 			<version>LATEST</version>
 		</dependency>
+		<dependency>
+            <groupId>bskyblock.addon</groupId>
+            <artifactId>Level</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 	</dependencies>
 	<repositories>
 		<repository>

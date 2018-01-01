@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import org.apache.commons.lang.math.RandomUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -31,16 +30,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
+import bskyblock.addin.warps.config.Settings;
 import bskyblock.addin.warps.database.object.WarpsDO;
 import bskyblock.addin.warps.event.WarpInitiateEvent;
 import bskyblock.addin.warps.event.WarpListEvent;
 import bskyblock.addin.warps.event.WarpRemoveEvent;
+import bskyblock.addon.level.Level;
 import us.tastybento.bskyblock.BSkyBlock;
 import us.tastybento.bskyblock.api.commands.User;
 import us.tastybento.bskyblock.database.BSBDatabase;
 import us.tastybento.bskyblock.database.managers.AbstractDatabaseHandler;
 import us.tastybento.bskyblock.database.objects.Island;
-import us.tastybento.bskyblock.database.objects.Island.SettingsFlag;
 import us.tastybento.bskyblock.generators.IslandWorld;
 import us.tastybento.bskyblock.util.Util;
 
@@ -51,7 +51,8 @@ import us.tastybento.bskyblock.util.Util;
  * 
  */
 public class WarpSignsManager implements Listener {
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
+    private static final boolean DEBUG2 = false;
     private BSkyBlock bSkyBlock;
     // Map of all warps stored as player, warp sign Location
     private Map<UUID, Location> warpList;
@@ -224,6 +225,7 @@ public class WarpSignsManager implements Listener {
                 it.remove();
             }
         }
+        /*
         if (warpList.size() < 100) {
             // TEST CODE
             for (int i = 0; i < 300; i++) {
@@ -238,7 +240,7 @@ public class WarpSignsManager implements Listener {
                 sign.update();
                 warpList.put(rand, new Location(IslandWorld.getIslandWorld(), x, 120, z));
             }
-        }
+        }*/
     }
 
     /**
@@ -290,29 +292,36 @@ public class WarpSignsManager implements Listener {
      */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
     public void onSignWarpCreate(SignChangeEvent e) {
-        plugin.getLogger().info("DEBUG: SignChangeEvent called");
+        if (DEBUG)
+            plugin.getLogger().info("DEBUG: SignChangeEvent called");
         String title = e.getLine(0);
         User player = User.getInstance(e.getPlayer());
         if (player.getWorld().equals(IslandWorld.getIslandWorld()) || player.getWorld().equals(IslandWorld.getNetherWorld())) {
-            plugin.getLogger().info("DEBUG: Correct world");
+            if (DEBUG)
+                plugin.getLogger().info("DEBUG: Correct world");
             if (e.getBlock().getType().equals(Material.SIGN_POST) || e.getBlock().getType().equals(Material.WALL_SIGN)) {
-
-                plugin.getLogger().info("DEBUG: The first line of the sign says " + title);
+                if (DEBUG)
+                    plugin.getLogger().info("DEBUG: The first line of the sign says " + title);
                 // Check if someone is changing their own sign
                 // This should never happen !!
                 if (title.equalsIgnoreCase(plugin.getConfig().getString("welcomeLine"))) {
-                    plugin.getLogger().info("DEBUG: Welcome sign detected");
+                    if (DEBUG)
+                        plugin.getLogger().info("DEBUG: Welcome sign detected");
                     // Welcome sign detected - check permissions
                     if (!(player.hasPermission(us.tastybento.bskyblock.config.Settings.PERMPREFIX + "island.addwarp"))) {
                         player.sendMessage("warps.error.no-permission");
                         return;
                     }
-                    /*
-                    if(!(ASkyBlockAPI.getInstance().getLongIslandLevel(player.getUniqueId()) > Settings.warpLevelsRestriction)){
-                        player.sendMessage(ChatColor.RED + "warps.error.NotEnoughLevel"));
-                        return;
+                    if (plugin.getLevelAddon().isPresent()) {
+                        Level lev = (Level) plugin.getLevelAddon().get();
+                        if (lev.getIslandLevel(player.getUniqueId()) < Settings.warpLevelRestriction) {
+                            player.sendMessage("warps.error.NotEnoughLevel");
+                            player.sendLegacyMessage("Your level is only " + lev.getIslandLevel(player.getUniqueId()));
+                            return;
+                        }
                     }
-                     */
+
+
                     // Check that the player is on their island
                     if (!(bSkyBlock.getIslands().playerIsOnIsland(player))) {
                         player.sendMessage("warps.error.not-on-island");
@@ -459,15 +468,15 @@ public class WarpSignsManager implements Listener {
         if (signLocation == null) {
             plugin.getWarpSignsManager().removeWarp(uuid);
         } else { 
-            if (DEBUG)
+            if (DEBUG2)
                 Bukkit.getLogger().info("DEBUG: getting sign text");
             // Get the sign info if it exists
             if (signLocation.getBlock().getType().equals(Material.SIGN_POST) || signLocation.getBlock().getType().equals(Material.WALL_SIGN)) {
-                if (DEBUG)
+                if (DEBUG2)
                     Bukkit.getLogger().info("DEBUG: sign is a sign");
                 Sign sign = (Sign)signLocation.getBlock().getState();
                 result.addAll(Arrays.asList(sign.getLines()));
-                if (DEBUG)
+                if (DEBUG2)
                     Bukkit.getLogger().info("DEBUG: " + result.toString());
             }
             // Clean up - remove the [WELCOME] line
@@ -482,7 +491,7 @@ public class WarpSignsManager implements Listener {
                     break;
             }
         }
-        
+
         return result;
     }
 
@@ -500,7 +509,7 @@ public class WarpSignsManager implements Listener {
                 inFront.getBlockZ() + 0.5D, yaw, 30F);
         user.teleport(actualWarp);
         if (pvp) {
-            user.sendLegacyMessage(user.getTranslation("igs." + SettingsFlag.PVP_OVERWORLD) + " " + user.getTranslation("igs.allowed"));
+            //user.sendLegacyMessage(user.getTranslation("igs." + SettingsFlag.PVP_OVERWORLD) + " " + user.getTranslation("igs.allowed"));
             user.getWorld().playSound(user.getLocation(), Sound.ENTITY_ARROW_HIT, 1F, 1F);
         } else {
             user.getWorld().playSound(user.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
@@ -576,10 +585,10 @@ public class WarpSignsManager implements Listener {
         Island island = plugin.getBSkyBlock().getIslands().getIsland(owner);
         boolean pvp = false;
         if (island != null) {
-            if ((warpSpot.getWorld().equals(IslandWorld.getIslandWorld()) && island.getFlag(SettingsFlag.PVP_OVERWORLD)) 
-                    || (warpSpot.getWorld().equals(IslandWorld.getNetherWorld()) && island.getFlag(SettingsFlag.PVP_NETHER))) {
-                pvp = true;
-            }
+            //if ((warpSpot.getWorld().equals(IslandWorld.getIslandWorld()) && island.getFlag(SettingsFlag.PVP_OVERWORLD)) 
+            //        || (warpSpot.getWorld().equals(IslandWorld.getNetherWorld()) && island.getFlag(SettingsFlag.PVP_NETHER))) {
+            //    pvp = true;
+            //}
         }
         // Find out which direction the warp is facing
         Block b = warpSpot.getBlock();
@@ -617,7 +626,7 @@ public class WarpSignsManager implements Listener {
                     warpSpot.getBlockZ() + 0.5D);
             user.teleport(actualWarp);
             if (pvp) {
-                user.sendLegacyMessage(user.getTranslation("igs." + SettingsFlag.PVP_OVERWORLD) + " " + user.getTranslation("igs.Allowed"));
+                //user.sendLegacyMessage(user.getTranslation("igs." + SettingsFlag.PVP_OVERWORLD) + " " + user.getTranslation("igs.Allowed"));
                 user.getWorld().playSound(user.getLocation(), Sound.ENTITY_ARROW_HIT, 1F, 1F);
             } else {
                 user.getWorld().playSound(user.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);

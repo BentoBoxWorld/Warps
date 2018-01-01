@@ -1,5 +1,7 @@
 package bskyblock.addin.warps;
 
+import java.util.Optional;
+
 import bskyblock.addin.warps.commands.WarpCommand;
 import bskyblock.addin.warps.commands.WarpsCommand;
 import bskyblock.addin.warps.config.PluginConfig;
@@ -15,6 +17,8 @@ import us.tastybento.bskyblock.config.Settings;
  */
 public class Warp extends Addon {
 
+    private static final String BSKYBLOCK_LEVEL = "BSkyBlock-Level";
+
     // The BSkyBlock plugin instance.
     private BSkyBlock bSkyBlock;
 
@@ -23,6 +27,9 @@ public class Warp extends Addon {
 
     // Warps signs object
     private WarpSignsManager warpSignsManager;
+
+    // Level addon
+    private Optional<Addon> levelAddon;
 
     @Override
     public void onEnable() {
@@ -46,6 +53,9 @@ public class Warp extends Addon {
             CompositeCommand bsbIslandCmd = (CompositeCommand) BSkyBlock.getInstance().getCommandsManager().getCommand(Settings.ISLANDCOMMAND);
             new WarpCommand(this, bsbIslandCmd);
             new WarpsCommand(this, bsbIslandCmd);
+            
+            // Get the level addon if it exists
+            setLevelAddon(getBSkyBlock().getAddonsManager().getAddonByName(BSKYBLOCK_LEVEL));
         });
         // Done
     }
@@ -64,9 +74,17 @@ public class Warp extends Addon {
     public WarpPanelManager getWarpPanelManager() {
         return warpPanelManager;
     }
-    
+
     public WarpSignsManager getWarpSignsManager() {
         return warpSignsManager;
+    }
+
+    public Optional<Addon> getLevelAddon() {
+        return levelAddon;
+    }
+
+    public void setLevelAddon(Optional<Addon> levelAddon) {
+        this.levelAddon = levelAddon;
     }
 
 }
