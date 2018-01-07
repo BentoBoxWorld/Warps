@@ -6,9 +6,9 @@ import bskyblock.addin.warps.commands.WarpCommand;
 import bskyblock.addin.warps.commands.WarpsCommand;
 import bskyblock.addin.warps.config.PluginConfig;
 import us.tastybento.bskyblock.BSkyBlock;
+import us.tastybento.bskyblock.Constants;
 import us.tastybento.bskyblock.api.addons.Addon;
 import us.tastybento.bskyblock.api.commands.CompositeCommand;
-import us.tastybento.bskyblock.config.Settings;
 
 /**
  * Addin to BSkyBlock that enables welcome warp signs
@@ -50,7 +50,7 @@ public class Warp extends Addon {
             // Load the listener
             getServer().getPluginManager().registerEvents(warpSignsManager, bSkyBlock);
             // Register commands
-            CompositeCommand bsbIslandCmd = (CompositeCommand) BSkyBlock.getInstance().getCommandsManager().getCommand(Settings.ISLANDCOMMAND);
+            CompositeCommand bsbIslandCmd = (CompositeCommand) BSkyBlock.getInstance().getCommandsManager().getCommand(Constants.ISLANDCOMMAND);
             new WarpCommand(this, bsbIslandCmd);
             new WarpsCommand(this, bsbIslandCmd);
             

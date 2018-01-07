@@ -6,9 +6,9 @@ package bskyblock.addin.warps.commands;
 import java.util.List;
 
 import bskyblock.addin.warps.Warp;
+import us.tastybento.bskyblock.Constants;
 import us.tastybento.bskyblock.api.commands.CompositeCommand;
 import us.tastybento.bskyblock.api.commands.User;
-import us.tastybento.bskyblock.config.Settings;
 
 /**
  * @author ben
@@ -28,7 +28,7 @@ public class WarpsCommand extends CompositeCommand {
      */
     @Override
     public void setup() {
-        this.setPermission(Settings.PERMPREFIX + "island.warp");
+        this.setPermission(Constants.PERMPREFIX + "island.warp");
         this.setOnlyPlayer(true);
         this.setDescription("warps.help.description");
     }

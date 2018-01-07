@@ -31,17 +31,17 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
 import bskyblock.addin.warps.config.Settings;
-import bskyblock.addin.warps.database.object.WarpsDO;
+import bskyblock.addin.warps.database.object.WarpsData;
 import bskyblock.addin.warps.event.WarpInitiateEvent;
 import bskyblock.addin.warps.event.WarpListEvent;
 import bskyblock.addin.warps.event.WarpRemoveEvent;
 import bskyblock.addon.level.Level;
 import us.tastybento.bskyblock.BSkyBlock;
+import us.tastybento.bskyblock.Constants;
 import us.tastybento.bskyblock.api.commands.User;
 import us.tastybento.bskyblock.database.BSBDatabase;
 import us.tastybento.bskyblock.database.managers.AbstractDatabaseHandler;
 import us.tastybento.bskyblock.database.objects.Island;
-import us.tastybento.bskyblock.generators.IslandWorld;
 import us.tastybento.bskyblock.util.Util;
 
 /**
@@ -57,7 +57,7 @@ public class WarpSignsManager implements Listener {
     // Map of all warps stored as player, warp sign Location
     private Map<UUID, Location> warpList;
     // Database handler for level data
-    private AbstractDatabaseHandler<WarpsDO> handler;
+    private AbstractDatabaseHandler<WarpsData> handler;
 
     // The BSkyBlock database object
     private BSBDatabase database;
@@ -76,7 +76,7 @@ public class WarpSignsManager implements Listener {
         database = BSBDatabase.getDatabase();
         // Set up the database handler to store and retrieve Island classes
         // Note that these are saved by the BSkyBlock database
-        handler = (AbstractDatabaseHandler<WarpsDO>) database.getHandler(bSkyBlock, WarpsDO.class);
+        handler = (AbstractDatabaseHandler<WarpsData>) database.getHandler(WarpsData.class);
         // Load the warps
         loadWarpList();
     }
@@ -196,7 +196,7 @@ public class WarpSignsManager implements Listener {
         plugin.getLogger().info("Loading warps...");
         warpList = new HashMap<>();
         try {
-            WarpsDO warps = handler.loadObject("warps");
+            WarpsData warps = handler.loadObject("warps");
             // If there's nothing there, start fresh
             if (warps == null) {
                 if (DEBUG) 
@@ -251,7 +251,7 @@ public class WarpSignsManager implements Listener {
     public void onSignBreak(BlockBreakEvent e) {
         Block b = e.getBlock();
         User player = User.getInstance(e.getPlayer());
-        if (b.getWorld().equals(IslandWorld.getIslandWorld()) || b.getWorld().equals(IslandWorld.getNetherWorld())) {
+        if (b.getWorld().equals(bSkyBlock.getIslandWorldManager().getIslandWorld()) || b.getWorld().equals(bSkyBlock.getIslandWorldManager().getNetherWorld())) {
             if (b.getType().equals(Material.SIGN_POST) || b.getType().equals(Material.WALL_SIGN)) {
                 Sign s = (Sign) b.getState();
                 if (s != null) {
@@ -268,7 +268,7 @@ public class WarpSignsManager implements Listener {
                                 // Player removed sign
                                 removeWarp(s.getLocation());
                                 Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(plugin, s.getLocation(), player.getUniqueId()));
-                            } else if (player.isOp()  || player.hasPermission(us.tastybento.bskyblock.config.Settings.PERMPREFIX + "mod.removesign")) {
+                            } else if (player.isOp()  || player.hasPermission(Constants.PERMPREFIX + "mod.removesign")) {
                                 // Op or mod removed sign
                                 player.sendMessage("warps.removed");
                                 removeWarp(s.getLocation());
@@ -296,7 +296,7 @@ public class WarpSignsManager implements Listener {
             plugin.getLogger().info("DEBUG: SignChangeEvent called");
         String title = e.getLine(0);
         User player = User.getInstance(e.getPlayer());
-        if (player.getWorld().equals(IslandWorld.getIslandWorld()) || player.getWorld().equals(IslandWorld.getNetherWorld())) {
+        if (player.getWorld().equals(bSkyBlock.getIslandWorldManager().getIslandWorld()) || player.getWorld().equals(bSkyBlock.getIslandWorldManager().getNetherWorld())) {
             if (DEBUG)
                 plugin.getLogger().info("DEBUG: Correct world");
             if (e.getBlock().getType().equals(Material.SIGN_POST) || e.getBlock().getType().equals(Material.WALL_SIGN)) {
@@ -308,7 +308,7 @@ public class WarpSignsManager implements Listener {
                     if (DEBUG)
                         plugin.getLogger().info("DEBUG: Welcome sign detected");
                     // Welcome sign detected - check permissions
-                    if (!(player.hasPermission(us.tastybento.bskyblock.config.Settings.PERMPREFIX + "island.addwarp"))) {
+                    if (!(player.hasPermission(Constants.PERMPREFIX + "island.addwarp"))) {
                         player.sendMessage("warps.error.no-permission");
                         return;
                     }
@@ -316,7 +316,7 @@ public class WarpSignsManager implements Listener {
                         Level lev = (Level) plugin.getLevelAddon().get();
                         if (lev.getIslandLevel(player.getUniqueId()) < Settings.warpLevelRestriction) {
                             player.sendMessage("warps.error.NotEnoughLevel");
-                            player.sendLegacyMessage("Your level is only " + lev.getIslandLevel(player.getUniqueId()));
+                            player.sendRawMessage("Your level is only " + lev.getIslandLevel(player.getUniqueId()));
                             return;
                         }
                     }
@@ -448,7 +448,7 @@ public class WarpSignsManager implements Listener {
         }
         //plugin.getLogger().info("Saving warps...");
         try {
-            handler.saveObject(new WarpsDO().save(warpList));
+            handler.saveObject(new WarpsData().save(warpList));
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException
                 | InstantiationException | NoSuchMethodException | IntrospectionException | SQLException e) {
             // TODO Auto-generated catch block
