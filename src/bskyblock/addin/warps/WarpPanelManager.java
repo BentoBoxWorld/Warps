@@ -50,10 +50,10 @@ public class WarpPanelManager {
 
     private PanelItem getPanelItem(UUID warpOwner) {
         return new PanelItemBuilder()
-                .setIcon(getSkull(warpOwner))
-                .setName(plugin.getBSkyBlock().getPlayers().getName(warpOwner))
-                .setDescription(plugin.getWarpSignsManager().getSignText(warpOwner))
-                .setClickHandler(new ClickHandler() {
+                .icon(getSkull(warpOwner))
+                .name(plugin.getBSkyBlock().getPlayers().getName(warpOwner))
+                .description(plugin.getWarpSignsManager().getSignText(warpOwner))
+                .clickHandler(new ClickHandler() {
 
                     @Override
                     public boolean onClick(User user, ClickType click) {
@@ -121,9 +121,9 @@ public class WarpPanelManager {
         if (i < warps.size()) {
             // Next
             panelBuilder.addItem(new PanelItemBuilder()
-                    .setName("Next")
-                    .setIcon(new ItemStack(Material.SIGN))
-                    .setClickHandler(new ClickHandler() {
+                    .name("Next")
+                    .icon(new ItemStack(Material.SIGN))
+                    .clickHandler(new ClickHandler() {
 
                         @Override
                         public boolean onClick(User user, ClickType click) {
@@ -137,9 +137,9 @@ public class WarpPanelManager {
         if (i > PANEL_MAX_SIZE) {
             // Previous
             panelBuilder.addItem(new PanelItemBuilder()
-                    .setName("Previous")
-                    .setIcon(new ItemStack(Material.SIGN))
-                    .setClickHandler(new ClickHandler() {
+                    .name("Previous")
+                    .icon(new ItemStack(Material.SIGN))
+                    .clickHandler(new ClickHandler() {
 
                         @Override
                         public boolean onClick(User user, ClickType click) {
