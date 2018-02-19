@@ -42,7 +42,6 @@ import us.tastybento.bskyblock.api.commands.User;
 import us.tastybento.bskyblock.database.BSBDatabase;
 import us.tastybento.bskyblock.database.managers.AbstractDatabaseHandler;
 import us.tastybento.bskyblock.database.objects.Island;
-import us.tastybento.bskyblock.util.Util;
 
 /**
  * Handles warping. Players can add one sign
@@ -66,7 +65,7 @@ public class WarpSignsManager implements Listener {
 
 
     /**
-     * @param plugin
+     * @param plugin - BSkyBlock plugin object
      */
     @SuppressWarnings("unchecked")
     public WarpSignsManager(Warp plugin, BSkyBlock bSkyBlock) {
@@ -84,7 +83,7 @@ public class WarpSignsManager implements Listener {
     /**
      * Stores warps in the warp array
      * 
-     * @param playerUUID
+     * @param playerUUID - the player's UUID
      * @param loc
      */
     public boolean addWarp(final UUID playerUUID, final Location loc) {
@@ -108,7 +107,7 @@ public class WarpSignsManager implements Listener {
     /**
      * Provides the location of the warp for player or null if one is not found
      * 
-     * @param playerUUID
+     * @param playerUUID - the player's UUID
      *            - the warp requested
      * @return Location of warp
      */
@@ -245,7 +244,7 @@ public class WarpSignsManager implements Listener {
 
     /**
      * Checks to see if a sign has been broken
-     * @param e
+     * @param e - event
      */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
     public void onSignBreak(BlockBreakEvent e) {
@@ -288,7 +287,7 @@ public class WarpSignsManager implements Listener {
     /**
      * Event handler for Sign Changes
      * 
-     * @param e
+     * @param e - event
      */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
     public void onSignWarpCreate(SignChangeEvent e) {
@@ -598,10 +597,10 @@ public class WarpSignsManager implements Listener {
             BlockFace directionFacing = s.getFacing();
             Location inFront = b.getRelative(directionFacing).getLocation();
             Location oneDown = b.getRelative(directionFacing).getRelative(BlockFace.DOWN).getLocation();
-            if ((Util.isSafeLocation(inFront))) {
+            if ((bSkyBlock.getIslands().isSafeLocation(inFront))) {
                 plugin.getWarpSignsManager().warpPlayer(user, inFront, owner, directionFacing, pvp);
                 return;
-            } else if (b.getType().equals(Material.WALL_SIGN) && Util.isSafeLocation(oneDown)) {
+            } else if (b.getType().equals(Material.WALL_SIGN) && bSkyBlock.getIslands().isSafeLocation(oneDown)) {
                 // Try one block down if this is a wall sign
                 plugin.getWarpSignsManager().warpPlayer(user, oneDown, owner, directionFacing, pvp);
                 return;
@@ -612,7 +611,7 @@ public class WarpSignsManager implements Listener {
             plugin.getWarpSignsManager().removeWarp(warpSpot);
             return;
         }
-        if (!(Util.isSafeLocation(warpSpot))) {
+        if (!(bSkyBlock.getIslands().isSafeLocation(warpSpot))) {
             user.sendMessage("warps.error.NotSafe");
             // WALL_SIGN's will always be unsafe if the place in front is obscured.
             if (b.getType().equals(Material.SIGN_POST)) {
@@ -633,6 +632,15 @@ public class WarpSignsManager implements Listener {
             }
             return;
         }
+    }
+
+    /**
+     * Check if a player has a warp
+     * @param playerUUID - player's UUID
+     * @return true if they have warp
+     */
+    public boolean hasWarp(UUID playerUUID) {
+        return warpList.containsKey(playerUUID);
     }
 
 }

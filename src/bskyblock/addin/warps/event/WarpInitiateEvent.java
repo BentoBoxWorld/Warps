@@ -23,7 +23,7 @@ public class WarpInitiateEvent extends Event implements Cancellable {
 	private final UUID player;
 	
 	/**
-	 * @param plugin
+	 * @param plugin - BSkyBlock plugin object
 	 * @param warpLoc - where the player is warping to
 	 * @param player - the UUID of the player
 	 */

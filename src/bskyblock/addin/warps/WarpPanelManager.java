@@ -66,7 +66,7 @@ public class WarpPanelManager {
 
     /**
      * Gets the skull for this player UUID
-     * @param playerUUID
+     * @param playerUUID - the player's UUID
      * @return Player skull item
      */
     @SuppressWarnings("deprecation")
