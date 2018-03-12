@@ -2,7 +2,6 @@ package bskyblock.addin.warps;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,9 +37,9 @@ import bskyblock.addin.warps.event.WarpRemoveEvent;
 import bskyblock.addon.level.Level;
 import us.tastybento.bskyblock.BSkyBlock;
 import us.tastybento.bskyblock.Constants;
-import us.tastybento.bskyblock.api.commands.User;
+import us.tastybento.bskyblock.api.user.User;
+import us.tastybento.bskyblock.database.AbstractDatabaseHandler;
 import us.tastybento.bskyblock.database.BSBDatabase;
-import us.tastybento.bskyblock.database.managers.AbstractDatabaseHandler;
 import us.tastybento.bskyblock.database.objects.Island;
 
 /**
@@ -209,7 +208,7 @@ public class WarpSignsManager implements Listener {
                     Bukkit.getLogger().info("DEBUG: warpList size = " + warpList.size());
             }
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | SecurityException | ClassNotFoundException | IntrospectionException | SQLException e) {
+                | SecurityException | ClassNotFoundException | IntrospectionException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -449,7 +448,7 @@ public class WarpSignsManager implements Listener {
         try {
             handler.saveObject(new WarpsData().save(warpList));
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException
-                | InstantiationException | NoSuchMethodException | IntrospectionException | SQLException e) {
+                | IntrospectionException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

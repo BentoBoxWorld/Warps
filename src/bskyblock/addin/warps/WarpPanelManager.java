@@ -11,12 +11,12 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import us.tastybento.bskyblock.api.commands.User;
 import us.tastybento.bskyblock.api.panels.ClickType;
 import us.tastybento.bskyblock.api.panels.PanelItem;
 import us.tastybento.bskyblock.api.panels.PanelItem.ClickHandler;
 import us.tastybento.bskyblock.api.panels.builders.PanelBuilder;
 import us.tastybento.bskyblock.api.panels.builders.PanelItemBuilder;
+import us.tastybento.bskyblock.api.user.User;
 
 public class WarpPanelManager {
 
@@ -105,8 +105,8 @@ public class WarpPanelManager {
         // TODO use when locales are done.
         //PanelBuilder panelBuilder = new PanelBuilder().setUser(user).setName(user.getTranslation("panel.title", "[number]", String.valueOf(index + 1)));
         PanelBuilder panelBuilder = new PanelBuilder()
-                .setUser(user)
-                .setName(user.getTranslation("panel.title") + " " + String.valueOf(index + 1));
+                .user(user)
+                .name(user.getTranslation("panel.title") + " " + String.valueOf(index + 1));
         
         int i = index * PANEL_MAX_SIZE;
         for (; i < (index * PANEL_MAX_SIZE + PANEL_MAX_SIZE) && i < warps.size(); i++) {
@@ -114,13 +114,13 @@ public class WarpPanelManager {
             if (!cachedWarps.containsKey(owner)) {
                 cachedWarps.put(owner, getPanelItem(owner));
             }
-            panelBuilder.addItem(cachedWarps.get(owner)); 
+            panelBuilder.item(cachedWarps.get(owner)); 
         }
         final int panelNum = index;
         // Add signs
         if (i < warps.size()) {
             // Next
-            panelBuilder.addItem(new PanelItemBuilder()
+            panelBuilder.item(new PanelItemBuilder()
                     .name("Next")
                     .icon(new ItemStack(Material.SIGN))
                     .clickHandler(new ClickHandler() {
@@ -136,7 +136,7 @@ public class WarpPanelManager {
         }
         if (i > PANEL_MAX_SIZE) {
             // Previous
-            panelBuilder.addItem(new PanelItemBuilder()
+            panelBuilder.item(new PanelItemBuilder()
                     .name("Previous")
                     .icon(new ItemStack(Material.SIGN))
                     .clickHandler(new ClickHandler() {
