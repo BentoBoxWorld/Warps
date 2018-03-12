@@ -6,11 +6,15 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 
+import com.google.gson.annotations.Expose;
+
 import us.tastybento.bskyblock.database.objects.DataObject;
 
 public class WarpsData implements DataObject {
     
+    @Expose
     private String uniqueId = "warps";
+    @Expose
     private Map<UUID, Location> warpSigns = new HashMap<>(); 
 
     @Override
