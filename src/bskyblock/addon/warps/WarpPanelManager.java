@@ -1,4 +1,4 @@
-package bskyblock.addin.warps;
+package bskyblock.addon.warps;
 
 import java.util.ArrayList;
 import java.util.HashMap;

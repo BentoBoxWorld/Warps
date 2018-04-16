@@ -1,4 +1,4 @@
-package bskyblock.addin.warps.event;
+package bskyblock.addon.warps.event;
 
 import java.util.UUID;
 
@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import bskyblock.addin.warps.Warp;
+import bskyblock.addon.warps.Warp;
 
 /**
  * This event is fired when a Warp is created

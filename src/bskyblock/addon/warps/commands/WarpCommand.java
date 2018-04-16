@@ -1,4 +1,4 @@
-package bskyblock.addin.warps.commands;
+package bskyblock.addon.warps.commands;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import bskyblock.addin.warps.Warp;
+import bskyblock.addon.warps.Warp;
 import us.tastybento.bskyblock.Constants;
 import us.tastybento.bskyblock.api.commands.CompositeCommand;
 import us.tastybento.bskyblock.api.user.User;

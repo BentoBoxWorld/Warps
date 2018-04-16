@@ -15,7 +15,7 @@
  *     along with ASkyBlock.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 
-package bskyblock.addin.warps.event;
+package bskyblock.addon.warps.event;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +23,7 @@ import java.util.UUID;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import bskyblock.addin.warps.Warp;
+import bskyblock.addon.warps.Warp;
 
 /**
  * This event is fired when request is made for a sorted list of warps or when

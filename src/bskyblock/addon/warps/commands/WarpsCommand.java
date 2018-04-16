@@ -1,11 +1,11 @@
 /**
  * 
  */
-package bskyblock.addin.warps.commands;
+package bskyblock.addon.warps.commands;
 
 import java.util.List;
 
-import bskyblock.addin.warps.Warp;
+import bskyblock.addon.warps.Warp;
 import us.tastybento.bskyblock.Constants;
 import us.tastybento.bskyblock.api.commands.CompositeCommand;
 import us.tastybento.bskyblock.api.user.User;

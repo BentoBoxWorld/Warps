@@ -1,6 +1,6 @@
-package bskyblock.addin.warps.config;
+package bskyblock.addon.warps.config;
 
-import bskyblock.addin.warps.Warp;
+import bskyblock.addon.warps.Warp;
 
 public class PluginConfig {
 

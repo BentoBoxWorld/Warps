@@ -1,4 +1,4 @@
-package bskyblock.addin.warps.database.object;
+package bskyblock.addon.warps.database.object;
 
 import java.util.HashMap;
 import java.util.Map;

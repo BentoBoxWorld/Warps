@@ -1,4 +1,4 @@
-package bskyblock.addin.warps.config;
+package bskyblock.addon.warps.config;
 
 public class Settings {
 

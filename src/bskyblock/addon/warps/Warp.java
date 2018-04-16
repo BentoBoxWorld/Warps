@@ -1,10 +1,10 @@
-package bskyblock.addin.warps;
+package bskyblock.addon.warps;
 
 import java.util.Optional;
 
-import bskyblock.addin.warps.commands.WarpCommand;
-import bskyblock.addin.warps.commands.WarpsCommand;
-import bskyblock.addin.warps.config.PluginConfig;
+import bskyblock.addon.warps.commands.WarpCommand;
+import bskyblock.addon.warps.commands.WarpsCommand;
+import bskyblock.addon.warps.config.PluginConfig;
 import us.tastybento.bskyblock.BSkyBlock;
 import us.tastybento.bskyblock.Constants;
 import us.tastybento.bskyblock.api.addons.Addon;

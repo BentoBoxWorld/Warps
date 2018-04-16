@@ -1,4 +1,4 @@
-package bskyblock.addin.warps;
+package bskyblock.addon.warps;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,12 +27,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
-import bskyblock.addin.warps.config.Settings;
-import bskyblock.addin.warps.database.object.WarpsData;
-import bskyblock.addin.warps.event.WarpInitiateEvent;
-import bskyblock.addin.warps.event.WarpListEvent;
-import bskyblock.addin.warps.event.WarpRemoveEvent;
 import bskyblock.addon.level.Level;
+import bskyblock.addon.warps.config.Settings;
+import bskyblock.addon.warps.database.object.WarpsData;
+import bskyblock.addon.warps.event.WarpInitiateEvent;
+import bskyblock.addon.warps.event.WarpListEvent;
+import bskyblock.addon.warps.event.WarpRemoveEvent;
 import us.tastybento.bskyblock.BSkyBlock;
 import us.tastybento.bskyblock.Constants;
 import us.tastybento.bskyblock.api.user.User;
