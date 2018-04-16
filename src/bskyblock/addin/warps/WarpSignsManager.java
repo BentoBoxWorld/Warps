@@ -1,7 +1,5 @@
 package bskyblock.addin.warps;
 
-import java.beans.IntrospectionException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,7 +36,6 @@ import bskyblock.addon.level.Level;
 import us.tastybento.bskyblock.BSkyBlock;
 import us.tastybento.bskyblock.Constants;
 import us.tastybento.bskyblock.api.user.User;
-import us.tastybento.bskyblock.database.AbstractDatabaseHandler;
 import us.tastybento.bskyblock.database.BSBDatabase;
 import us.tastybento.bskyblock.database.objects.Island;
 
@@ -51,30 +48,26 @@ import us.tastybento.bskyblock.database.objects.Island;
 public class WarpSignsManager implements Listener {
     private static final boolean DEBUG = false;
     private static final boolean DEBUG2 = false;
+    private static final int MAX_WARPS = 600;
     private BSkyBlock bSkyBlock;
     // Map of all warps stored as player, warp sign Location
     private Map<UUID, Location> warpList;
     // Database handler for level data
-    private AbstractDatabaseHandler<WarpsData> handler;
+    private BSBDatabase<WarpsData> handler;
 
-    // The BSkyBlock database object
-    private BSBDatabase database;
-
-    private Warp plugin;
+    private Warp addon;
 
 
     /**
-     * @param plugin - BSkyBlock plugin object
+     * @param addon - addon
+     * @param bSkyBlock - BSB plugin
      */
-    @SuppressWarnings("unchecked")
-    public WarpSignsManager(Warp plugin, BSkyBlock bSkyBlock) {
-        this.plugin = plugin;
+    public WarpSignsManager(Warp addon, BSkyBlock bSkyBlock) {
+        this.addon = addon;
         this.bSkyBlock = bSkyBlock;
-        // Get the BSkyBlock database
-        database = BSBDatabase.getDatabase();
         // Set up the database handler to store and retrieve Island classes
         // Note that these are saved by the BSkyBlock database
-        handler = (AbstractDatabaseHandler<WarpsData>) database.getHandler(WarpsData.class);
+        handler = new BSBDatabase<>(addon, WarpsData.class);
         // Load the warps
         loadWarpList();
     }
@@ -99,7 +92,7 @@ public class WarpSignsManager implements Listener {
         }
         warpList.put(playerUUID, loc);
         saveWarpList();
-        Bukkit.getPluginManager().callEvent(new WarpInitiateEvent(plugin, loc, playerUUID));
+        Bukkit.getPluginManager().callEvent(new WarpInitiateEvent(addon, loc, playerUUID));
         return true;
     }
 
@@ -139,7 +132,7 @@ public class WarpSignsManager implements Listener {
      * Get sorted list of warps with most recent players listed first
      * @return UUID collenction
      */
-    public Collection<UUID> getSortedWarps() {
+    public List<UUID> getSortedWarps() {
         // Bigger value of time means a more recent login
         TreeMap<Long, UUID> map = new TreeMap<Long, UUID>();
         Iterator<Entry<UUID, Location>> it = warpList.entrySet().iterator();
@@ -151,7 +144,7 @@ public class WarpSignsManager implements Listener {
             } else {
                 UUID uuid = en.getKey();
                 // If never played, will be zero
-                long lastPlayed = plugin.getServer().getOfflinePlayer(uuid).getLastPlayed();
+                long lastPlayed = addon.getServer().getOfflinePlayer(uuid).getLastPlayed();
                 // This aims to avoid the chance that players logged off at exactly the same time
                 if (!map.isEmpty() && map.containsKey(lastPlayed)) {
                     lastPlayed = map.firstKey() - 1;
@@ -159,14 +152,17 @@ public class WarpSignsManager implements Listener {
                 map.put(lastPlayed, uuid);
             }
         }
-
         Collection<UUID> result = map.descendingMap().values();
+        List<UUID> list = new ArrayList<>(result);
+        if (list.size() > MAX_WARPS) {
+            list.subList(0, MAX_WARPS).clear();
+        }
         // Fire event
-        WarpListEvent event = new WarpListEvent(plugin, result);
-        plugin.getServer().getPluginManager().callEvent(event);
+        WarpListEvent event = new WarpListEvent(addon, list);
+        addon.getServer().getPluginManager().callEvent(event);
         // Get the result of any changes by listeners
-        result = event.getWarps();
-        return result;
+        list = event.getWarps();
+        return list;
     }
 
     /**
@@ -191,26 +187,20 @@ public class WarpSignsManager implements Listener {
      * Load the warps and checks if they still exist
      */
     public void loadWarpList() {
-        plugin.getLogger().info("Loading warps...");
+        addon.getLogger().info("Loading warps...");
         warpList = new HashMap<>();
-        try {
-            WarpsData warps = handler.loadObject("warps");
-            // If there's nothing there, start fresh
-            if (warps == null) {
-                if (DEBUG) 
-                    Bukkit.getLogger().info("DEBUG: nothing in the database");              
-                warpList = new HashMap<>();
-            } else {
-                if (DEBUG) 
-                    Bukkit.getLogger().info("DEBUG: something in the database");
-                warpList = warps.getWarpSigns();
-                if (DEBUG) 
-                    Bukkit.getLogger().info("DEBUG: warpList size = " + warpList.size());
-            }
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | SecurityException | ClassNotFoundException | IntrospectionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        WarpsData warps = handler.loadObject("warps");
+        // If there's nothing there, start fresh
+        if (warps == null) {
+            if (DEBUG) 
+                Bukkit.getLogger().info("DEBUG: nothing in the database");              
+            warpList = new HashMap<>();
+        } else {
+            if (DEBUG) 
+                Bukkit.getLogger().info("DEBUG: something in the database");
+            warpList = warps.getWarpSigns();
+            if (DEBUG) 
+                Bukkit.getLogger().info("DEBUG: warpList size = " + warpList.size());
         }
         Iterator<Entry<UUID, Location>> it = warpList.entrySet().iterator();
         while (it.hasNext()) {
@@ -219,7 +209,7 @@ public class WarpSignsManager implements Listener {
             Block b = en.getValue().getBlock();
             // Check that a warp sign is still there
             if (!b.getType().equals(Material.SIGN_POST) && !b.getType().equals(Material.WALL_SIGN)) {
-                plugin.getLogger().warning("Warp at location " + en.getValue() + " has no sign - removing.");
+                addon.getLogger().warning("Warp at location " + en.getValue() + " has no sign - removing.");
                 it.remove();
             }
         }
@@ -254,7 +244,7 @@ public class WarpSignsManager implements Listener {
                 Sign s = (Sign) b.getState();
                 if (s != null) {
                     //plugin.getLogger().info("DEBUG: sign found at location " + s.toString());
-                    if (s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + plugin.getConfig().getString("welcomeLine"))) {
+                    if (s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getConfig().getString("welcomeLine"))) {
                         // Do a quick check to see if this sign location is in
                         //plugin.getLogger().info("DEBUG: welcome sign");
                         // the list of warp signs
@@ -265,12 +255,12 @@ public class WarpSignsManager implements Listener {
                             if ((warpList.containsKey(player.getUniqueId()) && warpList.get(player.getUniqueId()).equals(s.getLocation()))) {
                                 // Player removed sign
                                 removeWarp(s.getLocation());
-                                Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(plugin, s.getLocation(), player.getUniqueId()));
+                                Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(addon, s.getLocation(), player.getUniqueId()));
                             } else if (player.isOp()  || player.hasPermission(Constants.PERMPREFIX + "mod.removesign")) {
                                 // Op or mod removed sign
                                 player.sendMessage("warps.removed");
                                 removeWarp(s.getLocation());
-                                Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(plugin, s.getLocation(), player.getUniqueId()));
+                                Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(addon, s.getLocation(), player.getUniqueId()));
                             } else {
                                 // Someone else's sign - not allowed
                                 player.sendMessage("warps.error.no-remove");
@@ -291,27 +281,27 @@ public class WarpSignsManager implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
     public void onSignWarpCreate(SignChangeEvent e) {
         if (DEBUG)
-            plugin.getLogger().info("DEBUG: SignChangeEvent called");
+            addon.getLogger().info("DEBUG: SignChangeEvent called");
         String title = e.getLine(0);
         User player = User.getInstance(e.getPlayer());
         if (player.getWorld().equals(bSkyBlock.getIslandWorldManager().getIslandWorld()) || player.getWorld().equals(bSkyBlock.getIslandWorldManager().getNetherWorld())) {
             if (DEBUG)
-                plugin.getLogger().info("DEBUG: Correct world");
+                addon.getLogger().info("DEBUG: Correct world");
             if (e.getBlock().getType().equals(Material.SIGN_POST) || e.getBlock().getType().equals(Material.WALL_SIGN)) {
                 if (DEBUG)
-                    plugin.getLogger().info("DEBUG: The first line of the sign says " + title);
+                    addon.getLogger().info("DEBUG: The first line of the sign says " + title);
                 // Check if someone is changing their own sign
                 // This should never happen !!
-                if (title.equalsIgnoreCase(plugin.getConfig().getString("welcomeLine"))) {
+                if (title.equalsIgnoreCase(addon.getConfig().getString("welcomeLine"))) {
                     if (DEBUG)
-                        plugin.getLogger().info("DEBUG: Welcome sign detected");
+                        addon.getLogger().info("DEBUG: Welcome sign detected");
                     // Welcome sign detected - check permissions
                     if (!(player.hasPermission(Constants.PERMPREFIX + "island.addwarp"))) {
                         player.sendMessage("warps.error.no-permission");
                         return;
                     }
-                    if (plugin.getLevelAddon().isPresent()) {
-                        Level lev = (Level) plugin.getLevelAddon().get();
+                    if (addon.getLevelAddon().isPresent()) {
+                        Level lev = (Level) addon.getLevelAddon().get();
                         if (lev.getIslandLevel(player.getUniqueId()) < Settings.warpLevelRestriction) {
                             player.sendMessage("warps.error.NotEnoughLevel");
                             player.sendRawMessage("Your level is only " + lev.getIslandLevel(player.getUniqueId()));
@@ -323,7 +313,7 @@ public class WarpSignsManager implements Listener {
                     // Check that the player is on their island
                     if (!(bSkyBlock.getIslands().playerIsOnIsland(player))) {
                         player.sendMessage("warps.error.not-on-island");
-                        e.setLine(0, ChatColor.RED + plugin.getConfig().getString("welcomeLine"));
+                        e.setLine(0, ChatColor.RED + addon.getConfig().getString("welcomeLine"));
                         return;
                     }
                     // Check if the player already has a sign
@@ -334,13 +324,13 @@ public class WarpSignsManager implements Listener {
                         // sign
                         if (addWarp(player.getUniqueId(), e.getBlock().getLocation())) {
                             player.sendMessage("warps.success");
-                            e.setLine(0, ChatColor.GREEN + plugin.getConfig().getString("welcomeLine"));
+                            e.setLine(0, ChatColor.GREEN + addon.getConfig().getString("welcomeLine"));
                             for (int i = 1; i<4; i++) {
                                 e.setLine(i, ChatColor.translateAlternateColorCodes('&', e.getLine(i)));
                             }
                         } else {
                             player.sendMessage("warps.error.duplicate");
-                            e.setLine(0, ChatColor.RED + plugin.getConfig().getString("welcomeLine"));
+                            e.setLine(0, ChatColor.RED + addon.getConfig().getString("welcomeLine"));
                             for (int i = 1; i<4; i++) {
                                 e.setLine(i, ChatColor.translateAlternateColorCodes('&', e.getLine(i)));
                             }
@@ -357,23 +347,23 @@ public class WarpSignsManager implements Listener {
                             Sign oldSign = (Sign) oldSignBlock.getState();
                             if (oldSign != null) {
                                 //plugin.getLogger().info("DEBUG: Sign block is a sign");
-                                if (oldSign.getLine(0).equalsIgnoreCase(ChatColor.GREEN + plugin.getConfig().getString("welcomeLine"))) {
+                                if (oldSign.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getConfig().getString("welcomeLine"))) {
                                     //plugin.getLogger().info("DEBUG: Old sign had a green welcome");
-                                    oldSign.setLine(0, ChatColor.RED + plugin.getConfig().getString("welcomeLine"));
+                                    oldSign.setLine(0, ChatColor.RED + addon.getConfig().getString("welcomeLine"));
                                     oldSign.update(true, false);
                                     player.sendMessage("warps.deactivate");
                                     removeWarp(player.getUniqueId());
-                                    Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(plugin, oldSign.getLocation(), player.getUniqueId()));
+                                    Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(addon, oldSign.getLocation(), player.getUniqueId()));
                                 }
                             }
                         }
                         // Set up the warp
                         if (addWarp(player.getUniqueId(), e.getBlock().getLocation())) {
                             player.sendMessage("warps.error.success");
-                            e.setLine(0, ChatColor.GREEN + plugin.getConfig().getString("welcomeLine"));
+                            e.setLine(0, ChatColor.GREEN + addon.getConfig().getString("welcomeLine"));
                         } else {
                             player.sendMessage("warps.error.duplicate");
-                            e.setLine(0, ChatColor.RED + plugin.getConfig().getString("welcomeLine"));
+                            e.setLine(0, ChatColor.RED + addon.getConfig().getString("welcomeLine"));
                         }
                     }
                 }
@@ -390,8 +380,8 @@ public class WarpSignsManager implements Listener {
         if (b.getType().equals(Material.SIGN_POST) || b.getType().equals(Material.WALL_SIGN)) {
             Sign s = (Sign) b.getState();
             if (s != null) {
-                if (s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + plugin.getConfig().getString("welcomeLine"))) {
-                    s.setLine(0, ChatColor.RED + plugin.getConfig().getString("welcomeLine"));
+                if (s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getConfig().getString("welcomeLine"))) {
+                    s.setLine(0, ChatColor.RED + addon.getConfig().getString("welcomeLine"));
                     s.update(true, false);
                 }
             }
@@ -411,12 +401,11 @@ public class WarpSignsManager implements Listener {
             Entry<UUID, Location> en = it.next();
             if (en.getValue().equals(loc)) {
                 // Inform player
-                User user = User.getInstance(plugin.getServer().getPlayer(en.getKey()));
+                User user = User.getInstance(addon.getServer().getPlayer(en.getKey()));
                 if (user != null) {
                     // Inform the player
                     user.sendMessage("warps.sign-removed");
                 }
-                plugin.getWarpPanelManager().remove(en.getKey());
                 it.remove();
             }
         }
@@ -434,7 +423,6 @@ public class WarpSignsManager implements Listener {
             warpList.remove(uuid);
         }
         saveWarpList();
-        plugin.getWarpPanelManager().remove(uuid);
     }
 
     /**
@@ -444,14 +432,7 @@ public class WarpSignsManager implements Listener {
         if (warpList == null) {
             return;
         }
-        //plugin.getLogger().info("Saving warps...");
-        try {
-            handler.saveObject(new WarpsData().save(warpList));
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException
-                | IntrospectionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        handler.saveObject(new WarpsData().save(warpList));
     }
 
     /**
@@ -464,7 +445,7 @@ public class WarpSignsManager implements Listener {
         //get the sign info
         Location signLocation = getWarp(uuid);
         if (signLocation == null) {
-            plugin.getWarpSignsManager().removeWarp(uuid);
+            addon.getWarpSignsManager().removeWarp(uuid);
         } else { 
             if (DEBUG2)
                 Bukkit.getLogger().info("DEBUG: getting sign text");
@@ -570,17 +551,17 @@ public class WarpSignsManager implements Listener {
      * @param owner
      */
     public void warpPlayer(User user, UUID owner) {
-        final Location warpSpot = plugin.getWarpSignsManager().getWarp(owner);
+        final Location warpSpot = addon.getWarpSignsManager().getWarp(owner);
         // Check if the warp spot is safe
         if (warpSpot == null) {
             user.sendMessage("warps.error.NotReadyYet");
-            plugin.getLogger().warning("Null warp found, owned by " + plugin.getBSkyBlock().getPlayers().getName(owner));
+            addon.getLogger().warning("Null warp found, owned by " + addon.getBSkyBlock().getPlayers().getName(owner));
             return;
         }
         // Find out if island is locked
         // TODO: Fire event
 
-        Island island = plugin.getBSkyBlock().getIslands().getIsland(owner);
+        Island island = addon.getBSkyBlock().getIslands().getIsland(owner);
         boolean pvp = false;
         if (island != null) {
             //if ((warpSpot.getWorld().equals(IslandWorld.getIslandWorld()) && island.getFlag(SettingsFlag.PVP_OVERWORLD)) 
@@ -597,25 +578,25 @@ public class WarpSignsManager implements Listener {
             Location inFront = b.getRelative(directionFacing).getLocation();
             Location oneDown = b.getRelative(directionFacing).getRelative(BlockFace.DOWN).getLocation();
             if ((bSkyBlock.getIslands().isSafeLocation(inFront))) {
-                plugin.getWarpSignsManager().warpPlayer(user, inFront, owner, directionFacing, pvp);
+                addon.getWarpSignsManager().warpPlayer(user, inFront, owner, directionFacing, pvp);
                 return;
             } else if (b.getType().equals(Material.WALL_SIGN) && bSkyBlock.getIslands().isSafeLocation(oneDown)) {
                 // Try one block down if this is a wall sign
-                plugin.getWarpSignsManager().warpPlayer(user, oneDown, owner, directionFacing, pvp);
+                addon.getWarpSignsManager().warpPlayer(user, oneDown, owner, directionFacing, pvp);
                 return;
             }
         } else {
             // Warp has been removed
             user.sendMessage("warps.error.DoesNotExist");
-            plugin.getWarpSignsManager().removeWarp(warpSpot);
+            addon.getWarpSignsManager().removeWarp(warpSpot);
             return;
         }
         if (!(bSkyBlock.getIslands().isSafeLocation(warpSpot))) {
             user.sendMessage("warps.error.NotSafe");
             // WALL_SIGN's will always be unsafe if the place in front is obscured.
             if (b.getType().equals(Material.SIGN_POST)) {
-                plugin.getLogger().warning(
-                        "Unsafe warp found at " + warpSpot.toString() + " owned by " + plugin.getBSkyBlock().getPlayers().getName(owner));
+                addon.getLogger().warning(
+                        "Unsafe warp found at " + warpSpot.toString() + " owned by " + addon.getBSkyBlock().getPlayers().getName(owner));
 
             }
             return;

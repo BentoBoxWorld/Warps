@@ -17,7 +17,7 @@
 
 package bskyblock.addin.warps.event;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.event.Event;
@@ -36,13 +36,13 @@ import bskyblock.addin.warps.Warp;
  */
 public class WarpListEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private Collection<UUID> warps;
+    private List<UUID> warps;
 
     /**
      * @param plugin - BSkyBlock plugin object
      * @param warps
      */
-    public WarpListEvent(Warp plugin, Collection<UUID> warps) {
+    public WarpListEvent(Warp plugin, List<UUID> warps) {
         this.warps = warps;
     }
 
@@ -52,14 +52,14 @@ public class WarpListEvent extends Event {
      * that players with the most recent login will be first.
      * @return the warps
      */
-    public Collection<UUID> getWarps() {
+    public List<UUID> getWarps() {
         return warps;
     }
 
     /**
      * @param warps the warps to set
      */
-    public void setWarps(Collection<UUID> warps) {
+    public void setWarps(List<UUID> warps) {
         this.warps = warps;
     }
 
