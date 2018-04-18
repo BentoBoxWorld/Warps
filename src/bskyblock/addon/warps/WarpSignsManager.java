@@ -406,6 +406,8 @@ public class WarpSignsManager implements Listener {
                     // Inform the player
                     user.sendMessage("warps.sign-removed");
                 }
+                // Remove sign from warp panel cache
+                addon.getWarpPanelManager().removeWarp(en.getKey());
                 it.remove();
             }
         }
@@ -421,6 +423,8 @@ public class WarpSignsManager implements Listener {
         if (warpList.containsKey(uuid)) {
             popSign(warpList.get(uuid));
             warpList.remove(uuid);
+            // Remove sign from warp panel cache
+            addon.getWarpPanelManager().removeWarp(uuid);
         }
         saveWarpList();
     }

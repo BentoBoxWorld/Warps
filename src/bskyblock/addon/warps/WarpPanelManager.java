@@ -7,10 +7,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import us.tastybento.bskyblock.api.panels.ClickType;
 import us.tastybento.bskyblock.api.panels.PanelItem;
@@ -25,19 +23,19 @@ public class WarpPanelManager {
     private static final int PANEL_MAX_SIZE = 52;
     private Warp addon;
     // This is a cache of heads, so they don't need to be created everytime
-    private Map<UUID, ItemStack> cachedHeads = new HashMap<>();
+    private Map<UUID, List<String>> cachedHeads = new HashMap<>();
 
 
     public WarpPanelManager(Warp addon) {
         this.addon = addon;
-        addon.getWarpSignsManager().getSortedWarps().forEach(this :: getSkull);
+        addon.getWarpSignsManager().getSortedWarps().forEach(this :: getSign);
     }
 
     private PanelItem getPanelItem(UUID warpOwner) {
         return new PanelItemBuilder()
-                .icon(cachedHeads.getOrDefault(warpOwner, getSkull(warpOwner)))
+                .icon(Material.SIGN)
                 .name(addon.getBSkyBlock().getPlayers().getName(warpOwner))
-                .description(addon.getWarpSignsManager().getSignText(warpOwner))
+                .description(cachedHeads.getOrDefault(warpOwner, getSign(warpOwner)))
                 .clickHandler(new ClickHandler() {
 
                     @Override
@@ -49,31 +47,14 @@ public class WarpPanelManager {
     }
 
     /**
-     * Gets the skull for this player UUID
-     * @param playerUUID - the player's UUID
-     * @return Player skull item
+     * Gets sign text and caches it
+     * @param playerUUID
+     * @return
      */
-    @SuppressWarnings("deprecation")
-    private ItemStack getSkull(UUID playerUUID) {
-        String playerName = addon.getBSkyBlock().getPlayers().getName(playerUUID);
-        if (DEBUG)
-            addon.getLogger().info("DEBUG: name of warp = " + playerName);
-        if (playerName == null) {
-            if (DEBUG)
-                addon.getLogger().warning("Warp for Player: UUID " + playerUUID.toString() + " is unknown on this server, skipping...");
-            return null;
-        }
-        ItemStack playerSkull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-        SkullMeta meta = (SkullMeta) playerSkull.getItemMeta();
-        meta.setDisplayName(ChatColor.WHITE + playerName);
-        playerSkull.setItemMeta(meta);
-        cachedHeads.put(playerUUID, playerSkull);
-        Bukkit.getScheduler().runTaskAsynchronously(addon.getBSkyBlock(), () -> {
-            meta.setOwner(playerName);
-            playerSkull.setItemMeta(meta);
-            cachedHeads.put(playerUUID, playerSkull);
-        });
-        return playerSkull;
+    private List<String> getSign(UUID playerUUID) {
+        List<String> result = addon.getWarpSignsManager().getSignText(playerUUID);
+        cachedHeads.put(playerUUID, result);
+        return result;
     }
 
     /**
@@ -134,6 +115,14 @@ public class WarpPanelManager {
                     }).build());
         }
         panelBuilder.build();
+    }
+
+    /**
+     * Removes sign text from the cache
+     * @param key
+     */
+    public void removeWarp(UUID key) {
+        cachedHeads.remove(key);
     }
 
 }

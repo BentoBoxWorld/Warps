@@ -1,5 +1,11 @@
 name: BSkyBlock-WelcomeWarps
-main: bskyblock.addin.warps.Warp
+main: bskyblock.addon.warps.Warp
 version: 0.1
 
 authors: tastybento
+
+permissions:
+  bskyblock.island.warp:
+    description: Player can use warp or warps commands
+    default: true
+
