@@ -74,7 +74,7 @@ public class WarpPanelManager {
         }
         PanelBuilder panelBuilder = new PanelBuilder()
                 .user(user)
-                .name(user.getTranslation("panel.title") + " " + String.valueOf(index + 1));
+                .name(user.getTranslation("warps.title") + " " + String.valueOf(index + 1));
 
         int i = index * PANEL_MAX_SIZE;
         for (; i < (index * PANEL_MAX_SIZE + PANEL_MAX_SIZE) && i < warps.size(); i++) {
