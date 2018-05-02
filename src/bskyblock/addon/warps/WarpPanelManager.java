@@ -10,9 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import us.tastybento.bskyblock.api.panels.ClickType;
 import us.tastybento.bskyblock.api.panels.PanelItem;
-import us.tastybento.bskyblock.api.panels.PanelItem.ClickHandler;
 import us.tastybento.bskyblock.api.panels.builders.PanelBuilder;
 import us.tastybento.bskyblock.api.panels.builders.PanelItemBuilder;
 import us.tastybento.bskyblock.api.user.User;
@@ -36,13 +34,10 @@ public class WarpPanelManager {
                 .icon(Material.SIGN)
                 .name(addon.getBSkyBlock().getPlayers().getName(warpOwner))
                 .description(cachedHeads.getOrDefault(warpOwner, getSign(warpOwner)))
-                .clickHandler(new ClickHandler() {
-
-                    @Override
-                    public boolean onClick(User user, ClickType click) {
-                        addon.getWarpSignsManager().warpPlayer(user, warpOwner);
-                        return true;
-                    }
+                .clickHandler((panel, clicker, click, slot) -> { {
+                    addon.getWarpSignsManager().warpPlayer(clicker, warpOwner);
+                    return true;
+                }
                 }).build();
     }
 
@@ -87,15 +82,10 @@ public class WarpPanelManager {
             panelBuilder.item(new PanelItemBuilder()
                     .name("Next")
                     .icon(new ItemStack(Material.SIGN))
-                    .clickHandler(new ClickHandler() {
-
-                        @Override
-                        public boolean onClick(User user, ClickType click) {
-                            user.closeInventory();
-                            showWarpPanel(user, panelNum+1);
-                            return true;
-                        }
-
+                    .clickHandler((panel, clicker, click, slot) -> {
+                        user.closeInventory();
+                        showWarpPanel(user, panelNum+1);
+                        return true;
                     }).build());
         }
         if (i > PANEL_MAX_SIZE) {
@@ -103,15 +93,10 @@ public class WarpPanelManager {
             panelBuilder.item(new PanelItemBuilder()
                     .name("Previous")
                     .icon(new ItemStack(Material.SIGN))
-                    .clickHandler(new ClickHandler() {
-
-                        @Override
-                        public boolean onClick(User user, ClickType click) {
-                            user.closeInventory();
-                            showWarpPanel(user, panelNum-1);
-                            return true;
-                        }
-
+                    .clickHandler((panel, clicker, click, slot) -> {
+                        user.closeInventory();
+                        showWarpPanel(user, panelNum-1);
+                        return true;
                     }).build());
         }
         panelBuilder.build();
