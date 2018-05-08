@@ -311,7 +311,7 @@ public class WarpSignsManager implements Listener {
 
 
                     // Check that the player is on their island
-                    if (!(bSkyBlock.getIslands().playerIsOnIsland(player))) {
+                    if (!(bSkyBlock.getIslands().userIsOnIsland(player))) {
                         player.sendMessage("warps.error.not-on-island");
                         e.setLine(0, ChatColor.RED + addon.getConfig().getString("welcomeLine"));
                         return;
