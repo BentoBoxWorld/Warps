@@ -1,7 +1,6 @@
 package bskyblock.addon.warps.commands;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -36,7 +35,7 @@ public class WarpCommand extends CompositeCommand {
     }
     
     @Override
-    public Optional<List<String>> tabComplete(User user, String alias, LinkedList<String> args) {
+    public Optional<List<String>> tabComplete(User user, String alias, List<String> args) {
         List<String> options = new ArrayList<>();
         final Set<UUID> warpList = plugin.getWarpSignsManager().listWarps();
 
