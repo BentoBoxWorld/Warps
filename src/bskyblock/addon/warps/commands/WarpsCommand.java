@@ -6,7 +6,6 @@ package bskyblock.addon.warps.commands;
 import java.util.List;
 
 import bskyblock.addon.warps.Warp;
-import us.tastybento.bskyblock.Constants;
 import us.tastybento.bskyblock.api.commands.CompositeCommand;
 import us.tastybento.bskyblock.api.user.User;
 
@@ -28,7 +27,7 @@ public class WarpsCommand extends CompositeCommand {
      */
     @Override
     public void setup() {
-        this.setPermission(Constants.PERMPREFIX + "island.warp");
+        this.setPermission(getPermissionPrefix() + "island.warp");
         this.setOnlyPlayer(true);
         this.setDescription("warps.help.description");
     }
@@ -38,11 +37,11 @@ public class WarpsCommand extends CompositeCommand {
      */
     @Override
     public boolean execute(User user, List<String> args) {
-        if (plugin.getWarpSignsManager().listWarps().isEmpty()) {
+        if (plugin.getWarpSignsManager().listWarps(getWorld()).isEmpty()) {
             user.sendMessage("warps.error.no-warps-yet");
             user.sendMessage("warps.warpTip");                
         } else {
-            plugin.getWarpPanelManager().showWarpPanel(user,0);
+            plugin.getWarpPanelManager().showWarpPanel(getWorld(), user,0);
         }
         return true;
     }

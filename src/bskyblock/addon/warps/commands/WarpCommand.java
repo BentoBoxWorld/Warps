@@ -7,14 +7,13 @@ import java.util.Set;
 import java.util.UUID;
 
 import bskyblock.addon.warps.Warp;
-import us.tastybento.bskyblock.Constants;
 import us.tastybento.bskyblock.api.commands.CompositeCommand;
 import us.tastybento.bskyblock.api.user.User;
 
 /**
  * The /is warp <name> command
  * 
- * @author ben
+ * @author tastybento
  *
  */
 public class WarpCommand extends CompositeCommand {
@@ -28,7 +27,7 @@ public class WarpCommand extends CompositeCommand {
 
     @Override
     public void setup() {
-        this.setPermission(Constants.PERMPREFIX + "island.warp");
+        this.setPermission(getPermissionPrefix() + "island.warp");
         this.setOnlyPlayer(true);
         this.setParameters("warp.help.parameters");
         this.setDescription("warp.help.description");
@@ -37,7 +36,7 @@ public class WarpCommand extends CompositeCommand {
     @Override
     public Optional<List<String>> tabComplete(User user, String alias, List<String> args) {
         List<String> options = new ArrayList<>();
-        final Set<UUID> warpList = plugin.getWarpSignsManager().listWarps();
+        final Set<UUID> warpList = plugin.getWarpSignsManager().listWarps(getWorld());
 
         for (UUID warp : warpList) {
             options.add(plugin.getBSkyBlock().getPlayers().getName(warp));
@@ -50,7 +49,7 @@ public class WarpCommand extends CompositeCommand {
     public boolean execute(User user, List<String> args) {
         if (args.size() == 1) {
             // Warp somewhere command
-            final Set<UUID> warpList = plugin.getWarpSignsManager().listWarps();
+            final Set<UUID> warpList = plugin.getWarpSignsManager().listWarps(getWorld());
             if (warpList.isEmpty()) {
                 user.sendMessage("warps.errorNoWarpsYet");
                 user.sendMessage("warps.warpTip");
@@ -73,7 +72,7 @@ public class WarpCommand extends CompositeCommand {
                     return true;
                 } else {
                     // Warp exists!
-                    plugin.getWarpSignsManager().warpPlayer(user, foundWarp);
+                    plugin.getWarpSignsManager().warpPlayer(getWorld(), user, foundWarp);
                 }
             }
         }

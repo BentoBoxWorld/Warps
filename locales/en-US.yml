@@ -19,6 +19,7 @@ warps:
     not-on-island: "&CYou must be on your island to do that!"
     duplicate: "&CDuplicate sign placed"
     no-warps-yet: "&CThere are no warps available yet"
+    your-level-is: "&cYou island level is only [level] and must be higher than [required]"
   help:
     description: "open the warps panel"
 warp:

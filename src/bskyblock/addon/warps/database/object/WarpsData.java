@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 
 import com.google.gson.annotations.Expose;
 
@@ -15,7 +16,7 @@ public class WarpsData implements DataObject {
     @Expose
     private String uniqueId = "warps";
     @Expose
-    private Map<UUID, Location> warpSigns = new HashMap<>(); 
+    private Map<Location, UUID> warpSigns = new HashMap<>(); 
 
     @Override
     public String getUniqueId() {
@@ -27,18 +28,23 @@ public class WarpsData implements DataObject {
         this.uniqueId = uniqueId;
     }
 
-    public Map<UUID, Location> getWarpSigns() {
+    public Map<Location,  UUID> getWarpSigns() {
     		if (warpSigns == null)
     			return new HashMap<>();
         return warpSigns;
     }
 
-    public void setWarpSigns(Map<UUID, Location> warpSigns) {
+    public void setWarpSigns(Map<Location, UUID> warpSigns) {
         this.warpSigns = warpSigns;
     }
 
-    public WarpsData save(Map<UUID, Location> warpList) {
-        this.warpSigns = warpList;
+    /**
+     * Puts all the data from the map into this object ready for saving
+     * @param worldsWarpList
+     * @return this class filled with data
+     */
+    public WarpsData save(Map<World, Map<UUID, Location>> worldsWarpList) {
+        worldsWarpList.values().forEach(world -> world.forEach((uuid,location) -> warpSigns.put(location, uuid)));
         return this;
     }
 
