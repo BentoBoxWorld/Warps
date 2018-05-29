@@ -16,7 +16,9 @@ public class WarpsData implements DataObject {
     @Expose
     private String uniqueId = "warps";
     @Expose
-    private Map<Location, UUID> warpSigns = new HashMap<>(); 
+    private Map<Location, UUID> warpSigns = new HashMap<>();
+    
+    public WarpsData() {}
 
     @Override
     public String getUniqueId() {
