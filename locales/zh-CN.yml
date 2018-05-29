@@ -1,0 +1,29 @@
+###########################################################################################
+# 本文件是 YML 格式的文件. 编辑时请务必小心.                                              #
+# 请在 http://yaml-online-parser.appspot.com 等 YAML 检查器中检查您的编辑.                #
+###########################################################################################
+
+warps:
+  removed: "&C传送木牌已移除"
+  success: "&A成功!"
+  sign-removed: "&C传送木牌已移除!"
+  title: "传送木牌"
+  previous: "&6上一页"
+  next: "&6下一页"
+  warpToPlayersSign: "&6正传送到 [player] 的传送木牌"
+  warpTip: "&6放置一个第一行是 [Welcome] 的木牌以创建传送木牌"
+  error:
+    no-remove: "&C无权移除传送木牌!"
+    not-enough-level: "&C岛屿等级不够高!"
+    no-permission: "&C权限不足!"
+    not-on-island: "&C操作必须在空岛上进行!"
+    duplicate: "&C木牌重复"
+    no-warps-yet: "&C暂无可用传送木牌"
+    your-level-is: "&c岛屿当前等级 [level], 需要等级 [required]"
+  help:
+    description: "打开传送面板"
+warp:
+  help:
+    parameters: "<玩家名称>"
+    description: "传送到该玩家的传送木牌处"
+    
