@@ -101,16 +101,16 @@ public class WarpSignsListener implements Listener {
         // Check if someone is changing their own sign
         if (title.equalsIgnoreCase(addon.getConfig().getString("welcomeLine"))) {
             // Welcome sign detected - check permissions
-            if (!(user.hasPermission(addon.getPermPrefix(e.getBlock().getWorld()) + "island.addwarp"))) {
+            if (!(user.hasPermission(addon.getPermPrefix(b.getWorld()) + "island.addwarp"))) {
                 user.sendMessage("warps.error.no-permission");
                 return;
             }
             if (addon.getLevelAddon().isPresent()) {
                 Level lev = (Level) addon.getLevelAddon().get();
-                if (lev.getIslandLevel(e.getBlock().getWorld(), user.getUniqueId()) < Settings.warpLevelRestriction) {
+                if (lev.getIslandLevel(b.getWorld(), user.getUniqueId()) < Settings.warpLevelRestriction) {
                     user.sendMessage("warps.error.not-enough-level");
                     user.sendMessage("warps.error.your-level-is", 
-                            "[level]", String.valueOf(lev.getIslandLevel(e.getBlock().getWorld(), user.getUniqueId())),
+                            "[level]", String.valueOf(lev.getIslandLevel(b.getWorld(), user.getUniqueId())),
                             "[required]", String.valueOf(Settings.warpLevelRestriction));
                     return;
                 }
@@ -118,18 +118,18 @@ public class WarpSignsListener implements Listener {
 
 
             // Check that the player is on their island
-            if (!(plugin.getIslands().userIsOnIsland(e.getBlock().getWorld(), user))) {
+            if (!(plugin.getIslands().userIsOnIsland(b.getWorld(), user))) {
                 user.sendMessage("warps.error.not-on-island");
                 e.setLine(0, ChatColor.RED + addon.getConfig().getString("welcomeLine"));
                 return;
             }
             // Check if the player already has a sign
-            final Location oldSignLoc = addon.getWarpSignsManager().getWarp(e.getBlock().getWorld(), user.getUniqueId());
+            final Location oldSignLoc = addon.getWarpSignsManager().getWarp(b.getWorld(), user.getUniqueId());
             if (oldSignLoc == null) {
                 //plugin.getLogger().info("DEBUG: Player does not have a sign already");
                 // First time the sign has been placed or this is a new
                 // sign
-                if (addon.getWarpSignsManager().addWarp(user.getUniqueId(), e.getBlock().getLocation())) {
+                if (addon.getWarpSignsManager().addWarp(user.getUniqueId(), b.getLocation())) {
                     user.sendMessage("warps.success");
                     e.setLine(0, ChatColor.GREEN + addon.getConfig().getString("welcomeLine"));
                     for (int i = 1; i<4; i++) {
@@ -161,7 +161,7 @@ public class WarpSignsListener implements Listener {
                     }
                 }
                 // Set up the warp
-                if (addon.getWarpSignsManager().addWarp(user.getUniqueId(), e.getBlock().getLocation())) {
+                if (addon.getWarpSignsManager().addWarp(user.getUniqueId(), b.getLocation())) {
                     user.sendMessage("warps.error.success");
                     e.setLine(0, ChatColor.GREEN + addon.getConfig().getString("welcomeLine"));
                 } else {
