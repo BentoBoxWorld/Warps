@@ -8,4 +8,7 @@ permissions:
   bskyblock.island.warp:
     description: Player can use warp or warps commands
     default: true
+  acidisland.island.warp:
+    description: Player can use warp or warps commands
+    default: true
 

@@ -27,7 +27,7 @@ public class WarpCommand extends CompositeCommand {
 
     @Override
     public void setup() {
-        this.setPermission(getPermissionPrefix() + "island.warp");
+        this.setPermission("island.warp");
         this.setOnlyPlayer(true);
         this.setParameters("warp.help.parameters");
         this.setDescription("warp.help.description");
