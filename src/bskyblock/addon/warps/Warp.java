@@ -62,7 +62,7 @@ public class Warp extends Addon {
             CompositeCommand bsbIslandCmd = (CompositeCommand) BSkyBlock.getInstance().getCommandsManager().getCommand("island");
             new WarpCommand(this, bsbIslandCmd);
             new WarpsCommand(this, bsbIslandCmd);
-            registeredWorlds.add(plugin.getIWM().getIslandWorld());
+            registeredWorlds.add(plugin.getIWM().getBSBIslandWorld());
             // AcidIsland hook in
             getServer().getScheduler().runTask(getBSkyBlock(), () -> {
                 this.getBSkyBlock().getAddonsManager().getAddonByName("AcidIsland").ifPresent(acidIsland -> {
