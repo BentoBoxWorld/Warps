@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package bskyblock.addon.warps.commands;
 
@@ -36,10 +36,10 @@ public class WarpsCommand extends CompositeCommand {
      * @see us.tastybento.bskyblock.api.commands.BSBCommand#execute(us.tastybento.bskyblock.api.commands.User, java.util.List)
      */
     @Override
-    public boolean execute(User user, List<String> args) {
+    public boolean execute(User user, String label, List<String> args) {
         if (plugin.getWarpSignsManager().listWarps(getWorld()).isEmpty()) {
             user.sendMessage("warps.error.no-warps-yet");
-            user.sendMessage("warps.warpTip");                
+            user.sendMessage("warps.warpTip");
         } else {
             plugin.getWarpPanelManager().showWarpPanel(getWorld(), user,0);
         }

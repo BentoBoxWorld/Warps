@@ -12,7 +12,7 @@ import us.tastybento.bskyblock.api.user.User;
 
 /**
  * The /is warp <name> command
- * 
+ *
  * @author tastybento
  *
  */
@@ -32,7 +32,7 @@ public class WarpCommand extends CompositeCommand {
         this.setParameters("warp.help.parameters");
         this.setDescription("warp.help.description");
     }
-    
+
     @Override
     public Optional<List<String>> tabComplete(User user, String alias, List<String> args) {
         List<String> options = new ArrayList<>();
@@ -41,12 +41,12 @@ public class WarpCommand extends CompositeCommand {
         for (UUID warp : warpList) {
             options.add(plugin.getBSkyBlock().getPlayers().getName(warp));
         }
-        
+
         return Optional.of(options);
     }
 
     @Override
-    public boolean execute(User user, List<String> args) {
+    public boolean execute(User user, String label, List<String> args) {
         if (args.size() == 1) {
             // Warp somewhere command
             final Set<UUID> warpList = plugin.getWarpSignsManager().listWarps(getWorld());
