@@ -36,9 +36,9 @@ import us.tastybento.bskyblock.util.Util;
 
 /**
  * Handles warping. Players can add one sign
- * 
+ *
  * @author tastybento
- * 
+ *
  */
 public class WarpSignsManager {
     private static final boolean DEBUG2 = false;
@@ -72,7 +72,7 @@ public class WarpSignsManager {
 
     /**
      * Stores warps in the warp array
-     * 
+     *
      * @param playerUUID - the player's UUID
      * @param loc
      */
@@ -96,7 +96,7 @@ public class WarpSignsManager {
 
     /**
      * Provides the location of the warp for player or null if one is not found
-     * 
+     *
      * @param playerUUID - the player's UUID
      *            - the warp requested
      * @return Location of warp
@@ -165,8 +165,8 @@ public class WarpSignsManager {
 
     /**
      * Lists all the known warps
-     * @param world 
-     * 
+     * @param world
+     *
      * @return UUID set of warps
      */
     public Set<UUID> listWarps(World world) {
@@ -185,7 +185,7 @@ public class WarpSignsManager {
         // Load into map
         if (warps != null) {
             warps.getWarpSigns().forEach((k,v) -> {
-                if (k != null && (k.getBlock().getType().equals(Material.SIGN_POST) || k.getBlock().getType().equals(Material.WALL_SIGN))) {
+                if (k != null && (k.getBlock().getType().equals(Material.SIGN) || k.getBlock().getType().equals(Material.WALL_SIGN))) {
                     // Add to map
                     getWarpList(k.getWorld()).put(v, k);
                 }
@@ -199,7 +199,7 @@ public class WarpSignsManager {
      */
     private void popSign(Location loc) {
         Block b = loc.getBlock();
-        if (b.getType().equals(Material.SIGN_POST) || b.getType().equals(Material.WALL_SIGN)) {
+        if (b.getType().equals(Material.SIGN) || b.getType().equals(Material.WALL_SIGN)) {
             Sign s = (Sign) b.getState();
             if (s != null) {
                 if (s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getConfig().getString("welcomeLine"))) {
@@ -211,8 +211,8 @@ public class WarpSignsManager {
     }
 
     /**
-     * Removes a warp at a location. 
-     * 
+     * Removes a warp at a location.
+     *
      * @param loc
      */
     public void removeWarp(Location loc) {
@@ -238,7 +238,7 @@ public class WarpSignsManager {
 
     /**
      * Remove warp sign owned by UUID
-     * 
+     *
      * @param uuid
      */
     public void removeWarp(World world, UUID uuid) {
@@ -269,11 +269,11 @@ public class WarpSignsManager {
         Location signLocation = getWarp(world, uuid);
         if (signLocation == null) {
             addon.getWarpSignsManager().removeWarp(world, uuid);
-        } else { 
+        } else {
             if (DEBUG2)
                 Bukkit.getLogger().info("DEBUG: getting sign text");
             // Get the sign info if it exists
-            if (signLocation.getBlock().getType().equals(Material.SIGN_POST) || signLocation.getBlock().getType().equals(Material.WALL_SIGN)) {
+            if (signLocation.getBlock().getType().equals(Material.SIGN) || signLocation.getBlock().getType().equals(Material.WALL_SIGN)) {
                 if (DEBUG2)
                     Bukkit.getLogger().info("DEBUG: sign is a sign");
                 Sign sign = (Sign)signLocation.getBlock().getState();
@@ -325,7 +325,7 @@ public class WarpSignsManager {
     /**
      * Converts block face direction to radial degrees. Returns 0 if block face
      * is not radial.
-     * 
+     *
      * @param face
      * @return degrees
      */
@@ -387,14 +387,14 @@ public class WarpSignsManager {
         Island island = addon.getBSkyBlock().getIslands().getIsland(world, owner);
         boolean pvp = false;
         if (island != null) {
-            //if ((warpSpot.getWorld().equals(IslandWorld.getIslandWorld()) && island.getFlag(SettingsFlag.PVP_OVERWORLD)) 
+            //if ((warpSpot.getWorld().equals(IslandWorld.getIslandWorld()) && island.getFlag(SettingsFlag.PVP_OVERWORLD))
             //        || (warpSpot.getWorld().equals(IslandWorld.getNetherWorld()) && island.getFlag(SettingsFlag.PVP_NETHER))) {
             //    pvp = true;
             //}
         }
         // Find out which direction the warp is facing
         Block b = warpSpot.getBlock();
-        if (b.getType().equals(Material.SIGN_POST) || b.getType().equals(Material.WALL_SIGN)) {
+        if (b.getType().equals(Material.SIGN) || b.getType().equals(Material.WALL_SIGN)) {
             Sign sign = (Sign) b.getState();
             org.bukkit.material.Sign s = (org.bukkit.material.Sign) sign.getData();
             BlockFace directionFacing = s.getFacing();
@@ -417,7 +417,7 @@ public class WarpSignsManager {
         if (!(plugin.getIslands().isSafeLocation(warpSpot))) {
             user.sendMessage("warps.error.NotSafe");
             // WALL_SIGN's will always be unsafe if the place in front is obscured.
-            if (b.getType().equals(Material.SIGN_POST)) {
+            if (b.getType().equals(Material.SIGN)) {
                 addon.getLogger().warning(
                         "Unsafe warp found at " + warpSpot.toString() + " owned by " + addon.getBSkyBlock().getPlayers().getName(owner));
 

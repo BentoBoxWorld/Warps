@@ -20,9 +20,9 @@ import us.tastybento.bskyblock.api.user.User;
 
 /**
  * Handles warping. Players can add one sign
- * 
+ *
  * @author tastybento
- * 
+ *
  */
 public class WarpSignsListener implements Listener {
     private BSkyBlock plugin;
@@ -46,7 +46,7 @@ public class WarpSignsListener implements Listener {
     public void onSignBreak(BlockBreakEvent e) {
         Block b = e.getBlock();
         // Signs only
-        if (!b.getType().equals(Material.SIGN_POST) && !b.getType().equals(Material.WALL_SIGN)) {
+        if (!b.getType().equals(Material.SIGN) && !b.getType().equals(Material.WALL_SIGN)) {
             return;
         }
         if (!addon.inRegisteredWorld(b.getWorld())) {
@@ -83,14 +83,14 @@ public class WarpSignsListener implements Listener {
 
     /**
      * Event handler for Sign Changes
-     * 
+     *
      * @param e - event
      */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
     public void onSignWarpCreate(SignChangeEvent e) {
         Block b = e.getBlock();
         // Signs only
-        if (!b.getType().equals(Material.SIGN_POST) && !b.getType().equals(Material.WALL_SIGN)) {
+        if (!b.getType().equals(Material.SIGN) && !b.getType().equals(Material.WALL_SIGN)) {
             return;
         }
         if (!addon.inRegisteredWorld(b.getWorld())) {
@@ -110,7 +110,7 @@ public class WarpSignsListener implements Listener {
                 Level lev = (Level) addon.getLevelAddon().get();
                 if (lev.getIslandLevel(b.getWorld(), user.getUniqueId()) < Settings.warpLevelRestriction) {
                     user.sendMessage("warps.error.not-enough-level");
-                    user.sendMessage("warps.error.your-level-is", 
+                    user.sendMessage("warps.error.your-level-is",
                             "[level]", String.valueOf(lev.getIslandLevel(b.getWorld(), user.getUniqueId())),
                             "[required]", String.valueOf(Settings.warpLevelRestriction));
                     return;
@@ -148,7 +148,7 @@ public class WarpSignsListener implements Listener {
                 // so,
                 // deactivate it
                 Block oldSignBlock = oldSignLoc.getBlock();
-                if (oldSignBlock.getType().equals(Material.SIGN_POST) || oldSignBlock.getType().equals(Material.WALL_SIGN)) {
+                if (oldSignBlock.getType().equals(Material.SIGN) || oldSignBlock.getType().equals(Material.WALL_SIGN)) {
                     // The block is still a sign
                     Sign oldSign = (Sign) oldSignBlock.getState();
                     if (oldSign != null) {
