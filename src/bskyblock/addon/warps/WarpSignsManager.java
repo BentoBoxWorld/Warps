@@ -28,11 +28,11 @@ import org.bukkit.block.Sign;
 import bskyblock.addon.warps.database.object.WarpsData;
 import bskyblock.addon.warps.event.WarpInitiateEvent;
 import bskyblock.addon.warps.event.WarpListEvent;
-import us.tastybento.bskyblock.BSkyBlock;
-import us.tastybento.bskyblock.api.user.User;
-import us.tastybento.bskyblock.database.BSBDatabase;
-import us.tastybento.bskyblock.database.objects.Island;
-import us.tastybento.bskyblock.util.Util;
+import world.bentobox.bbox.BentoBox;
+import world.bentobox.bbox.api.user.User;
+import world.bentobox.bbox.database.BSBDatabase;
+import world.bentobox.bbox.database.objects.Island;
+import world.bentobox.bbox.util.Util;
 
 /**
  * Handles warping. Players can add one sign
@@ -43,7 +43,7 @@ import us.tastybento.bskyblock.util.Util;
 public class WarpSignsManager {
     private static final boolean DEBUG2 = false;
     private static final int MAX_WARPS = 600;
-    private BSkyBlock plugin;
+    private BentoBox plugin;
     // Map of all warps stored as player, warp sign Location
     private Map<World, Map<UUID, Location>> worldsWarpList;
     // Database handler for level data
@@ -58,9 +58,9 @@ public class WarpSignsManager {
 
     /**
      * @param addon - addon
-     * @param plugin - BSB plugin
+     * @param plugin - plugin
      */
-    public WarpSignsManager(Warp addon, BSkyBlock plugin) {
+    public WarpSignsManager(Warp addon, BentoBox plugin) {
         this.addon = addon;
         this.plugin = plugin;
         // Set up the database handler to store and retrieve Island classes

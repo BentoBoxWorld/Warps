@@ -11,10 +11,10 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
-import us.tastybento.bskyblock.api.panels.PanelItem;
-import us.tastybento.bskyblock.api.panels.builders.PanelBuilder;
-import us.tastybento.bskyblock.api.panels.builders.PanelItemBuilder;
-import us.tastybento.bskyblock.api.user.User;
+import world.bentobox.bbox.api.panels.PanelItem;
+import world.bentobox.bbox.api.panels.builders.PanelBuilder;
+import world.bentobox.bbox.api.panels.builders.PanelItemBuilder;
+import world.bentobox.bbox.api.user.User;
 
 public class WarpPanelManager {
 
@@ -57,11 +57,11 @@ public class WarpPanelManager {
 
     /**
      * Show the warp panel for the user
-     * @param world 
+     * @param world
      * @param user
      * @param index
      */
-    public void showWarpPanel(World world, User user, int index) { 
+    public void showWarpPanel(World world, User user, int index) {
         List<UUID> warps = new ArrayList<>(addon.getWarpSignsManager().getSortedWarps(world));
         if (DEBUG) {
             Bukkit.getLogger().info("DEBUG: showing warps. warps list is " + warps.size());
@@ -77,7 +77,7 @@ public class WarpPanelManager {
 
         int i = index * PANEL_MAX_SIZE;
         for (; i < (index * PANEL_MAX_SIZE + PANEL_MAX_SIZE) && i < warps.size(); i++) {
-            panelBuilder.item(getPanelItem(world, warps.get(i))); 
+            panelBuilder.item(getPanelItem(world, warps.get(i)));
         }
         final int panelNum = index;
         // Add signs

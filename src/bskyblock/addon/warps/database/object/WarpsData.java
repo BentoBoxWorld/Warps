@@ -9,7 +9,7 @@ import org.bukkit.World;
 
 import com.google.gson.annotations.Expose;
 
-import us.tastybento.bskyblock.database.objects.DataObject;
+import world.bentobox.bbox.database.objects.DataObject;
 
 public class WarpsData implements DataObject {
     

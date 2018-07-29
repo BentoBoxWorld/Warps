@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import bskyblock.addon.warps.Warp;
-import us.tastybento.bskyblock.api.commands.CompositeCommand;
-import us.tastybento.bskyblock.api.user.User;
+import world.bentobox.bbox.api.commands.CompositeCommand;
+import world.bentobox.bbox.api.user.User;
 
 /**
  * The /is warp <name> command

@@ -6,8 +6,8 @@ package bskyblock.addon.warps.commands;
 import java.util.List;
 
 import bskyblock.addon.warps.Warp;
-import us.tastybento.bskyblock.api.commands.CompositeCommand;
-import us.tastybento.bskyblock.api.user.User;
+import world.bentobox.bbox.api.commands.CompositeCommand;
+import world.bentobox.bbox.api.user.User;
 
 /**
  * @author ben

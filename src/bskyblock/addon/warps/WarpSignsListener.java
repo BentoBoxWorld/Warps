@@ -15,8 +15,8 @@ import org.bukkit.event.block.SignChangeEvent;
 import bskyblock.addon.level.Level;
 import bskyblock.addon.warps.config.Settings;
 import bskyblock.addon.warps.event.WarpRemoveEvent;
-import us.tastybento.bskyblock.BSkyBlock;
-import us.tastybento.bskyblock.api.user.User;
+import world.bentobox.bbox.BentoBox;
+import world.bentobox.bbox.api.user.User;
 
 /**
  * Handles warping. Players can add one sign
@@ -25,7 +25,7 @@ import us.tastybento.bskyblock.api.user.User;
  *
  */
 public class WarpSignsListener implements Listener {
-    private BSkyBlock plugin;
+    private BentoBox plugin;
 
     private Warp addon;
 
@@ -33,7 +33,7 @@ public class WarpSignsListener implements Listener {
      * @param addon - addon
      * @param plugin - BSB plugin
      */
-    public WarpSignsListener(Warp addon, BSkyBlock plugin) {
+    public WarpSignsListener(Warp addon, BentoBox plugin) {
         this.addon = addon;
         this.plugin = plugin;
     }
