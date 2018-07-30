@@ -378,13 +378,13 @@ public class WarpSignsManager {
         // Check if the warp spot is safe
         if (warpSpot == null) {
             user.sendMessage("warps.error.NotReadyYet");
-            addon.getLogger().warning("Null warp found, owned by " + addon.getBSkyBlock().getPlayers().getName(owner));
+            addon.getLogger().warning("Null warp found, owned by " + addon.getPlugin().getPlayers().getName(owner));
             return;
         }
         // Find out if island is locked
         // TODO: Fire event
 
-        Island island = addon.getBSkyBlock().getIslands().getIsland(world, owner);
+        Island island = addon.getPlugin().getIslands().getIsland(world, owner);
         boolean pvp = false;
         if (island != null) {
             //if ((warpSpot.getWorld().equals(IslandWorld.getIslandWorld()) && island.getFlag(SettingsFlag.PVP_OVERWORLD))
@@ -419,7 +419,7 @@ public class WarpSignsManager {
             // WALL_SIGN's will always be unsafe if the place in front is obscured.
             if (b.getType().equals(Material.SIGN)) {
                 addon.getLogger().warning(
-                        "Unsafe warp found at " + warpSpot.toString() + " owned by " + addon.getBSkyBlock().getPlayers().getName(owner));
+                        "Unsafe warp found at " + warpSpot.toString() + " owned by " + addon.getPlugin().getPlayers().getName(owner));
 
             }
             return;

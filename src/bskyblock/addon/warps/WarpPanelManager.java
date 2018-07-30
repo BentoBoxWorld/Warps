@@ -34,7 +34,7 @@ public class WarpPanelManager {
         cachedSigns.putIfAbsent(world, new HashMap<>());
         return new PanelItemBuilder()
                 .icon(Material.SIGN)
-                .name(addon.getBSkyBlock().getPlayers().getName(warpOwner))
+                .name(addon.getPlugin().getPlayers().getName(warpOwner))
                 .description(cachedSigns.get(world).getOrDefault(warpOwner, getSign(world, warpOwner)))
                 .clickHandler((panel, clicker, click, slot) -> { {
                     addon.getWarpSignsManager().warpPlayer(world, clicker, warpOwner);

@@ -39,7 +39,7 @@ public class WarpCommand extends CompositeCommand {
         final Set<UUID> warpList = plugin.getWarpSignsManager().listWarps(getWorld());
 
         for (UUID warp : warpList) {
-            options.add(plugin.getBSkyBlock().getPlayers().getName(warp));
+            options.add(plugin.getPlugin().getPlayers().getName(warp));
         }
 
         return Optional.of(options);

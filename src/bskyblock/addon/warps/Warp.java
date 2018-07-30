@@ -43,14 +43,14 @@ public class Warp extends Addon {
         // Load the plugin's config
         new PluginConfig(this);
         // Get the BSkyBlock plugin. This will be available because this plugin depends on it in plugin.yml.
-        plugin = this.getBSkyBlock();
+        plugin = this.getPlugin();
         // Check if it is enabled - it might be loaded, but not enabled.
         if (!plugin.isEnabled()) {
             this.setEnabled(false);
             return;
         }
         // We have to wait for the worlds to load, so we do the rest 1 tick later
-        getServer().getScheduler().runTask(this.getBSkyBlock(), () -> {
+        getServer().getScheduler().runTask(this.getPlugin(), () -> {
             registeredWorlds = new HashSet<>();
             // Start warp signs
             warpSignsManager = new WarpSignsManager(this, plugin);
@@ -58,7 +58,7 @@ public class Warp extends Addon {
             // Load the listener
             getServer().getPluginManager().registerEvents(new WarpSignsListener(this, plugin), plugin);
             // Register commands
-            getServer().getScheduler().runTask(getBSkyBlock(), () -> {
+            getServer().getScheduler().runTask(getPlugin(), () -> {
                 // Register for BSkyBlock
                 /*
                 CompositeCommand bsbIslandCmd = BentoBox.getInstance().getCommandsManager().getCommand("island");
@@ -67,8 +67,8 @@ public class Warp extends Addon {
                 registeredWorlds.add(plugin.getIWM().getBSBIslandWorld());
                  */
                 // AcidIsland hook in
-                this.getBSkyBlock().getAddonsManager().getAddonByName("AcidIsland").ifPresent(acidIsland -> {
-                    CompositeCommand acidIslandCmd = getBSkyBlock().getCommandsManager().getCommand("ai");
+                this.getPlugin().getAddonsManager().getAddonByName("AcidIsland").ifPresent(acidIsland -> {
+                    CompositeCommand acidIslandCmd = getPlugin().getCommandsManager().getCommand("ai");
                     if (acidIslandCmd != null) {
                         new WarpCommand(this, acidIslandCmd);
                         new WarpsCommand(this, acidIslandCmd);
@@ -78,7 +78,7 @@ public class Warp extends Addon {
             });
 
             // Get the level addon if it exists
-            setLevelAddon(getBSkyBlock().getAddonsManager().getAddonByName(BSKYBLOCK_LEVEL));
+            setLevelAddon(getPlugin().getAddonsManager().getAddonByName(BSKYBLOCK_LEVEL));
         });
         // Done
     }
@@ -111,7 +111,7 @@ public class Warp extends Addon {
     }
 
     public String getPermPrefix(World world) {
-        this.getBSkyBlock().getIWM().getPermissionPrefix(world);
+        this.getPlugin().getIWM().getPermissionPrefix(world);
         return null;
     }
 
