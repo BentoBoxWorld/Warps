@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.bukkit.World;
 
-import bentobox.addon.acidisland.AcidIsland;
 import bskyblock.addon.warps.commands.WarpCommand;
 import bskyblock.addon.warps.commands.WarpsCommand;
 import bskyblock.addon.warps.config.PluginConfig;
@@ -22,7 +21,7 @@ import world.bentobox.bbox.util.Util;
  */
 public class Warp extends Addon {
 
-    private static final String BSKYBLOCK_LEVEL = "BSkyBlock-Level";
+    private static final String LEVEL_PLUGIN_NAME = "BSkyBlock-Level";
 
     // The plugin instance.
     private BentoBox plugin;
@@ -59,26 +58,27 @@ public class Warp extends Addon {
             getServer().getPluginManager().registerEvents(new WarpSignsListener(this, plugin), plugin);
             // Register commands
             getServer().getScheduler().runTask(getPlugin(), () -> {
-                // Register for BSkyBlock
-                /*
-                CompositeCommand bsbIslandCmd = BentoBox.getInstance().getCommandsManager().getCommand("island");
-                new WarpCommand(this, bsbIslandCmd);
-                new WarpsCommand(this, bsbIslandCmd);
-                registeredWorlds.add(plugin.getIWM().getBSBIslandWorld());
-                 */
+                // BSkyBlock hook in
+                this.getPlugin().getAddonsManager().getAddonByName("BSkyBlock").ifPresent(acidIsland -> {
+                    CompositeCommand bsbIslandCmd = BentoBox.getInstance().getCommandsManager().getCommand("island");
+                    if (bsbIslandCmd != null) {
+                        new WarpCommand(this, bsbIslandCmd);
+                        new WarpsCommand(this, bsbIslandCmd);
+                        registeredWorlds.add(plugin.getIWM().getWorld("BSkyBlock"));
+                    }
+                });
                 // AcidIsland hook in
                 this.getPlugin().getAddonsManager().getAddonByName("AcidIsland").ifPresent(acidIsland -> {
                     CompositeCommand acidIslandCmd = getPlugin().getCommandsManager().getCommand("ai");
                     if (acidIslandCmd != null) {
                         new WarpCommand(this, acidIslandCmd);
                         new WarpsCommand(this, acidIslandCmd);
-                        registeredWorlds.add(((AcidIsland)acidIsland).getAiw().getOverWorld());
+                        registeredWorlds.add(plugin.getIWM().getWorld("AcidIsland"));
                     }
                 });
             });
-
             // Get the level addon if it exists
-            setLevelAddon(getPlugin().getAddonsManager().getAddonByName(BSKYBLOCK_LEVEL));
+            setLevelAddon(getPlugin().getAddonsManager().getAddonByName(LEVEL_PLUGIN_NAME));
         });
         // Done
     }

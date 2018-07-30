@@ -31,11 +31,11 @@ public class WarpPanelManager {
     }
 
     private PanelItem getPanelItem(World world, UUID warpOwner) {
-        cachedSigns.putIfAbsent(world, new HashMap<>());
+        // Return a sign panel item
         return new PanelItemBuilder()
                 .icon(Material.SIGN)
                 .name(addon.getPlugin().getPlayers().getName(warpOwner))
-                .description(cachedSigns.get(world).getOrDefault(warpOwner, getSign(world, warpOwner)))
+                .description(getSign(world, warpOwner))
                 .clickHandler((panel, clicker, click, slot) -> { {
                     addon.getWarpSignsManager().warpPlayer(world, clicker, warpOwner);
                     return true;
@@ -44,22 +44,26 @@ public class WarpPanelManager {
     }
 
     /**
-     * Gets sign text and caches it
+     * Gets sign text and cache it
      * @param playerUUID
-     * @return
+     * @return sign text in a list
      */
     private List<String> getSign(World world, UUID playerUUID) {
-        List<String> result = addon.getWarpSignsManager().getSignText(world, playerUUID);
+        // Add the worlds if we haven't seen this before
         cachedSigns.putIfAbsent(world, new HashMap<>());
+        if (cachedSigns.get(world).containsKey(playerUUID)) {
+            return cachedSigns.get(world).get(playerUUID);
+        }
+        List<String> result = addon.getWarpSignsManager().getSignText(world, playerUUID);
         cachedSigns.get(world).put(playerUUID, result);
         return result;
     }
 
     /**
      * Show the warp panel for the user
-     * @param world
-     * @param user
-     * @param index
+     * @param world - world
+     * @param user - user
+     * @param index - page to show - 0 is first
      */
     public void showWarpPanel(World world, User user, int index) {
         List<UUID> warps = new ArrayList<>(addon.getWarpSignsManager().getSortedWarps(world));
