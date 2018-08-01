@@ -4,12 +4,21 @@ import bskyblock.addon.warps.Warp;
 
 public class PluginConfig {
 
+    private int warpLevelRestriction;
+
     /**
      * Loads the various settings from the config.yml file into the plugin
      */
     public PluginConfig(Warp plugin) {
         plugin.saveDefaultConfig();
-        Settings.warpLevelRestriction = plugin.getConfig().getInt("warplevelrestriction",10);
+        warpLevelRestriction  = plugin.getConfig().getInt("warplevelrestriction",10);
         // All done
+    }
+
+    /**
+     * @return the warpLevelRestriction
+     */
+    public int getWarpLevelRestriction() {
+        return warpLevelRestriction;
     }
 }

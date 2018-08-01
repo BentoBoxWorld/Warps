@@ -1,5 +1,8 @@
 package bskyblock.addon.warps;
 
+import java.util.Map;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -13,7 +16,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
 import bskyblock.addon.level.Level;
-import bskyblock.addon.warps.config.Settings;
 import bskyblock.addon.warps.event.WarpRemoveEvent;
 import world.bentobox.bbox.BentoBox;
 import world.bentobox.bbox.api.user.User;
@@ -31,11 +33,10 @@ public class WarpSignsListener implements Listener {
 
     /**
      * @param addon - addon
-     * @param plugin - BSB plugin
      */
-    public WarpSignsListener(Warp addon, BentoBox plugin) {
+    public WarpSignsListener(Warp addon) {
         this.addon = addon;
-        this.plugin = plugin;
+        this.plugin = addon.getPlugin();
     }
 
     /**
@@ -60,14 +61,13 @@ public class WarpSignsListener implements Listener {
         if (s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getConfig().getString("welcomeLine"))) {
             // Do a quick check to see if this sign location is in
             // the list of warp signs
-            if (addon.getWarpSignsManager().getWarpList(b.getWorld()).containsValue(s.getLocation())) {
+            Map<UUID, Location> list = addon.getWarpSignsManager().getWarpList(b.getWorld());
+            if (list.containsValue(s.getLocation())) {
                 // Welcome sign detected - check to see if it is
+                System.out.println("DEBIG:");
                 // this player's sign
-                if ((addon.getWarpSignsManager().getWarpList(b.getWorld()).containsKey(user.getUniqueId()) && addon.getWarpSignsManager().getWarpList(b.getWorld()).get(user.getUniqueId()).equals(s.getLocation()))) {
-                    // Player removed sign
-                    addon.getWarpSignsManager().removeWarp(s.getLocation());
-                    Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(addon, s.getLocation(), user.getUniqueId()));
-                } else if (user.isOp()  || user.hasPermission(addon.getPermPrefix(e.getBlock().getWorld()) + "mod.removesign")) {
+                if ((list.containsKey(user.getUniqueId()) && list.get(user.getUniqueId()).equals(s.getLocation())) 
+                        || user.isOp()  || user.hasPermission(addon.getPermPrefix(e.getBlock().getWorld()) + "mod.removesign")) {
                     // Op or mod removed sign
                     user.sendMessage("warps.removed");
                     addon.getWarpSignsManager().removeWarp(s.getLocation());
@@ -89,10 +89,6 @@ public class WarpSignsListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
     public void onSignWarpCreate(SignChangeEvent e) {
         Block b = e.getBlock();
-        // Signs only
-        if (!b.getType().equals(Material.SIGN) && !b.getType().equals(Material.WALL_SIGN)) {
-            return;
-        }
         if (!addon.inRegisteredWorld(b.getWorld())) {
             return;
         }
@@ -108,11 +104,11 @@ public class WarpSignsListener implements Listener {
             }
             if (addon.getLevelAddon().isPresent()) {
                 Level lev = (Level) addon.getLevelAddon().get();
-                if (lev.getIslandLevel(b.getWorld(), user.getUniqueId()) < Settings.warpLevelRestriction) {
+                if (lev.getIslandLevel(b.getWorld(), user.getUniqueId()) < addon.getSettings().getWarpLevelRestriction()) {
                     user.sendMessage("warps.error.not-enough-level");
                     user.sendMessage("warps.error.your-level-is",
                             "[level]", String.valueOf(lev.getIslandLevel(b.getWorld(), user.getUniqueId())),
-                            "[required]", String.valueOf(Settings.warpLevelRestriction));
+                            "[required]", String.valueOf(addon.getSettings().getWarpLevelRestriction()));
                     return;
                 }
             }
@@ -127,22 +123,9 @@ public class WarpSignsListener implements Listener {
             // Check if the player already has a sign
             final Location oldSignLoc = addon.getWarpSignsManager().getWarp(b.getWorld(), user.getUniqueId());
             if (oldSignLoc == null) {
-                //plugin.getLogger().info("DEBUG: Player does not have a sign already");
                 // First time the sign has been placed or this is a new
                 // sign
-                if (addon.getWarpSignsManager().addWarp(user.getUniqueId(), b.getLocation())) {
-                    user.sendMessage("warps.success");
-                    e.setLine(0, ChatColor.GREEN + addon.getConfig().getString("welcomeLine"));
-                    for (int i = 1; i<4; i++) {
-                        e.setLine(i, ChatColor.translateAlternateColorCodes('&', e.getLine(i)));
-                    }
-                } else {
-                    user.sendMessage("warps.error.duplicate");
-                    e.setLine(0, ChatColor.RED + addon.getConfig().getString("welcomeLine"));
-                    for (int i = 1; i<4; i++) {
-                        e.setLine(i, ChatColor.translateAlternateColorCodes('&', e.getLine(i)));
-                    }
-                }
+                addSign(e, user, b);
             } else {
                 // A sign already exists. Check if it still there and if
                 // so,
@@ -161,17 +144,27 @@ public class WarpSignsListener implements Listener {
                         }
                     }
                 }
-                // Set up the warp
-                if (addon.getWarpSignsManager().addWarp(user.getUniqueId(), b.getLocation())) {
-                    user.sendMessage("warps.error.success");
-                    e.setLine(0, ChatColor.GREEN + addon.getConfig().getString("welcomeLine"));
-                } else {
-                    user.sendMessage("warps.error.duplicate");
-                    e.setLine(0, ChatColor.RED + addon.getConfig().getString("welcomeLine"));
-                }
+                // Set up the new warp sign
+                addSign(e, user, b);
             }
         }
 
+    }
+
+    private void addSign(SignChangeEvent e, User user, Block b) {
+        if (addon.getWarpSignsManager().addWarp(user.getUniqueId(), b.getLocation())) {
+            user.sendMessage("warps.success");
+            e.setLine(0, ChatColor.GREEN + addon.getConfig().getString("welcomeLine"));
+            for (int i = 1; i<4; i++) {
+                e.setLine(i, ChatColor.translateAlternateColorCodes('&', e.getLine(i)));
+            }
+        } else {
+            user.sendMessage("warps.error.duplicate");
+            e.setLine(0, ChatColor.RED + addon.getConfig().getString("welcomeLine"));
+            for (int i = 1; i<4; i++) {
+                e.setLine(i, ChatColor.translateAlternateColorCodes('&', e.getLine(i)));
+            }
+        }        
     }
 
 }

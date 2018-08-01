@@ -37,10 +37,12 @@ public class Warp extends Addon {
 
     private Set<World> registeredWorlds;
 
+    private PluginConfig settings;
+
     @Override
     public void onEnable() {
         // Load the plugin's config
-        new PluginConfig(this);
+        settings = new PluginConfig(this);
         // Get the BSkyBlock plugin. This will be available because this plugin depends on it in plugin.yml.
         plugin = this.getPlugin();
         // Check if it is enabled - it might be loaded, but not enabled.
@@ -55,7 +57,7 @@ public class Warp extends Addon {
             warpSignsManager = new WarpSignsManager(this, plugin);
             warpPanelManager = new WarpPanelManager(this);
             // Load the listener
-            getServer().getPluginManager().registerEvents(new WarpSignsListener(this, plugin), plugin);
+            getServer().getPluginManager().registerEvents(new WarpSignsListener(this), plugin);
             // Register commands
             getServer().getScheduler().runTask(getPlugin(), () -> {
                 // BSkyBlock hook in
@@ -122,6 +124,13 @@ public class Warp extends Addon {
      */
     public boolean inRegisteredWorld(World world) {
         return registeredWorlds.contains(Util.getWorld(world));
+    }
+
+    /**
+     * @return the settings
+     */
+    public PluginConfig getSettings() {
+        return settings;
     }
 
 }
