@@ -8,6 +8,7 @@ warps:
   success: "&ASuccess!"
   sign-removed: "&CWarp sign removed!"
   title: "Warp Signs"
+  player-warped: "&2[name] warped to your warp sign!"
   previous: "&6Previous page"
   next: "&6Next page"
   warpToPlayersSign: "&6Warping to [player]'s sign"

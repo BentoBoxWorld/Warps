@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -41,7 +40,6 @@ import world.bentobox.bbox.util.Util;
  *
  */
 public class WarpSignsManager {
-    private static final boolean DEBUG2 = false;
     private static final int MAX_WARPS = 600;
     private BentoBox plugin;
     // Map of all warps stored as player, warp sign Location
@@ -51,7 +49,12 @@ public class WarpSignsManager {
 
     private Warp addon;
 
-    public Map<UUID, Location> getWarpList(World world) {
+    /**
+     * Get the warp map for this world
+     * @param world - world
+     * @return map of warps
+     */
+    public Map<UUID, Location> getWarpMap(World world) {
         worldsWarpList.putIfAbsent(world, new HashMap<>());
         return worldsWarpList.get(world);
     }
@@ -71,24 +74,18 @@ public class WarpSignsManager {
     }
 
     /**
-     * Stores warps in the warp array
+     * Stores warps in the warp array. If successful, fires an event
      *
      * @param playerUUID - the player's UUID
-     * @param loc
+     * @param loc - location of warp sign
+     * @return true if successful, false if not
      */
     public boolean addWarp(final UUID playerUUID, final Location loc) {
-        if (playerUUID == null) {
+        // Do not allow null players to set warps or warps to be in the same location
+        if (playerUUID == null || getWarpMap(loc.getWorld()).containsValue(loc)) {
             return false;
         }
-        // Do not allow warps to be in the same location
-        if (getWarpList(loc.getWorld()).containsValue(loc)) {
-            return false;
-        }
-        // Remove the old warp if it existed
-        if (getWarpList(loc.getWorld()).containsKey(playerUUID)) {
-            getWarpList(loc.getWorld()).remove(playerUUID);
-        }
-        getWarpList(loc.getWorld()).put(playerUUID, loc);
+        getWarpMap(loc.getWorld()).put(playerUUID, loc);
         saveWarpList();
         Bukkit.getPluginManager().callEvent(new WarpInitiateEvent(addon, loc, playerUUID));
         return true;
@@ -97,59 +94,44 @@ public class WarpSignsManager {
     /**
      * Provides the location of the warp for player or null if one is not found
      *
+     * @param world - world to search in
      * @param playerUUID - the player's UUID
      *            - the warp requested
-     * @return Location of warp
+     * @return Location of warp or null
      */
     public Location getWarp(World world, UUID playerUUID) {
-        if (playerUUID != null && getWarpList(world).containsKey(playerUUID)) {
-            if (getWarpList(world).get(playerUUID) == null) {
-                getWarpList(world).remove(playerUUID);
-                return null;
-            }
-            return getWarpList(world).get(playerUUID);
-        } else {
-            return null;
-        }
+        return getWarpMap(world).get(playerUUID);
     }
 
     /**
-     * @param location
-     * @return Name of warp owner
+     * Get the name of the warp owner by location
+     * @param location to search
+     * @return Name of warp owner or empty string if there is none
      */
     public String getWarpOwner(Location location) {
-        for (UUID playerUUID : getWarpList(location.getWorld()).keySet()) {
-            if (location.equals(getWarpList(location.getWorld()).get(playerUUID))) {
-                return plugin.getPlayers().getName(playerUUID);
-            }
-        }
-        return "";
+        return getWarpMap(location.getWorld()).entrySet().stream().filter(en -> en.getValue().equals(location))
+                .findFirst().map(en -> plugin.getPlayers().getName(en.getKey())).orElse("");
     }
 
     /**
      * Get sorted list of warps with most recent players listed first
-     * @return UUID collection
+     * @return UUID list
      */
     public List<UUID> getSortedWarps(World world) {
+        // Remove any null locations - this can happen if an admin changes the name of the world and signs point to old locations
+        getWarpMap(world).values().removeIf(Objects::isNull);
         // Bigger value of time means a more recent login
         TreeMap<Long, UUID> map = new TreeMap<Long, UUID>();
-        Iterator<Entry<UUID, Location>> it = getWarpList(world).entrySet().iterator();
-        while (it.hasNext()) {
-            Entry<UUID, Location> en = it.next();
-            // Check if the location of the warp still exists, if not, delete it
-            if (en.getValue() == null) {
-                it.remove();
-            } else {
-                UUID uuid = en.getKey();
-                // If never played, will be zero
-                long lastPlayed = addon.getServer().getOfflinePlayer(uuid).getLastPlayed();
-                // This aims to avoid the chance that players logged off at exactly the same time
-                if (!map.isEmpty() && map.containsKey(lastPlayed)) {
-                    lastPlayed = map.firstKey() - 1;
-                }
-                map.put(lastPlayed, uuid);
+        getWarpMap(world).entrySet().forEach(en -> {
+            UUID uuid = en.getKey();
+            // If never played, will be zero
+            long lastPlayed = addon.getServer().getOfflinePlayer(uuid).getLastPlayed();
+            // This aims to avoid the chance that players logged off at exactly the same time
+            if (!map.isEmpty() && map.containsKey(lastPlayed)) {
+                lastPlayed = map.firstKey() - 1;
             }
-        }
+            map.put(lastPlayed, uuid);
+        });
         Collection<UUID> result = map.descendingMap().values();
         List<UUID> list = new ArrayList<>(result);
         if (list.size() > MAX_WARPS) {
@@ -171,14 +153,14 @@ public class WarpSignsManager {
      */
     public Set<UUID> listWarps(World world) {
         // Remove any null locations
-        getWarpList(world).values().removeIf(Objects::isNull);
-        return getWarpList(world).entrySet().stream().filter(e -> Util.sameWorld(world, e.getValue().getWorld())).map(Map.Entry::getKey).collect(Collectors.toSet());
+        getWarpMap(world).values().removeIf(Objects::isNull);
+        return getWarpMap(world).entrySet().stream().filter(e -> Util.sameWorld(world, e.getValue().getWorld())).map(Map.Entry::getKey).collect(Collectors.toSet());
     }
 
     /**
-     * Load the warps and checks if they still exist
+     * Load the warps and check if they still exist
      */
-    public void loadWarpList() {
+    private void loadWarpList() {
         addon.getLogger().info("Loading warps...");
         worldsWarpList = new HashMap<>();
         WarpsData warps = handler.loadObject("warps");
@@ -187,7 +169,7 @@ public class WarpSignsManager {
             warps.getWarpSigns().forEach((k,v) -> {
                 if (k != null && (k.getBlock().getType().equals(Material.SIGN) || k.getBlock().getType().equals(Material.WALL_SIGN))) {
                     // Add to map
-                    getWarpList(k.getWorld()).put(v, k);
+                    getWarpMap(k.getWorld()).put(v, k);
                 }
             });
         }
@@ -216,9 +198,8 @@ public class WarpSignsManager {
      * @param loc
      */
     public void removeWarp(Location loc) {
-        //plugin.getLogger().info("Asked to remove warp at " + loc);
         popSign(loc);
-        Iterator<Entry<UUID, Location>> it = getWarpList(loc.getWorld()).entrySet().iterator();
+        Iterator<Entry<UUID, Location>> it = getWarpMap(loc.getWorld()).entrySet().iterator();
         while (it.hasNext()) {
             Entry<UUID, Location> en = it.next();
             if (en.getValue().equals(loc)) {
@@ -242,9 +223,9 @@ public class WarpSignsManager {
      * @param uuid
      */
     public void removeWarp(World world, UUID uuid) {
-        if (getWarpList(world).containsKey(uuid)) {
-            popSign(getWarpList(world).get(uuid));
-            getWarpList(world).remove(uuid);
+        if (getWarpMap(world).containsKey(uuid)) {
+            popSign(getWarpMap(world).get(uuid));
+            getWarpMap(world).remove(uuid);
             // Remove sign from warp panel cache
             addon.getWarpPanelManager().removeWarp(world, uuid);
         }
@@ -259,66 +240,52 @@ public class WarpSignsManager {
     }
 
     /**
-     * Gets the warp sign text
-     * @param uuid
+     * Gets the warp sign text for player's UUID in world
+     * 
+     * @param world - world to look in
+     * @param uuid - player's uuid
      * @return List of lines
      */
     public List<String> getSignText(World world, UUID uuid) {
         List<String> result = new ArrayList<>();
         //get the sign info
         Location signLocation = getWarp(world, uuid);
-        if (signLocation == null) {
-            addon.getWarpSignsManager().removeWarp(world, uuid);
-        } else {
-            if (DEBUG2)
-                Bukkit.getLogger().info("DEBUG: getting sign text");
-            // Get the sign info if it exists
-            if (signLocation.getBlock().getType().equals(Material.SIGN) || signLocation.getBlock().getType().equals(Material.WALL_SIGN)) {
-                if (DEBUG2)
-                    Bukkit.getLogger().info("DEBUG: sign is a sign");
-                Sign sign = (Sign)signLocation.getBlock().getState();
-                result.addAll(Arrays.asList(sign.getLines()));
-                if (DEBUG2)
-                    Bukkit.getLogger().info("DEBUG: " + result.toString());
-            }
+        if (signLocation != null && (signLocation.getBlock().getType().equals(Material.SIGN) || signLocation.getBlock().getType().equals(Material.WALL_SIGN))) {
+            Sign sign = (Sign)signLocation.getBlock().getState();
+            result.addAll(Arrays.asList(sign.getLines()));
             // Clean up - remove the [WELCOME] line
             result.remove(0);
             // Remove any trailing blank lines
-            ListIterator<String> it = result.listIterator(result.size());
-            while (it.hasPrevious()) {
-                String line = it.previous();
-                if (line.isEmpty())
-                    it.remove();
-                else
-                    break;
-            }
+            result.removeIf(String::isEmpty);
+        } else {
+            addon.getWarpSignsManager().removeWarp(world, uuid);
         }
-
         return result;
     }
 
     /**
-     * Warps a player to a spot in front of a sign
-     * @param user
-     * @param inFront
-     * @param foundWarp
-     * @param directionFacing
+     * Warps a player to a spot in front of a sign.
+     * @param user - user who is warping
+     * @param inFront - location in front of sign - previously checked for safety
+     * @param signOwner - warp sign owner
+     * @param directionFacing - direction that sign is facing
+     * @param pvp - true if this location allowed PVP
      */
-    private void warpPlayer(User user, Location inFront, UUID foundWarp, BlockFace directionFacing, boolean pvp) {
+    private void warpPlayer(User user, Location inFront, UUID signOwner, BlockFace directionFacing, boolean pvp) {
         // convert blockface to angle
         float yaw = blockFaceToFloat(directionFacing);
         final Location actualWarp = new Location(inFront.getWorld(), inFront.getBlockX() + 0.5D, inFront.getBlockY(),
                 inFront.getBlockZ() + 0.5D, yaw, 30F);
         user.teleport(actualWarp);
         if (pvp) {
-            //user.sendLegacyMessage(user.getTranslation("igs." + SettingsFlag.PVP_OVERWORLD) + " " + user.getTranslation("igs.allowed"));
+            user.sendRawMessage(user.getTranslation("protection.flags.PVP_OVERWORLD.active"));
             user.getWorld().playSound(user.getLocation(), Sound.ENTITY_ARROW_HIT, 1F, 1F);
         } else {
             user.getWorld().playSound(user.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
         }
-        User warpOwner = User.getInstance(foundWarp);
+        User warpOwner = User.getInstance(signOwner);
         if (!warpOwner.equals(user)) {
-            warpOwner.sendMessage("warps.PlayerWarped", "[name]", user.getName());
+            warpOwner.sendMessage("warps.player-warped", "[name]", user.getName());
         }
     }
 
@@ -370,8 +337,10 @@ public class WarpSignsManager {
 
     /**
      * Warps a user to the warp owner by owner
-     * @param user
-     * @param owner
+     * 
+     * @param world - world to check
+     * @param user - user who is warping
+     * @param owner - owner of the warp
      */
     public void warpPlayer(World world, User user, UUID owner) {
         final Location warpSpot = addon.getWarpSignsManager().getWarp(world, owner);
@@ -443,7 +412,7 @@ public class WarpSignsManager {
      * @return true if they have warp
      */
     public boolean hasWarp(World world, UUID playerUUID) {
-        return getWarpList(world).containsKey(playerUUID);
+        return getWarpMap(world).containsKey(playerUUID);
     }
 
 }

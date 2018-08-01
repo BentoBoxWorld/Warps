@@ -61,7 +61,7 @@ public class WarpSignsListener implements Listener {
         if (s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getConfig().getString("welcomeLine"))) {
             // Do a quick check to see if this sign location is in
             // the list of warp signs
-            Map<UUID, Location> list = addon.getWarpSignsManager().getWarpList(b.getWorld());
+            Map<UUID, Location> list = addon.getWarpSignsManager().getWarpMap(b.getWorld());
             if (list.containsValue(s.getLocation())) {
                 // Welcome sign detected - check to see if it is
                 // this player's sign

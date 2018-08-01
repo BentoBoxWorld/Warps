@@ -84,7 +84,7 @@ public class WarpSignsListenerTest {
         when(s.getLocation()).thenReturn(location);
         list.put(uuid, location);
         // Player is in world
-        when(wsm.getWarpList(Mockito.eq(world))).thenReturn(list);
+        when(wsm.getWarpMap(Mockito.eq(world))).thenReturn(list);
         //Player has a warp sign already here
         when(wsm.getWarp(Mockito.any(), Mockito.any())).thenReturn(location);
         // Unique spot
@@ -179,7 +179,7 @@ public class WarpSignsListenerTest {
         when(s.getLocation()).thenReturn(mock(Location.class));
         wsl.onSignBreak(e);
         assertFalse(e.isCancelled());
-        Mockito.verify(wsm).getWarpList(Mockito.eq(world));
+        Mockito.verify(wsm).getWarpMap(Mockito.eq(world));
         Mockito.verify(s).getLocation();
     }
     
