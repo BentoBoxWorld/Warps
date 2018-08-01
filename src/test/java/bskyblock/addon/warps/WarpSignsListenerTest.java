@@ -1,6 +1,9 @@
 package bskyblock.addon.warps;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,11 +37,11 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import bskyblock.addon.level.Level;
 import bskyblock.addon.warps.config.PluginConfig;
-import world.bentobox.bbox.BentoBox;
-import world.bentobox.bbox.api.addons.Addon;
-import world.bentobox.bbox.api.user.User;
-import world.bentobox.bbox.managers.IslandsManager;
-import world.bentobox.bbox.managers.LocalesManager;
+import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.api.addons.Addon;
+import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.managers.IslandsManager;
+import world.bentobox.bentobox.managers.LocalesManager;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Bukkit.class})

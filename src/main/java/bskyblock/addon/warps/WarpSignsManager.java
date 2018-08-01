@@ -27,11 +27,11 @@ import org.bukkit.block.Sign;
 import bskyblock.addon.warps.database.object.WarpsData;
 import bskyblock.addon.warps.event.WarpInitiateEvent;
 import bskyblock.addon.warps.event.WarpListEvent;
-import world.bentobox.bbox.BentoBox;
-import world.bentobox.bbox.api.user.User;
-import world.bentobox.bbox.database.BSBDatabase;
-import world.bentobox.bbox.database.objects.Island;
-import world.bentobox.bbox.util.Util;
+import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.database.BSBDatabase;
+import world.bentobox.bentobox.database.objects.Island;
+import world.bentobox.bentobox.util.Util;
 
 /**
  * Handles warping. Players can add one sign
@@ -241,7 +241,7 @@ public class WarpSignsManager {
 
     /**
      * Gets the warp sign text for player's UUID in world
-     * 
+     *
      * @param world - world to look in
      * @param uuid - player's uuid
      * @return List of lines
@@ -337,7 +337,7 @@ public class WarpSignsManager {
 
     /**
      * Warps a user to the warp owner by owner
-     * 
+     *
      * @param world - world to check
      * @param user - user who is warping
      * @param owner - owner of the warp

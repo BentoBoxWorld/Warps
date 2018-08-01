@@ -27,9 +27,9 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import world.bentobox.bbox.BentoBox;
-import world.bentobox.bbox.api.user.User;
-import world.bentobox.bbox.managers.PlayersManager;
+import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.managers.PlayersManager;
 
 /**
  * @author ben

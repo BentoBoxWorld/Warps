@@ -17,8 +17,8 @@ import org.bukkit.event.block.SignChangeEvent;
 
 import bskyblock.addon.level.Level;
 import bskyblock.addon.warps.event.WarpRemoveEvent;
-import world.bentobox.bbox.BentoBox;
-import world.bentobox.bbox.api.user.User;
+import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.api.user.User;
 
 /**
  * Handles warping. Players can add one sign

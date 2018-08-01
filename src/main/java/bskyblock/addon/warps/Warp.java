@@ -9,10 +9,10 @@ import org.bukkit.World;
 import bskyblock.addon.warps.commands.WarpCommand;
 import bskyblock.addon.warps.commands.WarpsCommand;
 import bskyblock.addon.warps.config.PluginConfig;
-import world.bentobox.bbox.BentoBox;
-import world.bentobox.bbox.api.addons.Addon;
-import world.bentobox.bbox.api.commands.CompositeCommand;
-import world.bentobox.bbox.util.Util;
+import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.api.addons.Addon;
+import world.bentobox.bentobox.api.commands.CompositeCommand;
+import world.bentobox.bentobox.util.Util;
 
 /**
  * Addin to BSkyBlock that enables welcome warp signs
