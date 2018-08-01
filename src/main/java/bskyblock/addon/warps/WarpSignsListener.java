@@ -64,7 +64,6 @@ public class WarpSignsListener implements Listener {
             Map<UUID, Location> list = addon.getWarpSignsManager().getWarpList(b.getWorld());
             if (list.containsValue(s.getLocation())) {
                 // Welcome sign detected - check to see if it is
-                System.out.println("DEBIG:");
                 // this player's sign
                 if ((list.containsKey(user.getUniqueId()) && list.get(user.getUniqueId()).equals(s.getLocation())) 
                         || user.isOp()  || user.hasPermission(addon.getPermPrefix(e.getBlock().getWorld()) + "mod.removesign")) {
