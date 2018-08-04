@@ -4,6 +4,7 @@
 ###########################################################################################
 
 warps:
+  deactivate: "&cOld warp sign deactivated!"
   success: "&ASuccess!"
   sign-removed: "&CWarp sign removed!"
   title: "Warp Signs"
@@ -13,6 +14,7 @@ warps:
   warpToPlayersSign: "&6Warping to [player]'s sign"
   warpTip: "&6Place a warp sign with [Welcome] on the top"
   error:
+    does-not-exist: "&cOh snap! That warp no longer exists!"
     no-remove: "&CYou cannot remove that sign!"
     not-enough-level: "&CYour island level is not high enough!"
     no-permission: "&CYou do not have permission to do that!"

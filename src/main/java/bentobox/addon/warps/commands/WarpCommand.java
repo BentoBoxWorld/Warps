@@ -49,30 +49,22 @@ public class WarpCommand extends CompositeCommand {
     public boolean execute(User user, String label, List<String> args) {
         if (args.size() == 1) {
             // Warp somewhere command
-            final Set<UUID> warpList = plugin.getWarpSignsManager().listWarps(getWorld());
+            Set<UUID> warpList = plugin.getWarpSignsManager().listWarps(getWorld());
             if (warpList.isEmpty()) {
-                user.sendMessage("warps.errorNoWarpsYet");
+                user.sendMessage("warps.error.no-warps-yet");
                 user.sendMessage("warps.warpTip");
                 return true;
             } else {
                 // Check if this is part of a name
-                UUID foundWarp = null;
-                for (UUID warp : warpList) {
-                    if (warp == null)
-                        continue;
-                    if (getPlayers().getName(warp).toLowerCase().equals(args.get(0).toLowerCase())) {
-                        foundWarp = warp;
-                        break;
-                    } else if (getPlayers().getName(warp).toLowerCase().startsWith(args.get(0).toLowerCase())) {
-                        foundWarp = warp;
-                    }
-                }
+                UUID foundWarp = warpList.stream().filter(u -> getPlayers().getName(u).toLowerCase().equals(args.get(0).toLowerCase())
+                        || getPlayers().getName(u).toLowerCase().startsWith(args.get(0).toLowerCase())).findFirst().orElse(null);
                 if (foundWarp == null) {
-                    user.sendMessage("warps.error.DoesNotExist");
-                    return true;
+                    user.sendMessage("warps.error.does-not-exist");
+                    return false;
                 } else {
                     // Warp exists!
                     plugin.getWarpSignsManager().warpPlayer(getWorld(), user, foundWarp);
+                    return true;
                 }
             }
         }

@@ -146,8 +146,8 @@ public class WarpSignsManager {
     }
 
     /**
-     * Lists all the known warps
-     * @param world
+     * Lists all the known warps for this world
+     * @param world - world
      *
      * @return UUID set of warps
      */
@@ -343,7 +343,7 @@ public class WarpSignsManager {
      * @param owner - owner of the warp
      */
     public void warpPlayer(World world, User user, UUID owner) {
-        final Location warpSpot = addon.getWarpSignsManager().getWarp(world, owner);
+        final Location warpSpot = getWarp(world, owner);
         // Check if the warp spot is safe
         if (warpSpot == null) {
             user.sendMessage("warps.error.NotReadyYet");
@@ -379,7 +379,7 @@ public class WarpSignsManager {
             }
         } else {
             // Warp has been removed
-            user.sendMessage("warps.error.DoesNotExist");
+            user.sendMessage("warps.error.does-not-exist");
             addon.getWarpSignsManager().removeWarp(warpSpot);
             return;
         }
