@@ -37,6 +37,7 @@ public class WarpPanelManager {
                 .name(addon.getPlugin().getPlayers().getName(warpOwner))
                 .description(getSign(world, warpOwner))
                 .clickHandler((panel, clicker, click, slot) -> { {
+                    clicker.closeInventory();
                     addon.getWarpSignsManager().warpPlayer(world, clicker, warpOwner);
                     return true;
                 }

@@ -346,8 +346,8 @@ public class WarpSignsManager {
         final Location warpSpot = getWarp(world, owner);
         // Check if the warp spot is safe
         if (warpSpot == null) {
-            user.sendMessage("warps.error.NotReadyYet");
-            addon.getLogger().warning("Null warp found, owned by " + addon.getPlugin().getPlayers().getName(owner));
+            user.sendMessage("warps.error.does-not-exist");
+            addon.getWarpSignsManager().removeWarp(world, owner);
             return;
         }
         // Find out if island is locked
