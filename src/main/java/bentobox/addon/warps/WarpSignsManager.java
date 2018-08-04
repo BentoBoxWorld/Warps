@@ -1,4 +1,4 @@
-package bskyblock.addon.warps;
+package bentobox.addon.warps;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,9 +24,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 
-import bskyblock.addon.warps.database.object.WarpsData;
-import bskyblock.addon.warps.event.WarpInitiateEvent;
-import bskyblock.addon.warps.event.WarpListEvent;
+import bentobox.addon.warps.database.object.WarpsData;
+import bentobox.addon.warps.event.WarpInitiateEvent;
+import bentobox.addon.warps.event.WarpListEvent;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.BSBDatabase;

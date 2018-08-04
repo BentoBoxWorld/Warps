@@ -1,4 +1,4 @@
-package bskyblock.addon.warps;
+package bentobox.addon.warps;
 
 import java.util.Map;
 import java.util.UUID;
@@ -15,8 +15,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
-import bskyblock.addon.level.Level;
-import bskyblock.addon.warps.event.WarpRemoveEvent;
+import bentobox.addon.level.Level;
+import bentobox.addon.warps.event.WarpRemoveEvent;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
 
@@ -27,6 +27,8 @@ import world.bentobox.bentobox.api.user.User;
  *
  */
 public class WarpSignsListener implements Listener {
+    private static final String LEVEL_PLUGIN_NAME = "BentoBox-Level";
+
     private BentoBox plugin;
 
     private Warp addon;
@@ -65,7 +67,7 @@ public class WarpSignsListener implements Listener {
             if (list.containsValue(s.getLocation())) {
                 // Welcome sign detected - check to see if it is
                 // this player's sign
-                if ((list.containsKey(user.getUniqueId()) && list.get(user.getUniqueId()).equals(s.getLocation())) 
+                if ((list.containsKey(user.getUniqueId()) && list.get(user.getUniqueId()).equals(s.getLocation()))
                         || user.isOp()  || user.hasPermission(addon.getPermPrefix(e.getBlock().getWorld()) + "mod.removesign")) {
                     // Op or mod removed sign
                     user.sendMessage("warps.removed");
@@ -101,17 +103,16 @@ public class WarpSignsListener implements Listener {
                 user.sendMessage("general.errors.you-need", "[permission]", addon.getPermPrefix(b.getWorld()) + "island.addwarp");
                 return;
             }
-            if (addon.getLevelAddon().isPresent()) {
-                Level lev = (Level) addon.getLevelAddon().get();
-                if (lev.getIslandLevel(b.getWorld(), user.getUniqueId()) < addon.getSettings().getWarpLevelRestriction()) {
-                    user.sendMessage("warps.error.not-enough-level");
-                    user.sendMessage("warps.error.your-level-is",
-                            "[level]", String.valueOf(lev.getIslandLevel(b.getWorld(), user.getUniqueId())),
-                            "[required]", String.valueOf(addon.getSettings().getWarpLevelRestriction()));
-                    return;
-                }
+            long level = plugin.getAddonsManager().getAddonByName(LEVEL_PLUGIN_NAME).map(l -> (Level)l)
+                    .map(l -> l.getIslandLevel(b.getWorld(), user.getUniqueId()))
+                    .filter(l -> l < addon.getSettings().getWarpLevelRestriction()).orElse(0L);
+            if (level > 0) {
+                user.sendMessage("warps.error.not-enough-level");
+                user.sendMessage("warps.error.your-level-is",
+                        "[level]", String.valueOf(level),
+                        "[required]", String.valueOf(addon.getSettings().getWarpLevelRestriction()));
+                return;
             }
-
 
             // Check that the player is on their island
             if (!(plugin.getIslands().userIsOnIsland(b.getWorld(), user))) {
@@ -163,7 +164,7 @@ public class WarpSignsListener implements Listener {
             for (int i = 1; i<4; i++) {
                 e.setLine(i, ChatColor.translateAlternateColorCodes('&', e.getLine(i)));
             }
-        }        
+        }
     }
 
 }

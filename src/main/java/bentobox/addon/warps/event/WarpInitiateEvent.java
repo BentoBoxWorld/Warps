@@ -1,4 +1,4 @@
-package bskyblock.addon.warps.event;
+package bentobox.addon.warps.event;
 
 import java.util.UUID;
 
@@ -7,7 +7,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import bskyblock.addon.warps.Warp;
+import bentobox.addon.warps.Warp;
 
 /**
  * This event is fired when a player tries to do a warp 

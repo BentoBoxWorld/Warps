@@ -1,4 +1,4 @@
-package bskyblock.addon.warps.database.object;
+package bentobox.addon.warps.database.object;
 
 import java.util.HashMap;
 import java.util.Map;

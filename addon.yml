@@ -1,5 +1,5 @@
-name: BSkyBlock-WelcomeWarps
-main: bskyblock.addon.warps.Warp
+name: BentoBox-WelcomeWarps
+main: bentobox.addon.warps.Warp
 version: 0.1
 
 authors: tastybento

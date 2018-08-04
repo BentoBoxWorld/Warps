@@ -1,11 +1,11 @@
 /**
  *
  */
-package bskyblock.addon.warps.commands;
+package bentobox.addon.warps.commands;
 
 import java.util.List;
 
-import bskyblock.addon.warps.Warp;
+import bentobox.addon.warps.Warp;
 import world.bentobox.bentobox.api.commands.CompositeCommand;
 import world.bentobox.bentobox.api.user.User;
 

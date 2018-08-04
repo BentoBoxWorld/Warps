@@ -1,4 +1,4 @@
-package bskyblock.addon.warps;
+package bentobox.addon.warps;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -18,7 +18,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -35,11 +34,12 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import bskyblock.addon.level.Level;
-import bskyblock.addon.warps.config.PluginConfig;
+import bentobox.addon.level.Level;
+import bentobox.addon.warps.config.PluginConfig;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.managers.AddonsManager;
 import world.bentobox.bentobox.managers.IslandsManager;
 import world.bentobox.bentobox.managers.LocalesManager;
 
@@ -78,7 +78,7 @@ public class WarpSignsListenerTest {
         when(player.getUniqueId()).thenReturn(uuid);
         s = mock(Sign.class);
         when(s.getLine(Mockito.anyInt())).thenReturn(ChatColor.GREEN + "[WELCOME]");
-        when(block.getState()).thenReturn((BlockState)s);
+        when(block.getState()).thenReturn(s);
         wsm = mock(WarpSignsManager.class);
         when(addon.getWarpSignsManager()).thenReturn(wsm);
         Map<UUID, Location> list = new HashMap<>();
@@ -109,19 +109,21 @@ public class WarpSignsListenerTest {
         PowerMockito.mockStatic(Bukkit.class);
         pm = mock(PluginManager.class);
         when(Bukkit.getPluginManager()).thenReturn(pm);
-        
+
         // Lines
         lines = new String[] {"[WELCOME]", "line2", "line3", "line4"};
-        
+
         settings = mock(PluginConfig.class);
         when(settings.getWarpLevelRestriction()).thenReturn(10);
         when(addon.getSettings()).thenReturn(settings);
-        
+
         level_addon = mock(Level.class);
         Optional<Addon> level = Optional.of(level_addon);
-        when(addon.getLevelAddon()).thenReturn(level);
+        AddonsManager am = mock(AddonsManager.class);
+        when(plugin.getAddonsManager()).thenReturn(am);
+        when(am.getAddonByName(Mockito.anyString())).thenReturn(level);
         when(level_addon.getIslandLevel(Mockito.any(), Mockito.any())).thenReturn(11L); // Higher than 10
-        
+
         im = mock(IslandsManager.class);
         // On island
         when(plugin.getIslands()).thenReturn(im);
@@ -152,7 +154,7 @@ public class WarpSignsListenerTest {
         assertFalse(e.isCancelled());
         Mockito.verify(addon).inRegisteredWorld(Mockito.eq(world));
     }
-    
+
     @Test
     public void testOnSignBreakNullState() {
         WarpSignsListener wsl = new WarpSignsListener(addon);
@@ -162,7 +164,7 @@ public class WarpSignsListenerTest {
         assertFalse(e.isCancelled());
         Mockito.verify(block).getState();
     }
-    
+
     @Test
     public void testOnSignNotWelcomeSign() {
         WarpSignsListener wsl = new WarpSignsListener(addon);
@@ -173,7 +175,7 @@ public class WarpSignsListenerTest {
         Mockito.verify(s).getLine(Mockito.eq(0));
         Mockito.verify(addon).getConfig();
     }
-    
+
     @Test
     public void testOnSignNotRealWelcomeSign() {
         // Right text, but not in the right position
@@ -185,7 +187,7 @@ public class WarpSignsListenerTest {
         Mockito.verify(wsm).getWarpMap(Mockito.eq(world));
         Mockito.verify(s).getLocation();
     }
-    
+
     @Test
     public void testOnSignRemovePlayerSignWrongPlayer() {
         when(player.getUniqueId()).thenReturn(UUID.randomUUID());
@@ -195,7 +197,7 @@ public class WarpSignsListenerTest {
         assertTrue(e.isCancelled());
         Mockito.verify(player).sendMessage("warps.error.no-remove");
     }
-    
+
     @Test
     public void testOnSignRemovePlayerSignPlayerIsOp() {
         when(player.getUniqueId()).thenReturn(UUID.randomUUID());
@@ -207,7 +209,7 @@ public class WarpSignsListenerTest {
         assertFalse(e.isCancelled());
         Mockito.verify(pm).callEvent(Mockito.any());
     }
-    
+
     @Test
     public void testOnSignRemovePlayerSignPlayerHasPerm() {
         when(player.getUniqueId()).thenReturn(UUID.randomUUID());
@@ -219,7 +221,7 @@ public class WarpSignsListenerTest {
         assertFalse(e.isCancelled());
         Mockito.verify(pm).callEvent(Mockito.any());
     }
-    
+
     @Test
     public void testOnSignRemoveCorrectPlayer() {
         WarpSignsListener wsl = new WarpSignsListener(addon);
@@ -230,7 +232,7 @@ public class WarpSignsListenerTest {
         Mockito.verify(pm).callEvent(Mockito.any());
     }
 
-    
+
 
     /**
      * Sign create
@@ -244,7 +246,7 @@ public class WarpSignsListenerTest {
         wsl.onSignWarpCreate(e);
         Mockito.verify(addon).inRegisteredWorld(Mockito.eq(world));
     }
-    
+
     @Test
     public void testOnCreateWrongText() {
         when(player.hasPermission(Mockito.anyString())).thenReturn(true);
@@ -256,7 +258,7 @@ public class WarpSignsListenerTest {
         Mockito.verify(config).getString(Mockito.anyString());
         Mockito.verify(player, Mockito.never()).sendMessage(Mockito.anyString());
     }
-    
+
     @Test
     public void testOnCreateNoPerm() {
         when(player.hasPermission(Mockito.anyString())).thenReturn(false);
@@ -265,7 +267,7 @@ public class WarpSignsListenerTest {
         wsl.onSignWarpCreate(e);
         Mockito.verify(player).sendMessage("warps.error.no-permission");
     }
-    
+
     @Test
     public void testOnLevelPresentNotHighEnough() {
         when(player.hasPermission(Mockito.anyString())).thenReturn(true);
@@ -286,7 +288,7 @@ public class WarpSignsListenerTest {
         Mockito.verify(player).sendMessage("warps.error.not-on-island");
         assertEquals(ChatColor.RED + "[WELCOME]", e.getLine(0));
     }
-    
+
     @Test
     public void testCreateNoSignAlreadyUniqueSpot() {
         when(wsm.getWarp(Mockito.any(), Mockito.any())).thenReturn(null);
@@ -297,7 +299,7 @@ public class WarpSignsListenerTest {
         Mockito.verify(player).sendMessage("warps.success");
         assertEquals(ChatColor.GREEN + "[WELCOME]", e.getLine(0));
     }
-    
+
     @Test
     public void testCreateNoSignAlreadyDuplicateSpot() {
         when(wsm.addWarp(Mockito.any(), Mockito.any())).thenReturn(false);
@@ -309,7 +311,7 @@ public class WarpSignsListenerTest {
         Mockito.verify(player).sendMessage("warps.error.duplicate");
         assertEquals(ChatColor.RED + "[WELCOME]", e.getLine(0));
     }
-    
+
     @Test
     public void testCreateNoSignDeactivateOldSign() {
         when(player.hasPermission(Mockito.anyString())).thenReturn(true);
@@ -320,6 +322,6 @@ public class WarpSignsListenerTest {
         assertEquals(ChatColor.GREEN + "[WELCOME]", e.getLine(0));
         Mockito.verify(s).setLine(0, ChatColor.RED + "[WELCOME]");
     }
-    
+
 
 }

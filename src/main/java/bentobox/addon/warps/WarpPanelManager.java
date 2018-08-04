@@ -1,4 +1,4 @@
-package bskyblock.addon.warps;
+package bentobox.addon.warps;
 
 import java.util.ArrayList;
 import java.util.HashMap;

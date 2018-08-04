@@ -1,6 +1,6 @@
-package bskyblock.addon.warps.config;
+package bentobox.addon.warps.config;
 
-import bskyblock.addon.warps.Warp;
+import bentobox.addon.warps.Warp;
 
 public class PluginConfig {
 
