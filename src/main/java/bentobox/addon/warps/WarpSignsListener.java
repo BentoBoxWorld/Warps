@@ -45,7 +45,7 @@ public class WarpSignsListener implements Listener {
      * Checks to see if a sign has been broken
      * @param e - event
      */
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onSignBreak(BlockBreakEvent e) {
         Block b = e.getBlock();
         // Signs only
@@ -69,8 +69,6 @@ public class WarpSignsListener implements Listener {
                 // this player's sign
                 if ((list.containsKey(user.getUniqueId()) && list.get(user.getUniqueId()).equals(s.getLocation()))
                         || user.isOp()  || user.hasPermission(addon.getPermPrefix(e.getBlock().getWorld()) + "mod.removesign")) {
-                    // Op or mod removed sign
-                    user.sendMessage("warps.removed");
                     addon.getWarpSignsManager().removeWarp(s.getLocation());
                     Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(addon, s.getLocation(), user.getUniqueId()));
                 } else {
@@ -87,7 +85,7 @@ public class WarpSignsListener implements Listener {
      *
      * @param e - event
      */
-    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onSignWarpCreate(SignChangeEvent e) {
         Block b = e.getBlock();
         if (!addon.inRegisteredWorld(b.getWorld())) {
@@ -104,9 +102,8 @@ public class WarpSignsListener implements Listener {
                 return;
             }
             long level = plugin.getAddonsManager().getAddonByName(LEVEL_PLUGIN_NAME).map(l -> (Level)l)
-                    .map(l -> l.getIslandLevel(b.getWorld(), user.getUniqueId()))
-                    .filter(l -> l < addon.getSettings().getWarpLevelRestriction()).orElse(0L);
-            if (level > 0) {
+                    .map(l -> l.getIslandLevel(b.getWorld(), user.getUniqueId())).orElse(0L);
+            if (level < addon.getSettings().getWarpLevelRestriction()) {
                 user.sendMessage("warps.error.not-enough-level");
                 user.sendMessage("warps.error.your-level-is",
                         "[level]", String.valueOf(level),

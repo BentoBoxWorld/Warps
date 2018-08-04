@@ -4,7 +4,6 @@
 ###########################################################################################
 
 warps:
-  removed: "&CWarp sign removed"
   success: "&ASuccess!"
   sign-removed: "&CWarp sign removed!"
   title: "Warp Signs"
