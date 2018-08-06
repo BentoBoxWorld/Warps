@@ -29,7 +29,7 @@ import bentobox.addon.warps.event.WarpInitiateEvent;
 import bentobox.addon.warps.event.WarpListEvent;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
-import world.bentobox.bentobox.database.BBDatabase;
+import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.util.Util;
 
@@ -45,7 +45,7 @@ public class WarpSignsManager {
     // Map of all warps stored as player, warp sign Location
     private Map<World, Map<UUID, Location>> worldsWarpList;
     // Database handler for level data
-    private BBDatabase<WarpsData> handler;
+    private Database<WarpsData> handler;
 
     private Warp addon;
 
@@ -68,7 +68,7 @@ public class WarpSignsManager {
         this.plugin = plugin;
         // Set up the database handler to store and retrieve Island classes
         // Note that these are saved by the BSkyBlock database
-        handler = new BBDatabase<>(addon, WarpsData.class);
+        handler = new Database<>(addon, WarpsData.class);
         // Load the warps
         loadWarpList();
     }
