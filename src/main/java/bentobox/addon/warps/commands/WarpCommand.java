@@ -29,7 +29,7 @@ public class WarpCommand extends CompositeCommand {
     public void setup() {
         this.setPermission("island.warp");
         this.setOnlyPlayer(true);
-        this.setParameters("warp.help.parameters");
+        this.setParametersHelp("warp.help.parameters");
         this.setDescription("warp.help.description");
     }
 
