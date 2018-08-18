@@ -47,36 +47,33 @@ public class Warp extends Addon {
             this.setEnabled(false);
             return;
         }
-        // We have to wait for the worlds to load, so we do the rest 1 tick later
-        getServer().getScheduler().runTask(this.getPlugin(), () -> {
-            registeredWorlds = new HashSet<>();
-            // Start warp signs
-            warpSignsManager = new WarpSignsManager(this, plugin);
-            warpPanelManager = new WarpPanelManager(this);
-            // Load the listener
-            getServer().getPluginManager().registerEvents(new WarpSignsListener(this), plugin);
-            // Register commands
-            getServer().getScheduler().runTask(getPlugin(), () -> {
-                // BSkyBlock hook in
-                this.getPlugin().getAddonsManager().getAddonByName(BSKYBLOCK).ifPresent(acidIsland -> {
-                    CompositeCommand bsbIslandCmd = BentoBox.getInstance().getCommandsManager().getCommand("island");
-                    if (bsbIslandCmd != null) {
-                        new WarpCommand(this, bsbIslandCmd);
-                        new WarpsCommand(this, bsbIslandCmd);
-                        registeredWorlds.add(plugin.getIWM().getWorld(BSKYBLOCK));
-                    }
-                });
-                // AcidIsland hook in
-                this.getPlugin().getAddonsManager().getAddonByName(ACIDISLAND).ifPresent(acidIsland -> {
-                    CompositeCommand acidIslandCmd = getPlugin().getCommandsManager().getCommand("ai");
-                    if (acidIslandCmd != null) {
-                        new WarpCommand(this, acidIslandCmd);
-                        new WarpsCommand(this, acidIslandCmd);
-                        registeredWorlds.add(plugin.getIWM().getWorld(ACIDISLAND));
-                    }
-                });
-            });
+        registeredWorlds = new HashSet<>();
+        // Start warp signs
+        warpSignsManager = new WarpSignsManager(this, plugin);
+        warpPanelManager = new WarpPanelManager(this);
+        // Load the listener
+        getServer().getPluginManager().registerEvents(new WarpSignsListener(this), plugin);
+        // Register commands
+
+        // BSkyBlock hook in
+        this.getPlugin().getAddonsManager().getAddonByName(BSKYBLOCK).ifPresent(acidIsland -> {
+            CompositeCommand bsbIslandCmd = BentoBox.getInstance().getCommandsManager().getCommand("island");
+            if (bsbIslandCmd != null) {
+                new WarpCommand(this, bsbIslandCmd);
+                new WarpsCommand(this, bsbIslandCmd);
+                registeredWorlds.add(plugin.getIWM().getWorld(BSKYBLOCK));
+            }
         });
+        // AcidIsland hook in
+        this.getPlugin().getAddonsManager().getAddonByName(ACIDISLAND).ifPresent(acidIsland -> {
+            CompositeCommand acidIslandCmd = getPlugin().getCommandsManager().getCommand("ai");
+            if (acidIslandCmd != null) {
+                new WarpCommand(this, acidIslandCmd);
+                new WarpsCommand(this, acidIslandCmd);
+                registeredWorlds.add(plugin.getIWM().getWorld(ACIDISLAND));
+            }
+        });
+
         // Done
     }
 

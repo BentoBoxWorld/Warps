@@ -4,6 +4,8 @@ version: 0.1
 
 authors: tastybento
 
+softdepend: AcidIsland, BSkyBlock
+
 permissions:
   bskyblock.island.warp:
     description: Player can use warp or warps commands
