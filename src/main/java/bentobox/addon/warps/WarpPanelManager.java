@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
@@ -18,7 +17,6 @@ import world.bentobox.bentobox.api.user.User;
 
 public class WarpPanelManager {
 
-    private static final boolean DEBUG = false;
     private static final int PANEL_MAX_SIZE = 52;
     private Warp addon;
     // This is a cache of signs
@@ -27,7 +25,6 @@ public class WarpPanelManager {
 
     public WarpPanelManager(Warp addon) {
         this.addon = addon;
-        //addon.getWarpSignsManager().getSortedWarps().forEach(this :: getSign);
     }
 
     private PanelItem getPanelItem(World world, UUID warpOwner) {
@@ -68,9 +65,6 @@ public class WarpPanelManager {
      */
     public void showWarpPanel(World world, User user, int index) {
         List<UUID> warps = new ArrayList<>(addon.getWarpSignsManager().getSortedWarps(world));
-        if (DEBUG) {
-            Bukkit.getLogger().info("DEBUG: showing warps. warps list is " + warps.size());
-        }
         if (index < 0) {
             index = 0;
         } else if (index > (warps.size() / PANEL_MAX_SIZE)) {
