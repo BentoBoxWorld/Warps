@@ -97,8 +97,7 @@ public class Warp extends Addon {
     }
 
     public String getPermPrefix(World world) {
-        this.getPlugin().getIWM().getPermissionPrefix(world);
-        return null;
+        return this.getPlugin().getIWM().getPermissionPrefix(world);
     }
 
     /**
