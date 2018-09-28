@@ -11,7 +11,7 @@ warps:
   previous: "&6上一页"
   next: "&6下一页"
   warpToPlayersSign: "&6正传送到 [player] 的传送木牌"
-  warpTip: "&6放置一个第一行是 [Welcome] 的木牌以创建传送木牌"
+  warpTip: "&6放置一个第一行是 [text] 的木牌以创建传送木牌"
   error:
     no-remove: "&C无权移除传送木牌!"
     not-enough-level: "&C岛屿等级不够高!"

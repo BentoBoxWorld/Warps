@@ -12,7 +12,8 @@ warps:
   previous: "&6Previous page"
   next: "&6Next page"
   warpToPlayersSign: "&6Warping to [player]'s sign"
-  warpTip: "&6Place a warp sign with [Welcome] on the top"
+  # The [text] is replaced with the welcome line text from config.yml
+  warpTip: "&6Place a warp sign with [text] on the top"
   error:
     does-not-exist: "&cOh snap! That warp no longer exists!"
     no-remove: "&CYou cannot remove that sign!"

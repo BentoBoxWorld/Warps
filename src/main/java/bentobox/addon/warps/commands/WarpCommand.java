@@ -52,7 +52,7 @@ public class WarpCommand extends CompositeCommand {
             Set<UUID> warpList = addon.getWarpSignsManager().listWarps(getWorld());
             if (warpList.isEmpty()) {
                 user.sendMessage("warps.error.no-warps-yet");
-                user.sendMessage("warps.warpTip");
+                user.sendMessage("warps.warpTip", "[text]", getAddon().getConfig().getString("welcomeLine", "[WELCOME]"));
                 return true;
             } else {
                 // Check if this is part of a name

@@ -39,7 +39,7 @@ public class WarpsCommand extends CompositeCommand {
     public boolean execute(User user, String label, List<String> args) {
         if (plugin.getWarpSignsManager().listWarps(getWorld()).isEmpty()) {
             user.sendMessage("warps.error.no-warps-yet");
-            user.sendMessage("warps.warpTip");
+            user.sendMessage("warps.warpTip", "[text]", getAddon().getConfig().getString("welcomeLine", "[WELCOME]"));
         } else {
             plugin.getWarpPanelManager().showWarpPanel(getWorld(), user,0);
         }
