@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -34,12 +33,9 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import bentobox.addon.level.Level;
 import bentobox.addon.warps.config.PluginConfig;
 import world.bentobox.bentobox.BentoBox;
-import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.user.User;
-import world.bentobox.bentobox.managers.AddonsManager;
 import world.bentobox.bentobox.managers.IslandsManager;
 import world.bentobox.bentobox.managers.LocalesManager;
 
@@ -58,7 +54,6 @@ public class WarpSignsListenerTest {
     private String[] lines;
     private FileConfiguration config;
     private PluginConfig settings;
-    private Level level_addon;
     private IslandsManager im;
 
     @Before
@@ -117,17 +112,13 @@ public class WarpSignsListenerTest {
         when(settings.getWarpLevelRestriction()).thenReturn(10);
         when(addon.getSettings()).thenReturn(settings);
 
-        level_addon = mock(Level.class);
-        Optional<Addon> level = Optional.of(level_addon);
-        AddonsManager am = mock(AddonsManager.class);
-        when(plugin.getAddonsManager()).thenReturn(am);
-        when(am.getAddonByName(Mockito.anyString())).thenReturn(level);
-        when(level_addon.getIslandLevel(Mockito.any(), Mockito.any())).thenReturn(11L); // Higher than 10
-
         im = mock(IslandsManager.class);
         // On island
         when(plugin.getIslands()).thenReturn(im);
         when(im.userIsOnIsland(Mockito.any(World.class), Mockito.any(User.class))).thenReturn(true);
+
+        // Sufficient level
+        when(addon.getLevel(Mockito.any(), Mockito.any())).thenReturn(100L);
     }
 
     @Test
@@ -271,7 +262,7 @@ public class WarpSignsListenerTest {
     @Test
     public void testOnLevelPresentNotHighEnough() {
         when(player.hasPermission(Mockito.anyString())).thenReturn(true);
-        when(level_addon.getIslandLevel(Mockito.any(), Mockito.any())).thenReturn(1L);
+        when(addon.getLevel(Mockito.any(), Mockito.any())).thenReturn(1L);
         WarpSignsListener wsl = new WarpSignsListener(addon);
         SignChangeEvent e = new SignChangeEvent(block, player, lines);
         wsl.onSignWarpCreate(e);

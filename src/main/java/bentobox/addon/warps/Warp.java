@@ -2,9 +2,11 @@ package bentobox.addon.warps;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.World;
 
+import bentobox.addon.level.Level;
 import bentobox.addon.warps.commands.WarpCommand;
 import bentobox.addon.warps.commands.WarpsCommand;
 import bentobox.addon.warps.config.PluginConfig;
@@ -22,6 +24,7 @@ public class Warp extends Addon {
 
     private static final String BSKYBLOCK = "BSkyBlock";
     private static final String ACIDISLAND = "AcidIsland";
+    private static final String LEVEL_PLUGIN_NAME = "BentoBox-Level";
 
     // The plugin instance.
     private BentoBox plugin;
@@ -114,6 +117,16 @@ public class Warp extends Addon {
      */
     public PluginConfig getSettings() {
         return settings;
+    }
+
+    /**
+     * Get the island level
+     * @param world - world
+     * @param uniqueId - player's UUID
+     * @return island level or null if there is no level plugin
+     */
+    public Long getLevel(World world, UUID uniqueId) {
+        return plugin.getAddonsManager().getAddonByName(LEVEL_PLUGIN_NAME).map(l -> ((Level) l).getIslandLevel(world, uniqueId)).orElse(null);
     }
 
 }

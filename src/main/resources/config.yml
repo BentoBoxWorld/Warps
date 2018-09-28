@@ -3,5 +3,7 @@
 # 10 is default
 warplevelrestriction: 10
 
+# Text that player must put on sign to make it a warp sign
+# Not case sensitive!
 welcomeLine: [WELCOME]
 

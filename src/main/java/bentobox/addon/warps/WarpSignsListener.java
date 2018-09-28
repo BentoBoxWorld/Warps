@@ -15,7 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
-import bentobox.addon.level.Level;
 import bentobox.addon.warps.event.WarpRemoveEvent;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
@@ -27,7 +26,6 @@ import world.bentobox.bentobox.api.user.User;
  *
  */
 public class WarpSignsListener implements Listener {
-    private static final String LEVEL_PLUGIN_NAME = "BentoBox-Level";
 
     private BentoBox plugin;
 
@@ -101,9 +99,9 @@ public class WarpSignsListener implements Listener {
                 user.sendMessage("general.errors.you-need", "[permission]", addon.getPermPrefix(b.getWorld()) + ".island.addwarp");
                 return;
             }
-            long level = plugin.getAddonsManager().getAddonByName(LEVEL_PLUGIN_NAME).map(l -> (Level)l)
-                    .map(l -> l.getIslandLevel(b.getWorld(), user.getUniqueId())).orElse(0L);
-            if (level < addon.getSettings().getWarpLevelRestriction()) {
+            // Get level is level addon is available
+            Long level = addon.getLevel(b.getWorld(), user.getUniqueId());
+            if (level != null && level < addon.getSettings().getWarpLevelRestriction()) {
                 user.sendMessage("warps.error.not-enough-level");
                 user.sendMessage("warps.error.your-level-is",
                         "[level]", String.valueOf(level),
