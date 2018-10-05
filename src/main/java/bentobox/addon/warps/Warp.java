@@ -64,7 +64,7 @@ public class Warp extends Addon {
             if (bsbIslandCmd != null) {
                 new WarpCommand(this, bsbIslandCmd);
                 new WarpsCommand(this, bsbIslandCmd);
-                registeredWorlds.add(plugin.getIWM().getWorld(BSKYBLOCK));
+                registeredWorlds.add(bsbIslandCmd.getWorld());
             }
         });
         // AcidIsland hook in
@@ -73,7 +73,7 @@ public class Warp extends Addon {
             if (acidIslandCmd != null) {
                 new WarpCommand(this, acidIslandCmd);
                 new WarpsCommand(this, acidIslandCmd);
-                registeredWorlds.add(plugin.getIWM().getWorld(ACIDISLAND));
+                registeredWorlds.add(acidIslandCmd.getWorld());
             }
         });
 
