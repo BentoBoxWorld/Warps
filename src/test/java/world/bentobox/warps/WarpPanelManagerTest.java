@@ -1,7 +1,7 @@
 /**
  * 
  */
-package bentobox.addon.warps;
+package world.bentobox.warps;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,6 +30,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.managers.PlayersManager;
+import world.bentobox.warps.Warp;
+import world.bentobox.warps.WarpPanelManager;
+import world.bentobox.warps.WarpSignsManager;
 
 /**
  * @author ben
@@ -99,7 +102,7 @@ public class WarpPanelManagerTest {
         when(Bukkit.createInventory(Mockito.any(), Mockito.anyInt(), Mockito.any())).thenReturn(top);    }
 
     /**
-     * Test method for {@link bentobox.addon.warps.WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
+     * Test method for {@link WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
      */
     @Test
     public void testShowWarpPanelFirst() {
@@ -111,7 +114,7 @@ public class WarpPanelManagerTest {
     }
     
     /**
-     * Test method for {@link bentobox.addon.warps.WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
+     * Test method for {@link WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
      */
     @Test
     public void testShowWarpPanelMiddle() {
@@ -123,7 +126,7 @@ public class WarpPanelManagerTest {
     }
 
     /**
-     * Test method for {@link bentobox.addon.warps.WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
+     * Test method for {@link WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
      */
     @Test
     public void testShowWarpPanelLast() {
@@ -135,7 +138,7 @@ public class WarpPanelManagerTest {
     }
 
     /**
-     * Test method for {@link bentobox.addon.warps.WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
+     * Test method for {@link WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
      */
     @Test
     public void testShowWarpPanelTestCache() {
@@ -150,7 +153,7 @@ public class WarpPanelManagerTest {
     
     
     /**
-     * Test method for {@link bentobox.addon.warps.WarpPanelManager#removeWarp(org.bukkit.World, java.util.UUID)}.
+     * Test method for {@link WarpPanelManager#removeWarp(org.bukkit.World, java.util.UUID)}.
      */
     @Test
     public void testRemoveWarp() {

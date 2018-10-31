@@ -15,7 +15,7 @@
  *     along with ASkyBlock.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
 
-package bentobox.addon.warps.event;
+package world.bentobox.warps.event;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +23,7 @@ import java.util.UUID;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import bentobox.addon.warps.Warp;
+import world.bentobox.warps.Warp;
 
 /**
  * This event is fired when request is made for a sorted list of warps or when
@@ -39,7 +39,7 @@ public class WarpListEvent extends Event {
     private List<UUID> warps;
 
     /**
-     * @param plugin - BSkyBlock plugin object
+     * @param plugin - BSkyBlock plugin objects
      * @param warps
      */
     public WarpListEvent(Warp plugin, List<UUID> warps) {

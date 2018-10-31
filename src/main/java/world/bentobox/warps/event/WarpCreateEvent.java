@@ -1,4 +1,4 @@
-package bentobox.addon.warps.event;
+package world.bentobox.warps.event;
 
 import java.util.UUID;
 
@@ -6,42 +6,42 @@ import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import bentobox.addon.warps.Warp;
+import world.bentobox.warps.Warp;
 
 /**
- * This event is fired when a Warp is removed (when a warp sign is broken)
+ * This event is fired when a Warp is created
  * A Listener to this event can use it only to get informations. e.g: broadcast something
  * 
  * @author Poslovitch
  *
  */
-public class WarpRemoveEvent extends Event{
+public class WarpCreateEvent extends Event{
 	private static final HandlerList handlers = new HandlerList();
 	
 	private Location warpLoc;
-	private UUID remover;
+	private UUID creator;
 	
 	/**
-	 * @param plugin - BSkyBlock plugin object
+	 * @param plugin - BSkyBlock plugin objects
 	 * @param warpLoc
-	 * @param remover
+	 * @param creator
 	 */
-	public WarpRemoveEvent(Warp plugin, Location warpLoc, UUID remover){
+	public WarpCreateEvent(Warp plugin, Location warpLoc, UUID creator){
 		this.warpLoc = warpLoc;
-		this.remover = remover;
+		this.creator = creator;
 	}
 	
 	/**
-	 * Get the location of the removed Warp
-	 * @return removed warp's location
+	 * Get the location of the created Warp
+	 * @return created warp's location
 	 */
 	public Location getWarpLocation(){return this.warpLoc;}
 	
 	/**
-	 * Get who has removed the warp
-	 * @return the warp's remover
+	 * Get who has created the warp
+	 * @return the warp's creator
 	 */
-	public UUID getRemover(){return this.remover;}
+	public UUID getCreator(){return this.creator;}
 	
 	@Override
     public HandlerList getHandlers() {

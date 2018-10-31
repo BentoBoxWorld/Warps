@@ -1,5 +1,5 @@
-name: BentoBox-WelcomeWarps
-main: bentobox.addon.warps.Warp
+name: WelcomeWarps
+main: world.bentobox.warps.Warp
 version: ${version}
 
 authors: tastybento

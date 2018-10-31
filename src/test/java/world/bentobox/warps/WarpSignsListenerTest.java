@@ -1,4 +1,4 @@
-package bentobox.addon.warps;
+package world.bentobox.warps;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -33,7 +33,10 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import bentobox.addon.warps.config.PluginConfig;
+import world.bentobox.warps.Warp;
+import world.bentobox.warps.WarpSignsListener;
+import world.bentobox.warps.WarpSignsManager;
+import world.bentobox.warps.config.PluginConfig;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.managers.IslandsManager;

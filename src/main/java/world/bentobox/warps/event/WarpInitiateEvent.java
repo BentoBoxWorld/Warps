@@ -1,4 +1,4 @@
-package bentobox.addon.warps.event;
+package world.bentobox.warps.event;
 
 import java.util.UUID;
 
@@ -7,7 +7,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import bentobox.addon.warps.Warp;
+import world.bentobox.warps.Warp;
 
 /**
  * This event is fired when a player tries to do a warp 
@@ -23,7 +23,7 @@ public class WarpInitiateEvent extends Event implements Cancellable {
 	private final UUID player;
 	
 	/**
-	 * @param plugin - BSkyBlock plugin object
+	 * @param plugin - BSkyBlock plugin objects
 	 * @param warpLoc - where the player is warping to
 	 * @param player - the UUID of the player
 	 */

@@ -1,4 +1,4 @@
-package bentobox.addon.warps;
+package world.bentobox.warps;
 
 import java.util.Map;
 import java.util.UUID;
@@ -15,7 +15,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
-import bentobox.addon.warps.event.WarpRemoveEvent;
+import world.bentobox.warps.event.WarpRemoveEvent;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
 

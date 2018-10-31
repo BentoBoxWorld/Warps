@@ -1,4 +1,4 @@
-package bentobox.addon.warps;
+package world.bentobox.warps;
 
 import java.util.ArrayList;
 import java.util.HashMap;

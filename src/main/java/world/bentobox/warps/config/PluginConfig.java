@@ -1,6 +1,6 @@
-package bentobox.addon.warps.config;
+package world.bentobox.warps.config;
 
-import bentobox.addon.warps.Warp;
+import world.bentobox.warps.Warp;
 
 public class PluginConfig {
 

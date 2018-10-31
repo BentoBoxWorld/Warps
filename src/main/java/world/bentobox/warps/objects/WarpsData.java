@@ -1,4 +1,4 @@
-package bentobox.addon.warps.database.object;
+package world.bentobox.warps.objects;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class WarpsData implements DataObject {
     }
 
     /**
-     * Puts all the data from the map into this object ready for saving
+     * Puts all the data from the map into this objects ready for saving
      * @param worldsWarpList
      * @return this class filled with data
      */

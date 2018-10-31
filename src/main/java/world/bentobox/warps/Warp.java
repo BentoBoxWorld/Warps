@@ -1,4 +1,4 @@
-package bentobox.addon.warps;
+package world.bentobox.warps;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -6,10 +6,10 @@ import java.util.UUID;
 
 import org.bukkit.World;
 
-import bentobox.addon.level.Level;
-import bentobox.addon.warps.commands.WarpCommand;
-import bentobox.addon.warps.commands.WarpsCommand;
-import bentobox.addon.warps.config.PluginConfig;
+import world.bentobox.level.Level;
+import world.bentobox.warps.commands.WarpCommand;
+import world.bentobox.warps.commands.WarpsCommand;
+import world.bentobox.warps.config.PluginConfig;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.commands.CompositeCommand;
@@ -24,15 +24,15 @@ public class Warp extends Addon {
 
     private static final String BSKYBLOCK = "BSkyBlock";
     private static final String ACIDISLAND = "AcidIsland";
-    private static final String LEVEL_PLUGIN_NAME = "BentoBox-Level";
+    private static final String LEVEL_ADDON_NAME = "Level";
 
     // The plugin instance.
     private BentoBox plugin;
 
-    // Warp panel object
+    // Warp panel objects
     private WarpPanelManager warpPanelManager;
 
-    // Warps signs object
+    // Warps signs objects
     private WarpSignsManager warpSignsManager;
 
     private Set<World> registeredWorlds;
@@ -126,7 +126,7 @@ public class Warp extends Addon {
      * @return island level or null if there is no level plugin
      */
     public Long getLevel(World world, UUID uniqueId) {
-        return plugin.getAddonsManager().getAddonByName(LEVEL_PLUGIN_NAME).map(l -> ((Level) l).getIslandLevel(world, uniqueId)).orElse(null);
+        return plugin.getAddonsManager().getAddonByName(LEVEL_ADDON_NAME).map(l -> ((Level) l).getIslandLevel(world, uniqueId)).orElse(null);
     }
 
 }
