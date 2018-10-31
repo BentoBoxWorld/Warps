@@ -47,7 +47,7 @@ public class Warp extends Addon {
         plugin = this.getPlugin();
         // Check if it is enabled - it might be loaded, but not enabled.
         if (!plugin.isEnabled()) {
-            this.setEnabled(false);
+            this.setState(State.DISABLED);
             return;
         }
         registeredWorlds = new HashSet<>();
