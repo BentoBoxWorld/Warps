@@ -5,7 +5,7 @@
 
 	<groupId>world.bentobox</groupId>
 	<artifactId>WelcomeWarpSigns</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.1-SNAPSHOT</version>
 
 	<name>WelcomeWarpSigns</name>
 	<description>WelcomeWarpSigns is an add-on for BentoBox, an expandable Minecraft Bukkit plugin for island-type games like ASkyBlock or AcidIsland.</description>
@@ -57,7 +57,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.13-R0.1-SNAPSHOT</version>
+			<version>1.13.2-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -79,20 +79,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.mongodb</groupId>
-			<artifactId>mongodb-driver</artifactId>
-			<version>3.8.0</version>
-		</dependency>
-		<dependency>
 			<groupId>world.bentobox</groupId>
 			<artifactId>bentobox</artifactId>
-			<version>0.12.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>world.bentobox</groupId>
-			<artifactId>Level</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
-			<scope>provided</scope>
+			<version>0.18.0</version>
 		</dependency>
 	</dependencies>
 

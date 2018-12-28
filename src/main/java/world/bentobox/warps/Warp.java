@@ -1,12 +1,13 @@
 package world.bentobox.warps;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.World;
 
-import world.bentobox.level.Level;
+import world.bentobox.bentobox.api.addons.request.AddonRequestBuilder;
 import world.bentobox.warps.commands.WarpCommand;
 import world.bentobox.warps.commands.WarpsCommand;
 import world.bentobox.warps.config.PluginConfig;
@@ -126,7 +127,24 @@ public class Warp extends Addon {
      * @return island level or null if there is no level plugin
      */
     public Long getLevel(World world, UUID uniqueId) {
-        return plugin.getAddonsManager().getAddonByName(LEVEL_ADDON_NAME).map(l -> ((Level) l).getIslandLevel(world, uniqueId)).orElse(null);
+
+        Optional<Addon> levelHook = this.getAddonByName(LEVEL_ADDON_NAME);
+
+        if (levelHook.isPresent())
+        {
+            Object value = new AddonRequestBuilder().addon(LEVEL_ADDON_NAME).
+                label("island-level").
+                addMetaData("player", uniqueId).
+                addMetaData("world-name", world.getName()).
+                request();
+
+            if (value != null)
+            {
+                return (Long) value;
+            }
+        }
+
+        return null;
     }
 
 }
