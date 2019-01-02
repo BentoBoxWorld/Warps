@@ -24,6 +24,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 
+import world.bentobox.bentobox.lists.Flags;
 import world.bentobox.warps.objects.WarpsData;
 import world.bentobox.warps.event.WarpInitiateEvent;
 import world.bentobox.warps.event.WarpListEvent;
@@ -350,6 +351,15 @@ public class WarpSignsManager {
             addon.getWarpSignsManager().removeWarp(world, owner);
             return;
         }
+
+        if (this.plugin.getIWM().inWorld(user.getWorld()) &&
+            Flags.PREVENT_TELEPORT_WHEN_FALLING.isSetForWorld(user.getWorld()) &&
+            user.getPlayer().getFallDistance() > 0) {
+            // We're sending the "hint" to the player to tell them they cannot teleport while falling.
+            user.sendMessage(Flags.PREVENT_TELEPORT_WHEN_FALLING.getHintReference());
+            return;
+        }
+
         // Find out if island is locked
         // TODO: Fire event
 
