@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -33,14 +34,12 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import world.bentobox.warps.Warp;
-import world.bentobox.warps.WarpSignsListener;
-import world.bentobox.warps.WarpSignsManager;
-import world.bentobox.warps.config.PluginConfig;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.managers.IslandWorldManager;
 import world.bentobox.bentobox.managers.IslandsManager;
 import world.bentobox.bentobox.managers.LocalesManager;
+import world.bentobox.warps.config.PluginConfig;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Bukkit.class})
@@ -122,6 +121,10 @@ public class WarpSignsListenerTest {
 
         // Sufficient level
         when(addon.getLevel(Mockito.any(), Mockito.any())).thenReturn(100L);
+
+        IslandWorldManager iwm = mock(IslandWorldManager.class);
+        when(plugin.getIWM()).thenReturn(iwm);
+        when(iwm.getAddon(Mockito.any())).thenReturn(Optional.empty());
     }
 
     @Test

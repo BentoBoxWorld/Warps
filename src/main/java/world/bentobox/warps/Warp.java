@@ -6,14 +6,13 @@ import java.util.UUID;
 
 import org.bukkit.World;
 
+import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.api.addons.Addon;
+import world.bentobox.bentobox.util.Util;
 import world.bentobox.level.Level;
 import world.bentobox.warps.commands.WarpCommand;
 import world.bentobox.warps.commands.WarpsCommand;
 import world.bentobox.warps.config.PluginConfig;
-import world.bentobox.bentobox.BentoBox;
-import world.bentobox.bentobox.api.addons.Addon;
-import world.bentobox.bentobox.api.commands.CompositeCommand;
-import world.bentobox.bentobox.util.Util;
 
 /**
  * Addin to BSkyBlock that enables welcome warp signs
@@ -57,26 +56,16 @@ public class Warp extends Addon {
         // Load the listener
         getServer().getPluginManager().registerEvents(new WarpSignsListener(this), plugin);
         // Register commands
+        getPlugin().getAddonsManager().getGameModeAddons().stream()
+        .filter(a -> a.getDescription().getName().equals(BSKYBLOCK) || a.getDescription().getName().equals(ACIDISLAND))
+        .forEach(a -> {
+            a.getPlayerCommand().ifPresent(c ->  {
+                new WarpCommand(this, c);
+                new WarpsCommand(this, c);
+                registeredWorlds.add(c.getWorld());
+            });
 
-        // BSkyBlock hook in
-        this.getPlugin().getAddonsManager().getAddonByName(BSKYBLOCK).ifPresent(acidIsland -> {
-            CompositeCommand bsbIslandCmd = BentoBox.getInstance().getCommandsManager().getCommand("island");
-            if (bsbIslandCmd != null) {
-                new WarpCommand(this, bsbIslandCmd);
-                new WarpsCommand(this, bsbIslandCmd);
-                registeredWorlds.add(bsbIslandCmd.getWorld());
-            }
         });
-        // AcidIsland hook in
-        this.getPlugin().getAddonsManager().getAddonByName(ACIDISLAND).ifPresent(acidIsland -> {
-            CompositeCommand acidIslandCmd = getPlugin().getCommandsManager().getCommand("ai");
-            if (acidIslandCmd != null) {
-                new WarpCommand(this, acidIslandCmd);
-                new WarpsCommand(this, acidIslandCmd);
-                registeredWorlds.add(acidIslandCmd.getWorld());
-            }
-        });
-
         // Done
     }
 
