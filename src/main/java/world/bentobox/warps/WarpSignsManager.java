@@ -163,15 +163,18 @@ public class WarpSignsManager {
     private void loadWarpList() {
         addon.getLogger().info("Loading warps...");
         worldsWarpList = new HashMap<>();
-        WarpsData warps = handler.loadObject("warps");
-        // Load into map
-        if (warps != null) {
-            warps.getWarpSigns().forEach((k,v) -> {
-                if (k != null && (k.getBlock().getType().equals(Material.SIGN) || k.getBlock().getType().equals(Material.WALL_SIGN))) {
-                    // Add to map
-                    getWarpMap(k.getWorld()).put(v, k);
-                }
-            });
+        WarpsData warps = new WarpsData();
+        if (handler.objectExists("warps")) {
+            warps = handler.loadObject("warps");
+            // Load into map
+            if (warps != null) {
+                warps.getWarpSigns().forEach((k,v) -> {
+                    if (k != null && (k.getBlock().getType().equals(Material.SIGN) || k.getBlock().getType().equals(Material.WALL_SIGN))) {
+                        // Add to map
+                        getWarpMap(k.getWorld()).put(v, k);
+                    }
+                });
+            }
         }
     }
 
