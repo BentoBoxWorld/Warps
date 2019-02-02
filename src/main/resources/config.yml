@@ -5,7 +5,7 @@ warplevelrestriction: 10
 
 # Text that player must put on sign to make it a warp sign
 # Not case sensitive!
-welcomeLine: [WELCOME]
+welcomeLine: '[WELCOME]'
 
 # This list stores GameModes in which Challenges addon should not work.
 # To disable addon it is necessary to write its name in new line that starts with -. Example:
