@@ -13,6 +13,7 @@ permissions:
   bskyblock.island.addwarp:
     description: Player can create a welcome warp sign
     default: true
+
   acidisland.island.warp:
     description: Player can use warp or warps commands
     default: true
@@ -20,3 +21,16 @@ permissions:
     description: Player can create a welcome warp sign
     default: true
 
+  caveblock.island.warp:
+    description: Player can use warp or warps commands
+    default: true
+  caveblock.island.addwarp:
+    description: Player can create a welcome warp sign
+    default: true
+
+  skygrid.island.warp:
+    description: Player can use warp or warps commands
+    default: true
+  skygrid.island.addwarp:
+    description: Player can create a welcome warp sign
+    default: true
