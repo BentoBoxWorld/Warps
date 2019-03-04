@@ -24,15 +24,15 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 
-import world.bentobox.bentobox.lists.Flags;
-import world.bentobox.warps.objects.WarpsData;
-import world.bentobox.warps.event.WarpInitiateEvent;
-import world.bentobox.warps.event.WarpListEvent;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.database.objects.Island;
+import world.bentobox.bentobox.lists.Flags;
 import world.bentobox.bentobox.util.Util;
+import world.bentobox.warps.event.WarpInitiateEvent;
+import world.bentobox.warps.event.WarpListEvent;
+import world.bentobox.warps.objects.WarpsData;
 
 /**
  * Handles warping. Players can add one sign
@@ -56,8 +56,7 @@ public class WarpSignsManager {
      * @return map of warps
      */
     public Map<UUID, Location> getWarpMap(World world) {
-        worldsWarpList.putIfAbsent(world, new HashMap<>());
-        return worldsWarpList.get(world);
+        return worldsWarpList.computeIfAbsent(Util.getWorld(world), k -> new HashMap<>());
     }
 
     /**
@@ -282,7 +281,7 @@ public class WarpSignsManager {
                 inFront.getBlockZ() + 0.5D, yaw, 30F);
         user.teleport(actualWarp);
         if (pvp) {
-            user.sendRawMessage(user.getTranslation("protection.flags.PVP_OVERWORLD.active"));
+            user.sendMessage("protection.flags.PVP_OVERWORLD.active");
             user.getWorld().playSound(user.getLocation(), Sound.ENTITY_ARROW_HIT, 1F, 1F);
         } else {
             user.getWorld().playSound(user.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
@@ -356,23 +355,31 @@ public class WarpSignsManager {
         }
 
         if (this.plugin.getIWM().inWorld(user.getWorld()) &&
-            Flags.PREVENT_TELEPORT_WHEN_FALLING.isSetForWorld(user.getWorld()) &&
-            user.getPlayer().getFallDistance() > 0) {
+                Flags.PREVENT_TELEPORT_WHEN_FALLING.isSetForWorld(user.getWorld()) &&
+                user.getPlayer().getFallDistance() > 0) {
             // We're sending the "hint" to the player to tell them they cannot teleport while falling.
             user.sendMessage(Flags.PREVENT_TELEPORT_WHEN_FALLING.getHintReference());
             return;
         }
 
-        // Find out if island is locked
-        // TODO: Fire event
-
         Island island = addon.getPlugin().getIslands().getIsland(world, owner);
         boolean pvp = false;
         if (island != null) {
-            //if ((warpSpot.getWorld().equals(IslandWorld.getIslandWorld()) && island.getFlag(SettingsFlag.PVP_OVERWORLD))
-            //        || (warpSpot.getWorld().equals(IslandWorld.getNetherWorld()) && island.getFlag(SettingsFlag.PVP_NETHER))) {
-            //    pvp = true;
-            //}
+            // Check for PVP
+            switch (warpSpot.getWorld().getEnvironment()) {
+            case NETHER:
+                pvp = island.isAllowed(Flags.PVP_NETHER);
+                break;
+            case NORMAL:
+                pvp = island.isAllowed(Flags.PVP_OVERWORLD);
+                break;
+            case THE_END:
+                pvp = island.isAllowed(Flags.PVP_END);
+                break;
+            default:
+                break;
+
+            }
         }
         // Find out which direction the warp is facing
         Block b = warpSpot.getBlock();
@@ -397,7 +404,7 @@ public class WarpSignsManager {
             return;
         }
         if (!(plugin.getIslands().isSafeLocation(warpSpot))) {
-            user.sendMessage("warps.error.NotSafe");
+            user.sendMessage("warps.error.not-safe");
             // WALL_SIGN's will always be unsafe if the place in front is obscured.
             if (b.getType().equals(Material.SIGN)) {
                 addon.getLogger().warning(
@@ -408,13 +415,13 @@ public class WarpSignsManager {
         } else {
             final Location actualWarp = new Location(warpSpot.getWorld(), warpSpot.getBlockX() + 0.5D, warpSpot.getBlockY(),
                     warpSpot.getBlockZ() + 0.5D);
-            user.teleport(actualWarp);
             if (pvp) {
-                //user.sendLegacyMessage(user.getTranslation("igs." + SettingsFlag.PVP_OVERWORLD) + " " + user.getTranslation("igs.Allowed"));
+                user.sendMessage("protection.flags.PVP_OVERWORLD.active");
                 user.getWorld().playSound(user.getLocation(), Sound.ENTITY_ARROW_HIT, 1F, 1F);
             } else {
                 user.getWorld().playSound(user.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
             }
+            user.teleport(actualWarp);
             return;
         }
     }
