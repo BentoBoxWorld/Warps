@@ -169,7 +169,7 @@ public class WarpSignsManager {
             // Load into map
             if (warps != null) {
                 warps.getWarpSigns().forEach((k,v) -> {
-                    if (k != null && (k.getBlock().getType().equals(Material.SIGN) || k.getBlock().getType().equals(Material.WALL_SIGN))) {
+                    if (k != null && k.getWorld() != null && (k.getBlock().getType().equals(Material.SIGN) || k.getBlock().getType().equals(Material.WALL_SIGN))) {
                         // Add to map
                         getWarpMap(k.getWorld()).put(v, k);
                     }
