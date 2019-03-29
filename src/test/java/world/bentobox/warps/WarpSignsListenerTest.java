@@ -1,5 +1,6 @@
 package world.bentobox.warps;
 
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -33,17 +35,16 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import world.bentobox.warps.Warp;
-import world.bentobox.warps.WarpSignsListener;
-import world.bentobox.warps.WarpSignsManager;
-import world.bentobox.warps.config.PluginConfig;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.managers.IslandWorldManager;
 import world.bentobox.bentobox.managers.IslandsManager;
 import world.bentobox.bentobox.managers.LocalesManager;
+import world.bentobox.bentobox.util.Util;
+import world.bentobox.warps.config.Settings;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Bukkit.class})
+@PrepareForTest({Bukkit.class, Util.class})
 public class WarpSignsListenerTest {
 
     private Warp addon;
@@ -56,7 +57,7 @@ public class WarpSignsListenerTest {
     private UUID uuid;
     private String[] lines;
     private FileConfiguration config;
-    private PluginConfig settings;
+    private Settings settings;
     private IslandsManager im;
 
     @Before
@@ -111,7 +112,7 @@ public class WarpSignsListenerTest {
         // Lines
         lines = new String[] {"[WELCOME]", "line2", "line3", "line4"};
 
-        settings = mock(PluginConfig.class);
+        settings = mock(Settings.class);
         when(settings.getWarpLevelRestriction()).thenReturn(10);
         when(addon.getSettings()).thenReturn(settings);
 
@@ -122,6 +123,14 @@ public class WarpSignsListenerTest {
 
         // Sufficient level
         when(addon.getLevel(Mockito.any(), Mockito.any())).thenReturn(100L);
+
+        IslandWorldManager iwm = mock(IslandWorldManager.class);
+        when(plugin.getIWM()).thenReturn(iwm);
+        when(iwm.getAddon(Mockito.any())).thenReturn(Optional.empty());
+
+        // Util
+        PowerMockito.mockStatic(Util.class);
+        when(Util.getWorld(Mockito.any())).thenReturn(world);
     }
 
     @Test

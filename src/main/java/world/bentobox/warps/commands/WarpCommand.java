@@ -6,9 +6,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import world.bentobox.warps.Warp;
 import world.bentobox.bentobox.api.commands.CompositeCommand;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.warps.Warp;
 
 /**
  * The /is warp <name> command
@@ -31,18 +31,6 @@ public class WarpCommand extends CompositeCommand {
         this.setOnlyPlayer(true);
         this.setParametersHelp("warp.help.parameters");
         this.setDescription("warp.help.description");
-    }
-
-    @Override
-    public Optional<List<String>> tabComplete(User user, String alias, List<String> args) {
-        List<String> options = new ArrayList<>();
-        final Set<UUID> warpList = addon.getWarpSignsManager().listWarps(getWorld());
-
-        for (UUID warp : warpList) {
-            options.add(addon.getPlugin().getPlayers().getName(warp));
-        }
-
-        return Optional.of(options);
     }
 
     @Override
@@ -69,6 +57,18 @@ public class WarpCommand extends CompositeCommand {
             }
         }
         return false;
+    }
+
+    @Override
+    public Optional<List<String>> tabComplete(User user, String alias, List<String> args) {
+        List<String> options = new ArrayList<>();
+        final Set<UUID> warpList = addon.getWarpSignsManager().listWarps(getWorld());
+
+        for (UUID warp : warpList) {
+            options.add(addon.getPlugin().getPlayers().getName(warp));
+        }
+
+        return Optional.of(options);
     }
 
 

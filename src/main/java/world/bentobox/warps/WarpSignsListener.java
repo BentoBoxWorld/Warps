@@ -15,9 +15,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
-import world.bentobox.warps.event.WarpRemoveEvent;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.util.Util;
+import world.bentobox.warps.event.WarpRemoveEvent;
 
 /**
  * Handles warping. Players can add one sign
@@ -99,8 +100,8 @@ public class WarpSignsListener implements Listener {
                 user.sendMessage("general.errors.you-need", "[permission]", addon.getPermPrefix(b.getWorld()) + ".island.addwarp");
                 return;
             }
-            // Get level is level addon is available
-            Long level = addon.getLevel(b.getWorld(), user.getUniqueId());
+            // Get level if level addon is available
+            Long level = addon.getLevel(Util.getWorld(b.getWorld()), user.getUniqueId());
             if (level != null && level < addon.getSettings().getWarpLevelRestriction()) {
                 user.sendMessage("warps.error.not-enough-level");
                 user.sendMessage("warps.error.your-level-is",

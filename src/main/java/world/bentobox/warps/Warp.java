@@ -1,19 +1,18 @@
 package world.bentobox.warps;
 
+
+import org.bukkit.World;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.World;
-
+import world.bentobox.bentobox.api.addons.Addon;
+import world.bentobox.bentobox.api.configuration.Config;
+import world.bentobox.bentobox.util.Util;
 import world.bentobox.level.Level;
 import world.bentobox.warps.commands.WarpCommand;
 import world.bentobox.warps.commands.WarpsCommand;
-import world.bentobox.warps.config.PluginConfig;
-import world.bentobox.bentobox.BentoBox;
-import world.bentobox.bentobox.api.addons.Addon;
-import world.bentobox.bentobox.api.commands.CompositeCommand;
-import world.bentobox.bentobox.util.Util;
+import world.bentobox.warps.config.Settings;
 
 /**
  * Addin to BSkyBlock that enables welcome warp signs
@@ -21,64 +20,112 @@ import world.bentobox.bentobox.util.Util;
  *
  */
 public class Warp extends Addon {
+// ---------------------------------------------------------------------
+// Section: Variables
+// ---------------------------------------------------------------------
 
-    private static final String BSKYBLOCK = "BSkyBlock";
-    private static final String ACIDISLAND = "AcidIsland";
+    /**
+     * This variable stores string for Level addon.
+     */
     private static final String LEVEL_ADDON_NAME = "Level";
 
-    // The plugin instance.
-    private BentoBox plugin;
-
-    // Warp panel objects
+    /**
+     * Warp panel Manager
+     */
     private WarpPanelManager warpPanelManager;
 
-    // Warps signs objects
+    /**
+     * Worlds Sign manager.
+     */
     private WarpSignsManager warpSignsManager;
 
+    /**
+     * This variable stores in which worlds this addon is working.
+     */
     private Set<World> registeredWorlds;
 
-    private PluginConfig settings;
+    /**
+     * This variable stores if addon settings.
+     */
+    private Settings settings;
+
+    /**
+     * This variable stores if addon is hooked or not.
+     */
+    private boolean hooked;
+
+// ---------------------------------------------------------------------
+// Section: Methods
+// ---------------------------------------------------------------------
+
+
+    /**
+     * Executes code when loading the addon. This is called before {@link #onEnable()}. This should preferably
+     * be used to setup configuration and worlds.
+     */
+    @Override
+    public void onLoad()
+    {
+        super.onLoad();
+        // Save default config.yml
+        this.saveDefaultConfig();
+        // Load the plugin's config
+        this.loadSettings();
+    }
+
+
+    /**
+     * Executes code when reloading the addon.
+     */
+    @Override
+    public void onReload()
+    {
+        super.onReload();
+
+        if (this.hooked) {
+            this.warpSignsManager.saveWarpList();
+
+            this.loadSettings();
+            this.getLogger().info("WelcomeWarp addon reloaded.");
+        }
+    }
+
 
     @Override
     public void onEnable() {
-        // Load the plugin's config
-        settings = new PluginConfig(this);
-        // Get the BSkyBlock plugin. This will be available because this plugin depends on it in plugin.yml.
-        plugin = this.getPlugin();
         // Check if it is enabled - it might be loaded, but not enabled.
-        if (!plugin.isEnabled()) {
+        if (!this.getPlugin().isEnabled()) {
             this.setState(State.DISABLED);
             return;
         }
+
         registeredWorlds = new HashSet<>();
-        // Start warp signs
-        warpSignsManager = new WarpSignsManager(this, plugin);
-        warpPanelManager = new WarpPanelManager(this);
-        // Load the listener
-        getServer().getPluginManager().registerEvents(new WarpSignsListener(this), plugin);
+
         // Register commands
+        this.getPlugin().getAddonsManager().getGameModeAddons().forEach(gameModeAddon -> {
+            if (!this.settings.getDisabledGameModes().contains(gameModeAddon.getDescription().getName()))
+            {
+                if (gameModeAddon.getPlayerCommand().isPresent())
+                {
+                    this.registeredWorlds.add(gameModeAddon.getOverWorld());
 
-        // BSkyBlock hook in
-        this.getPlugin().getAddonsManager().getAddonByName(BSKYBLOCK).ifPresent(acidIsland -> {
-            CompositeCommand bsbIslandCmd = BentoBox.getInstance().getCommandsManager().getCommand("island");
-            if (bsbIslandCmd != null) {
-                new WarpCommand(this, bsbIslandCmd);
-                new WarpsCommand(this, bsbIslandCmd);
-                registeredWorlds.add(bsbIslandCmd.getWorld());
-            }
-        });
-        // AcidIsland hook in
-        this.getPlugin().getAddonsManager().getAddonByName(ACIDISLAND).ifPresent(acidIsland -> {
-            CompositeCommand acidIslandCmd = getPlugin().getCommandsManager().getCommand("ai");
-            if (acidIslandCmd != null) {
-                new WarpCommand(this, acidIslandCmd);
-                new WarpsCommand(this, acidIslandCmd);
-                registeredWorlds.add(acidIslandCmd.getWorld());
+                    new WarpCommand(this, gameModeAddon.getPlayerCommand().get());
+                    new WarpsCommand(this, gameModeAddon.getPlayerCommand().get());
+                    this.hooked = true;
+                }
             }
         });
 
-        // Done
+        if (hooked)
+        {
+            // Start warp signs
+            warpSignsManager = new WarpSignsManager(this, this.getPlugin());
+            warpPanelManager = new WarpPanelManager(this);
+            // Load the listener
+            getServer().getPluginManager().registerEvents(new WarpSignsListener(this), this.getPlugin());
+        }
     }
+
 
     @Override
     public void onDisable(){
@@ -86,6 +133,21 @@ public class Warp extends Addon {
         if (warpSignsManager != null)
             warpSignsManager.saveWarpList();
     }
+
+
+    /**
+     * This method loads addon configuration settings in memory.
+     */
+    private void loadSettings() {
+        this.settings = new Config<>(this, Settings.class).loadConfigObject();
+
+        if (this.settings == null) {
+            // Disable
+            this.logError("WelcomeWarp settings could not load! Addon disabled.");
+            this.setState(State.DISABLED);
+        }
+    }
+
 
     /**
      * Get warp panel manager
@@ -115,7 +177,7 @@ public class Warp extends Addon {
     /**
      * @return the settings
      */
-    public PluginConfig getSettings() {
+    public Settings getSettings() {
         return settings;
     }
 
@@ -126,7 +188,7 @@ public class Warp extends Addon {
      * @return island level or null if there is no level plugin
      */
     public Long getLevel(World world, UUID uniqueId) {
-        return plugin.getAddonsManager().getAddonByName(LEVEL_ADDON_NAME).map(l -> ((Level) l).getIslandLevel(world, uniqueId)).orElse(null);
+        return this.getPlugin().getAddonsManager().getAddonByName(LEVEL_ADDON_NAME).map(l -> ((Level) l).getIslandLevel(world, uniqueId)).orElse(null);
     }
 
 }

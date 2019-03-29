@@ -1,0 +1,31 @@
+###########################################################################################
+# This is a YML file. Be careful when editing. Check your edits in a YAML checker like    #
+# the one at http://yaml-online-parser.appspot.com                                        #
+###########################################################################################
+
+warp: 
+  help: 
+    description: "te téléporte au Warp d'un autre joueur"
+    parameters: <pseudo>
+warps: 
+  deactivate: "&cAncien panneau de Warp désactivé !"
+  error: 
+    does-not-exist: "&cCe Warp n'existe plus !"
+    duplicate: "&cPanneau dupliqué placé."
+    no-permission: "&cVous n'avez pas la permission pour faire cela !"
+    no-remove: "&cVous ne pouvez pas supprimer ce panneau !"
+    no-warps-yet: "&cIl n'y a encore aucun Warp sur ce serveur."
+    not-enough-level: "&cVotre niveau d'île n'est pas assez élevé pour faire cela !"
+    not-on-island: "&cVous devez être sur votre île pour faire cela !"
+    not-safe: "&cCe Warp n'est pas sûr!"
+    your-level-is: "&cVotre île est seulement niveau [level] et doit être niveau [required]."
+  help: 
+    description: "Ouvre le menu des Warps"
+  next: "&6Page suivante"
+  player-warped: "&2[name] s'est téléporté sur votre île !"
+  previous: "&6Page précédente"
+  sign-removed: "&cPanneau de Warp supprimé !"
+  success: "&aSuccès !"
+  title: "Panneau Warp"
+  warpTip: "&6Placez un panneau et écrivez [text] sur la première ligne."
+  warpToPlayersSign: "&6Téléportation sur l'île de [player]..."

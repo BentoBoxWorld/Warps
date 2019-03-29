@@ -1,9 +1,21 @@
+# WelcomeWarps Configuration ${version}
+# This config file is dynamic and saved when the server is shutdown.
+# You cannot edit it while the server is running because changes will
+# be lost! Use in-game settings GUI or edit when server is offline.
+# 
+# 
 # Warp Restriction - needed levels to be able to create a warp
-# 0 or negative values will disable this restriction
-# 10 is default
+# 0 or negative values will disable this restriction 10 is default
 warplevelrestriction: 10
-
+# 
 # Text that player must put on sign to make it a warp sign
 # Not case sensitive!
-welcomeLine: [WELCOME]
-
+welcomeLine: '[Welcome]'
+# 
+# This list stores GameModes in which Level addon should not work.
+# To disable addon it is necessary to write its name in new line that starts with -. Example:
+# disabled-gamemodes:
+#  - BSkyBlock
+disabled-gamemodes: []
+# 
+uniqueId: config
