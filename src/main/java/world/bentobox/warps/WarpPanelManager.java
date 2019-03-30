@@ -14,6 +14,8 @@ import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.util.ItemParser;
+
 
 public class WarpPanelManager {
 
@@ -29,8 +31,32 @@ public class WarpPanelManager {
 
     private PanelItem getPanelItem(World world, UUID warpOwner) {
         // Return a sign panel item
-        return new PanelItemBuilder()
-                .icon(Material.SIGN)
+
+        PanelItemBuilder builder = new PanelItemBuilder();
+
+        if (this.addon.getSettings().getIcon().equals("PLAYER"))
+        {
+            String playerName = this.addon.getPlayers().getName(warpOwner);
+
+            if (!playerName.isEmpty())
+            {
+                builder.icon(playerName);
+            }
+            else
+            {
+                // If player name is not found then use default icon.
+
+                ItemStack itemStack = ItemParser.parse(this.addon.getSettings().getIcon() + ":1");
+                builder.icon(itemStack == null ? Material.SIGN : itemStack.getType());
+            }
+        }
+        else
+        {
+            ItemStack itemStack = ItemParser.parse(this.addon.getSettings().getIcon() + ":1");
+            builder.icon(itemStack == null ? Material.SIGN : itemStack.getType());
+        }
+
+        return builder
                 .name(addon.getPlugin().getPlayers().getName(warpOwner))
                 .description(getSign(world, warpOwner))
                 .clickHandler((panel, clicker, click, slot) -> { {

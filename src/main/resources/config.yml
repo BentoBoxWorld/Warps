@@ -11,7 +11,12 @@ warplevelrestriction: 10
 # Text that player must put on sign to make it a warp sign
 # Not case sensitive!
 welcomeLine: '[Welcome]'
-# 
+#
+# Icon that will be displayed in Warps list.
+# It uses native Minecraft material strings, but using string 'PLAYER', it is possible to
+# use player heads instead.
+icon: 'SIGN'
+#
 # This list stores GameModes in which Level addon should not work.
 # To disable addon it is necessary to write its name in new line that starts with -. Example:
 # disabled-gamemodes:
