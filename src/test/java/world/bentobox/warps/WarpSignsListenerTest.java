@@ -17,6 +17,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Server;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -28,6 +31,7 @@ import org.bukkit.plugin.PluginManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -44,34 +48,57 @@ import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.config.Settings;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Bukkit.class, Util.class})
+@PrepareForTest({Bukkit.class, Util.class, NamespacedKey.class, Tag.class})
 public class WarpSignsListenerTest {
 
+    @Mock
     private Warp addon;
+    @Mock
     private Block block;
+    @Mock
     private Player player;
+    @Mock
     private World world;
     private Sign s;
     private WarpSignsManager wsm;
     private PluginManager pm;
     private UUID uuid;
     private String[] lines;
+    @Mock
     private FileConfiguration config;
     private Settings settings;
     private IslandsManager im;
+    @Mock
+    private Tag<Material> value;
 
     @Before
     public void setUp() throws Exception {
-        addon = mock(Warp.class);
+        PowerMockito.mockStatic(Tag.class);
+        when(Tag.WOOL).thenReturn(value);
+        // Bukkit
+        PowerMockito.mockStatic(Bukkit.class);
+        pm = mock(PluginManager.class);
+        when(Bukkit.getPluginManager()).thenReturn(pm);
+        when(value.isTagged(Mockito.any())).thenReturn(true);
+        when(Bukkit.getTag(Mockito.anyString(), Mockito.any(), Mockito.eq(Material.class))).thenReturn(value);
+
+        Server server = mock(Server.class);
+        when(server.getVersion()).thenReturn("1.14");
+        when(Bukkit.getServer()).thenReturn(server);
+        Bukkit.setServer(server);
+
+        PowerMockito.mockStatic(NamespacedKey.class);
+        NamespacedKey keyValue = mock(NamespacedKey.class);
+        when(NamespacedKey.minecraft(Mockito.anyString())).thenReturn(keyValue);
+        when(server.getTag(Mockito.anyString(), Mockito.any(), Mockito.eq(Material.class))).thenReturn(value);
+
         when(addon.inRegisteredWorld(Mockito.any())).thenReturn(true);
-        config = mock(FileConfiguration.class);
         when(config.getString(Mockito.anyString())).thenReturn("[WELCOME]");
         when(addon.getConfig()).thenReturn(config);
-        block = mock(Block.class);
-        when(block.getType()).thenReturn(Material.WALL_SIGN);
-        world = mock(World.class);
+        // Block
+        when(block.getType()).thenReturn(Material.OAK_WALL_SIGN);
         when(block.getWorld()).thenReturn(world);
-        player = mock(Player.class);
+        // Player
         when(player.hasPermission(Mockito.anyString())).thenReturn(false);
         uuid = UUID.randomUUID();
         when(player.getUniqueId()).thenReturn(uuid);
@@ -104,11 +131,6 @@ public class WarpSignsListenerTest {
             }});
         when(plugin.getLocalesManager()).thenReturn(lm);
 
-        // Bukkit
-        PowerMockito.mockStatic(Bukkit.class);
-        pm = mock(PluginManager.class);
-        when(Bukkit.getPluginManager()).thenReturn(pm);
-
         // Lines
         lines = new String[] {"[WELCOME]", "line2", "line3", "line4"};
 
@@ -131,6 +153,8 @@ public class WarpSignsListenerTest {
         // Util
         PowerMockito.mockStatic(Util.class);
         when(Util.getWorld(Mockito.any())).thenReturn(world);
+
+
     }
 
     @Test

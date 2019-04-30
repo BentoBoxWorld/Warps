@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -169,7 +169,7 @@ public class WarpSignsManager {
             // Load into map
             if (warps != null) {
                 warps.getWarpSigns().forEach((k,v) -> {
-                    if (k != null && k.getWorld() != null && (k.getBlock().getType().equals(Material.SIGN) || k.getBlock().getType().equals(Material.WALL_SIGN))) {
+                    if (k != null && k.getWorld() != null && Tag.SIGNS.isTagged(k.getBlock().getType())) {
                         // Add to map
                         getWarpMap(k.getWorld()).put(v, k);
                     }
@@ -184,7 +184,7 @@ public class WarpSignsManager {
      */
     private void popSign(Location loc) {
         Block b = loc.getBlock();
-        if (b.getType().equals(Material.SIGN) || b.getType().equals(Material.WALL_SIGN)) {
+        if (Tag.SIGNS.isTagged(b.getType())) {
             Sign s = (Sign) b.getState();
             if (s != null) {
                 if (s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getConfig().getString("welcomeLine"))) {
@@ -253,7 +253,7 @@ public class WarpSignsManager {
         List<String> result = new ArrayList<>();
         //get the sign info
         Location signLocation = getWarp(world, uuid);
-        if (signLocation != null && (signLocation.getBlock().getType().equals(Material.SIGN) || signLocation.getBlock().getType().equals(Material.WALL_SIGN))) {
+        if (signLocation != null && Tag.SIGNS.isTagged(signLocation.getBlock().getType())) {
             Sign sign = (Sign)signLocation.getBlock().getState();
             result.addAll(Arrays.asList(sign.getLines()));
             // Clean up - remove the [WELCOME] line
@@ -383,16 +383,23 @@ public class WarpSignsManager {
         }
         // Find out which direction the warp is facing
         Block b = warpSpot.getBlock();
-        if (b.getType().equals(Material.SIGN) || b.getType().equals(Material.WALL_SIGN)) {
-            Sign sign = (Sign) b.getState();
-            org.bukkit.material.Sign s = (org.bukkit.material.Sign) sign.getData();
+        if (Tag.STANDING_SIGNS.isTagged(b.getType())) {
+            org.bukkit.block.data.type.Sign s = (org.bukkit.block.data.type.Sign) b.getBlockData();
+            BlockFace directionFacing = s.getRotation();
+            Location inFront = b.getRelative(directionFacing).getLocation();
+            if ((plugin.getIslands().isSafeLocation(inFront))) {
+                addon.getWarpSignsManager().warpPlayer(user, inFront, owner, directionFacing, pvp);
+                return;
+            }
+        } else if (Tag.WALL_SIGNS.isTagged(b.getType())) {
+            org.bukkit.block.data.type.WallSign s = (org.bukkit.block.data.type.WallSign) b.getBlockData();
             BlockFace directionFacing = s.getFacing();
             Location inFront = b.getRelative(directionFacing).getLocation();
             Location oneDown = b.getRelative(directionFacing).getRelative(BlockFace.DOWN).getLocation();
             if ((plugin.getIslands().isSafeLocation(inFront))) {
                 addon.getWarpSignsManager().warpPlayer(user, inFront, owner, directionFacing, pvp);
                 return;
-            } else if (b.getType().equals(Material.WALL_SIGN) && plugin.getIslands().isSafeLocation(oneDown)) {
+            } else if (plugin.getIslands().isSafeLocation(oneDown)) {
                 // Try one block down if this is a wall sign
                 addon.getWarpSignsManager().warpPlayer(user, oneDown, owner, directionFacing, pvp);
                 return;
@@ -406,7 +413,7 @@ public class WarpSignsManager {
         if (!(plugin.getIslands().isSafeLocation(warpSpot))) {
             user.sendMessage("warps.error.not-safe");
             // WALL_SIGN's will always be unsafe if the place in front is obscured.
-            if (b.getType().equals(Material.SIGN)) {
+            if (Tag.STANDING_SIGNS.isTagged(b.getType())) {
                 addon.getLogger().warning(
                         "Unsafe warp found at " + warpSpot.toString() + " owned by " + addon.getPlugin().getPlayers().getName(owner));
 

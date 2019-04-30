@@ -1,10 +1,11 @@
 package world.bentobox.warps;
 
 
-import org.bukkit.World;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
+import org.bukkit.World;
 
 import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.configuration.Config;
@@ -20,9 +21,9 @@ import world.bentobox.warps.config.Settings;
  *
  */
 public class Warp extends Addon {
-// ---------------------------------------------------------------------
-// Section: Variables
-// ---------------------------------------------------------------------
+    // ---------------------------------------------------------------------
+    // Section: Variables
+    // ---------------------------------------------------------------------
 
     /**
      * This variable stores string for Level addon.
@@ -54,9 +55,9 @@ public class Warp extends Addon {
      */
     private boolean hooked;
 
-// ---------------------------------------------------------------------
-// Section: Methods
-// ---------------------------------------------------------------------
+    // ---------------------------------------------------------------------
+    // Section: Methods
+    // ---------------------------------------------------------------------
 
 
     /**

@@ -30,7 +30,7 @@ public class WarpPanelManager {
     private PanelItem getPanelItem(World world, UUID warpOwner) {
         // Return a sign panel item
         return new PanelItemBuilder()
-                .icon(Material.SIGN)
+                .icon(getSignIcon(world, warpOwner))
                 .name(addon.getPlugin().getPlayers().getName(warpOwner))
                 .description(getSign(world, warpOwner))
                 .clickHandler((panel, clicker, click, slot) -> { {
@@ -39,6 +39,11 @@ public class WarpPanelManager {
                     return true;
                 }
                 }).build();
+    }
+
+    private Material getSignIcon(World world, UUID warpOwner) {
+        Material type = addon.getWarpSignsManager().getWarp(world, warpOwner).getBlock().getType();
+        return Material.valueOf(type.toString().replace("_WALL", ""));
     }
 
     /**
@@ -84,7 +89,7 @@ public class WarpPanelManager {
             // Next
             panelBuilder.item(new PanelItemBuilder()
                     .name("Next")
-                    .icon(new ItemStack(Material.SIGN))
+                    .icon(new ItemStack(Material.STONE))
                     .clickHandler((panel, clicker, click, slot) -> {
                         user.closeInventory();
                         showWarpPanel(world, user, panelNum+1);
@@ -95,7 +100,7 @@ public class WarpPanelManager {
             // Previous
             panelBuilder.item(new PanelItemBuilder()
                     .name("Previous")
-                    .icon(new ItemStack(Material.SIGN))
+                    .icon(new ItemStack(Material.COBBLESTONE))
                     .clickHandler((panel, clicker, click, slot) -> {
                         user.closeInventory();
                         showWarpPanel(world, user, panelNum-1);
