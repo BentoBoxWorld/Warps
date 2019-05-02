@@ -33,6 +33,7 @@ import world.bentobox.bentobox.managers.PlayersManager;
 import world.bentobox.warps.Warp;
 import world.bentobox.warps.WarpPanelManager;
 import world.bentobox.warps.WarpSignsManager;
+import world.bentobox.warps.config.Settings;
 
 /**
  * @author ben
@@ -99,7 +100,12 @@ public class WarpPanelManagerTest {
         top = mock(Inventory.class);
         when(top.getSize()).thenReturn(9);
 
-        when(Bukkit.createInventory(Mockito.any(), Mockito.anyInt(), Mockito.any())).thenReturn(top);    }
+        when(Bukkit.createInventory(Mockito.any(), Mockito.anyInt(), Mockito.any())).thenReturn(top);  
+        
+        Settings settings = mock(Settings.class);
+        when(settings.getIcon()).thenReturn("SIGN");
+		when(addon.getSettings()).thenReturn(settings);
+        }
 
     /**
      * Test method for {@link WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
