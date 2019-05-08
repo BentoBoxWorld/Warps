@@ -28,4 +28,4 @@ warps:
   success: "&AExito!"
   title: "Carteles de Warps"
   warpTip: "&6Coloca un cartel con este texto [text] arriba"
-warpToPlayersSign: "&6Teletransportandote al warp de [player]"
+  warpToPlayersSign: "&6Teletransportandote al warp de [player]"
