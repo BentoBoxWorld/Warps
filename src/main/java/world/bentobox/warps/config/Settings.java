@@ -5,8 +5,8 @@ import java.util.Set;
 
 import world.bentobox.bentobox.api.configuration.ConfigComment;
 import world.bentobox.bentobox.api.configuration.ConfigEntry;
+import world.bentobox.bentobox.api.configuration.ConfigObject;
 import world.bentobox.bentobox.api.configuration.StoreAt;
-import world.bentobox.bentobox.database.objects.DataObject;
 
 
 @StoreAt(filename="config.yml", path="addons/WelcomeWarps")
@@ -15,7 +15,7 @@ import world.bentobox.bentobox.database.objects.DataObject;
 @ConfigComment("You cannot edit it while the server is running because changes will")
 @ConfigComment("be lost! Use in-game settings GUI or edit when server is offline.")
 @ConfigComment("")
-public class Settings implements DataObject
+public class Settings implements ConfigObject
 {
     @ConfigComment("")
     @ConfigComment("Warp Restriction - needed levels to be able to create a warp")
@@ -44,9 +44,6 @@ public class Settings implements DataObject
     @ConfigEntry(path = "disabled-gamemodes")
     private Set<String> disabledGameModes = new HashSet<>();
 
-    @ConfigComment("")
-    private String uniqueId = "config";
-
     // ---------------------------------------------------------------------
     // Section: Constructor
     // ---------------------------------------------------------------------
@@ -73,27 +70,6 @@ public class Settings implements DataObject
     {
         return warpLevelRestriction;
     }
-
-
-    /**
-     * @return the uniqueId
-     */
-    @Override
-    public String getUniqueId()
-    {
-        return uniqueId;
-    }
-
-
-    /**
-     * @param uniqueId - unique ID the uniqueId to set
-     */
-    @Override
-    public void setUniqueId(String uniqueId)
-    {
-        this.uniqueId = uniqueId;
-    }
-
 
     /**
      * This method sets the warpLevelRestriction object value.
