@@ -30,6 +30,13 @@ public class Settings implements DataObject
     private String welcomeLine;
 
     @ConfigComment("")
+    @ConfigComment("Icon that will be displayed in Warps list.")
+    @ConfigComment("It uses native Minecraft material strings, but using string 'PLAYER', it is possible to")
+    @ConfigComment("use player heads instead.")
+    @ConfigEntry(path = "icon")
+    private String icon = "SIGN";
+
+    @ConfigComment("")
     @ConfigComment("This list stores GameModes in which Level addon should not work.")
     @ConfigComment("To disable addon it is necessary to write its name in new line that starts with -. Example:")
     @ConfigComment("disabled-gamemodes:")
@@ -40,9 +47,9 @@ public class Settings implements DataObject
     @ConfigComment("")
     private String uniqueId = "config";
 
-// ---------------------------------------------------------------------
-// Section: Constructor
-// ---------------------------------------------------------------------
+    // ---------------------------------------------------------------------
+    // Section: Constructor
+    // ---------------------------------------------------------------------
 
 
     /**
@@ -54,9 +61,9 @@ public class Settings implements DataObject
     }
 
 
-// ---------------------------------------------------------------------
-// Section: Methods
-// ---------------------------------------------------------------------
+    // ---------------------------------------------------------------------
+    // Section: Methods
+    // ---------------------------------------------------------------------
 
 
     /**
@@ -138,5 +145,25 @@ public class Settings implements DataObject
     public void setDisabledGameModes(Set<String> disabledGameModes)
     {
         this.disabledGameModes = disabledGameModes;
+    }
+
+
+    /**
+     * This method returns the icon object.
+     * @return the icon object.
+     */
+    public String getIcon()
+    {
+        return icon;
+    }
+
+
+    /**
+     * This method sets the icon object value.
+     * @param icon the icon object new value.
+     */
+    public void setIcon(String icon)
+    {
+        this.icon = icon;
     }
 }

@@ -15,6 +15,7 @@ import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
 import world.bentobox.bentobox.api.user.User;
 
+
 public class WarpPanelManager {
 
     private static final int PANEL_MAX_SIZE = 52;
