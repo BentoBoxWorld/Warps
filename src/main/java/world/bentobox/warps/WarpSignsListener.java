@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
@@ -48,10 +47,8 @@ public class WarpSignsListener implements Listener {
     public void onSignBreak(BlockBreakEvent e) {
         Block b = e.getBlock();
         // Signs only
-
-        if (!Tag
-                .SIGNS
-                .isTagged(b.getType())) {
+        // FIXME: When we drop support for 1.13, switch to Tag.SIGNS
+        if (!e.getBlock().getType().name().contains("SIGN")) {
             return;
         }
         if (!addon.inRegisteredWorld(b.getWorld())) {
@@ -130,7 +127,8 @@ public class WarpSignsListener implements Listener {
                 // so,
                 // deactivate it
                 Block oldSignBlock = oldSignLoc.getBlock();
-                if (Tag.SIGNS.isTagged(oldSignBlock.getType())) {
+                // FIXME: When we drop support for 1.13, switch to Tag.SIGNS
+                if (oldSignBlock.getType().name().contains("SIGN")) {
                     // The block is still a sign
                     Sign oldSign = (Sign) oldSignBlock.getState();
                     if (oldSign != null) {

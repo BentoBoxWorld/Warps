@@ -44,6 +44,7 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.managers.IslandWorldManager;
 import world.bentobox.bentobox.managers.IslandsManager;
 import world.bentobox.bentobox.managers.LocalesManager;
+import world.bentobox.bentobox.managers.PlaceholdersManager;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.config.Settings;
 
@@ -68,19 +69,13 @@ public class WarpSignsListenerTest {
     private FileConfiguration config;
     private Settings settings;
     private IslandsManager im;
-    @Mock
-    private Tag<Material> value;
 
     @Before
     public void setUp() throws Exception {
-        PowerMockito.mockStatic(Tag.class);
-        when(Tag.WOOL).thenReturn(value);
         // Bukkit
         PowerMockito.mockStatic(Bukkit.class);
         pm = mock(PluginManager.class);
         when(Bukkit.getPluginManager()).thenReturn(pm);
-        when(value.isTagged(Mockito.any())).thenReturn(true);
-        when(Bukkit.getTag(Mockito.anyString(), Mockito.any(), Mockito.eq(Material.class))).thenReturn(value);
 
         Server server = mock(Server.class);
         when(server.getVersion()).thenReturn("1.14");
@@ -90,13 +85,18 @@ public class WarpSignsListenerTest {
         PowerMockito.mockStatic(NamespacedKey.class);
         NamespacedKey keyValue = mock(NamespacedKey.class);
         when(NamespacedKey.minecraft(Mockito.anyString())).thenReturn(keyValue);
-        when(server.getTag(Mockito.anyString(), Mockito.any(), Mockito.eq(Material.class))).thenReturn(value);
 
         when(addon.inRegisteredWorld(Mockito.any())).thenReturn(true);
         when(config.getString(Mockito.anyString())).thenReturn("[WELCOME]");
         when(addon.getConfig()).thenReturn(config);
         // Block
-        when(block.getType()).thenReturn(Material.OAK_WALL_SIGN);
+        Material sign;
+        try {
+            sign = Material.valueOf("OAK_WALL_SIGN");
+        } catch (Exception e) {
+            sign = Material.valueOf("WALL_SIGN");
+        }
+        when(block.getType()).thenReturn(sign);
         when(block.getWorld()).thenReturn(world);
         // Player
         when(player.hasPermission(Mockito.anyString())).thenReturn(false);
@@ -154,6 +154,15 @@ public class WarpSignsListenerTest {
         PowerMockito.mockStatic(Util.class);
         when(Util.getWorld(Mockito.any())).thenReturn(world);
 
+        // Locales
+        Answer<String> answer = invocation -> invocation.getArgumentAt(1, String.class);
+        when(lm.get(Mockito.any(User.class), Mockito.anyString())).thenAnswer(answer);
+        when(plugin.getLocalesManager()).thenReturn(lm);
+
+        // Placeholders
+        PlaceholdersManager placeholdersManager = mock(PlaceholdersManager.class);
+        when(plugin.getPlaceholdersManager()).thenReturn(placeholdersManager);
+        when(placeholdersManager.replacePlaceholders(Mockito.any(), Mockito.any())).thenAnswer(answer);
 
     }
 
@@ -169,7 +178,6 @@ public class WarpSignsListenerTest {
         when(block.getType()).thenReturn(Material.STONE);
         wsl.onSignBreak(e);
         assertFalse(e.isCancelled());
-        Mockito.verify(block, Mockito.times(2)).getType();
     }
 
     @Test

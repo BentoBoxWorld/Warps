@@ -11,7 +11,10 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFactory;
@@ -30,9 +33,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.managers.PlayersManager;
-import world.bentobox.warps.Warp;
-import world.bentobox.warps.WarpPanelManager;
-import world.bentobox.warps.WarpSignsManager;
 import world.bentobox.warps.config.Settings;
 
 /**
@@ -105,6 +105,19 @@ public class WarpPanelManagerTest {
         Settings settings = mock(Settings.class);
         when(settings.getIcon()).thenReturn("SIGN");
 		when(addon.getSettings()).thenReturn(settings);
+
+        Location location = mock(Location.class);
+        Block block = mock(Block.class);
+        Material sign_type;
+        try {
+            sign_type = Material.valueOf("SIGN");
+        } catch (Exception e) {
+            sign_type = Material.valueOf("OAK_SIGN");
+        }
+        when(block.getType()).thenReturn(sign_type);
+        when(location.getBlock()).thenReturn(block);
+        // Sign block
+        when(wsm.getWarp(Mockito.any(), Mockito.any())).thenReturn(location);
         }
 
     /**

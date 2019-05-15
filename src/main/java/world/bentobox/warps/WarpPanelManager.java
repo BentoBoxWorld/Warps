@@ -44,7 +44,7 @@ public class WarpPanelManager {
 
     private Material getSignIcon(World world, UUID warpOwner) {
         Material type = addon.getWarpSignsManager().getWarp(world, warpOwner).getBlock().getType();
-        return Material.valueOf(type.toString().replace("_WALL", ""));
+        return Material.valueOf(type.toString().replace("WALL_", ""));
     }
 
     /**

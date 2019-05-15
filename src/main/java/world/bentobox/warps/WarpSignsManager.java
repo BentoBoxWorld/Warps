@@ -18,7 +18,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -169,7 +168,7 @@ public class WarpSignsManager {
             // Load into map
             if (warps != null) {
                 warps.getWarpSigns().forEach((k,v) -> {
-                    if (k != null && k.getWorld() != null && Tag.SIGNS.isTagged(k.getBlock().getType())) {
+                    if (k != null && k.getWorld() != null && k.getBlock().getType().name().contains("SIGN")) {
                         // Add to map
                         getWarpMap(k.getWorld()).put(v, k);
                     }
@@ -184,7 +183,7 @@ public class WarpSignsManager {
      */
     private void popSign(Location loc) {
         Block b = loc.getBlock();
-        if (Tag.SIGNS.isTagged(b.getType())) {
+        if (b.getType().name().contains("SIGN")) {
             Sign s = (Sign) b.getState();
             if (s != null) {
                 if (s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getConfig().getString("welcomeLine"))) {
@@ -253,7 +252,7 @@ public class WarpSignsManager {
         List<String> result = new ArrayList<>();
         //get the sign info
         Location signLocation = getWarp(world, uuid);
-        if (signLocation != null && Tag.SIGNS.isTagged(signLocation.getBlock().getType())) {
+        if (signLocation != null && signLocation.getBlock().getType().name().contains("SIGN")) {
             Sign sign = (Sign)signLocation.getBlock().getState();
             result.addAll(Arrays.asList(sign.getLines()));
             // Clean up - remove the [WELCOME] line
@@ -383,15 +382,7 @@ public class WarpSignsManager {
         }
         // Find out which direction the warp is facing
         Block b = warpSpot.getBlock();
-        if (Tag.STANDING_SIGNS.isTagged(b.getType())) {
-            org.bukkit.block.data.type.Sign s = (org.bukkit.block.data.type.Sign) b.getBlockData();
-            BlockFace directionFacing = s.getRotation();
-            Location inFront = b.getRelative(directionFacing).getLocation();
-            if ((plugin.getIslands().isSafeLocation(inFront))) {
-                addon.getWarpSignsManager().warpPlayer(user, inFront, owner, directionFacing, pvp);
-                return;
-            }
-        } else if (Tag.WALL_SIGNS.isTagged(b.getType())) {
+        if (b.getType().name().contains("WALL_SIGN")) {
             org.bukkit.block.data.type.WallSign s = (org.bukkit.block.data.type.WallSign) b.getBlockData();
             BlockFace directionFacing = s.getFacing();
             Location inFront = b.getRelative(directionFacing).getLocation();
@@ -404,6 +395,14 @@ public class WarpSignsManager {
                 addon.getWarpSignsManager().warpPlayer(user, oneDown, owner, directionFacing, pvp);
                 return;
             }
+        } else if (b.getType().name().contains("SIGN")) {
+            org.bukkit.block.data.type.Sign s = (org.bukkit.block.data.type.Sign) b.getBlockData();
+            BlockFace directionFacing = s.getRotation();
+            Location inFront = b.getRelative(directionFacing).getLocation();
+            if ((plugin.getIslands().isSafeLocation(inFront))) {
+                addon.getWarpSignsManager().warpPlayer(user, inFront, owner, directionFacing, pvp);
+                return;
+            }
         } else {
             // Warp has been removed
             user.sendMessage("warps.error.does-not-exist");
@@ -412,12 +411,6 @@ public class WarpSignsManager {
         }
         if (!(plugin.getIslands().isSafeLocation(warpSpot))) {
             user.sendMessage("warps.error.not-safe");
-            // WALL_SIGN's will always be unsafe if the place in front is obscured.
-            if (Tag.STANDING_SIGNS.isTagged(b.getType())) {
-                addon.getLogger().warning(
-                        "Unsafe warp found at " + warpSpot.toString() + " owned by " + addon.getPlugin().getPlayers().getName(owner));
-
-            }
             return;
         } else {
             final Location actualWarp = new Location(warpSpot.getWorld(), warpSpot.getBlockX() + 0.5D, warpSpot.getBlockY(),
