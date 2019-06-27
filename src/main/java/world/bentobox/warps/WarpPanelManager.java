@@ -15,13 +15,13 @@ import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
 import world.bentobox.bentobox.api.user.User;
 
-
 public class WarpPanelManager {
 
     private static final int PANEL_MAX_SIZE = 52;
     private Warp addon;
     // This is a cache of signs
-    private Map<World, Map<UUID, List<String>>> cachedSigns = new HashMap<>();
+    private Map<World, Map<UUID, SignCache>> cachedSigns = new HashMap<>();
+
 
 
     public WarpPanelManager(Warp addon) {
@@ -43,9 +43,17 @@ public class WarpPanelManager {
     }
 
     private Material getSignIcon(World world, UUID warpOwner) {
-        Material type = addon.getWarpSignsManager().getWarp(world, warpOwner).getBlock().getType();
-        return Material.valueOf(type.toString().replace("WALL_", ""));
+        // Add the worlds if we haven't seen this before
+        cachedSigns.putIfAbsent(world, new HashMap<>());
+        if (cachedSigns.get(world).containsKey(warpOwner)) {
+            return cachedSigns.get(world).get(warpOwner).getType();
+        }
+        // Not in cache
+        SignCache sc = addon.getWarpSignsManager().getSignInfo(world, warpOwner);
+        cachedSigns.get(world).put(warpOwner, sc);
+        return sc.getType();
     }
+
 
     /**
      * Gets sign text and cache it
@@ -56,11 +64,11 @@ public class WarpPanelManager {
         // Add the worlds if we haven't seen this before
         cachedSigns.putIfAbsent(world, new HashMap<>());
         if (cachedSigns.get(world).containsKey(playerUUID)) {
-            return cachedSigns.get(world).get(playerUUID);
+            return cachedSigns.get(world).get(playerUUID).getSignText();
         }
-        List<String> result = addon.getWarpSignsManager().getSignText(world, playerUUID);
+        SignCache result = addon.getWarpSignsManager().getSignInfo(world, playerUUID);
         cachedSigns.get(world).put(playerUUID, result);
-        return result;
+        return result.getSignText();
     }
 
     /**

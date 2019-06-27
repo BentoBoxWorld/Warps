@@ -1,12 +1,15 @@
 /**
- * 
+ *
  */
 package world.bentobox.warps;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -67,8 +70,8 @@ public class WarpPanelManagerTest {
         // One final one
         uuid = UUID.randomUUID();
         list.add(uuid);
-        
-        when(wsm.getSortedWarps(Mockito.any())).thenReturn(list);
+
+        when(wsm.getSortedWarps(any())).thenReturn(list);
 
         user = mock(User.class);
         player = mock(Player.class);
@@ -79,32 +82,32 @@ public class WarpPanelManagerTest {
             public String answer(InvocationOnMock invocation) throws Throwable {
                 return invocation.getArgumentAt(0, String.class);
             }});
-        
+
         // World
         world = mock(World.class);
-        
+
         // BentoBox
         BentoBox plugin = mock(BentoBox.class);
         PlayersManager pm = mock(PlayersManager.class);
-        when(pm.getName(Mockito.any())).thenReturn("name");
+        when(pm.getName(any())).thenReturn("name");
         when(plugin.getPlayers()).thenReturn(pm);
         when(addon.getPlugin()).thenReturn(plugin);
-        
+
         // Bukkit
         PowerMockito.mockStatic(Bukkit.class);
         ItemFactory itemF = mock(ItemFactory.class);
         ItemMeta imeta = mock(ItemMeta.class);
-        when(itemF.getItemMeta(Mockito.any())).thenReturn(imeta);
+        when(itemF.getItemMeta(any())).thenReturn(imeta);
         when(Bukkit.getItemFactory()).thenReturn(itemF);
 
         top = mock(Inventory.class);
         when(top.getSize()).thenReturn(9);
 
-        when(Bukkit.createInventory(Mockito.any(), Mockito.anyInt(), Mockito.any())).thenReturn(top);  
-        
+        when(Bukkit.createInventory(any(), Mockito.anyInt(), any())).thenReturn(top);
+
         Settings settings = mock(Settings.class);
         when(settings.getIcon()).thenReturn("SIGN");
-		when(addon.getSettings()).thenReturn(settings);
+        when(addon.getSettings()).thenReturn(settings);
 
         Location location = mock(Location.class);
         Block block = mock(Block.class);
@@ -117,8 +120,14 @@ public class WarpPanelManagerTest {
         when(block.getType()).thenReturn(sign_type);
         when(location.getBlock()).thenReturn(block);
         // Sign block
-        when(wsm.getWarp(Mockito.any(), Mockito.any())).thenReturn(location);
-        }
+        when(wsm.getWarp(any(), any())).thenReturn(location);
+
+        // Sign cache
+        SignCache sc = mock(SignCache.class);
+        when(sc.getSignText()).thenReturn(Collections.singletonList("[welcome]"));
+        when(sc.getType()).thenReturn(sign_type);
+        when(wsm.getSignInfo(any(), any())).thenReturn(sc);
+    }
 
     /**
      * Test method for {@link WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
@@ -127,11 +136,11 @@ public class WarpPanelManagerTest {
     public void testShowWarpPanelFirst() {
         WarpPanelManager wpm = new WarpPanelManager(addon);
         wpm.showWarpPanel(world, user, 0);
-        Mockito.verify(player).openInventory(Mockito.eq(top));
+        verify(player).openInventory(Mockito.eq(top));
         // Just next sign
-        Mockito.verify(top, Mockito.times(53)).setItem(Mockito.anyInt(), Mockito.any(ItemStack.class));        
+        verify(top, Mockito.times(53)).setItem(Mockito.anyInt(), Mockito.any(ItemStack.class));
     }
-    
+
     /**
      * Test method for {@link WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
      */
@@ -139,9 +148,9 @@ public class WarpPanelManagerTest {
     public void testShowWarpPanelMiddle() {
         WarpPanelManager wpm = new WarpPanelManager(addon);
         wpm.showWarpPanel(world, user, 1);
-        Mockito.verify(player).openInventory(Mockito.eq(top));
+        verify(player).openInventory(Mockito.eq(top));
         // includes previous and next signs
-        Mockito.verify(top, Mockito.times(54)).setItem(Mockito.anyInt(), Mockito.any(ItemStack.class));        
+        verify(top, Mockito.times(54)).setItem(Mockito.anyInt(), Mockito.any(ItemStack.class));
     }
 
     /**
@@ -151,9 +160,9 @@ public class WarpPanelManagerTest {
     public void testShowWarpPanelLast() {
         WarpPanelManager wpm = new WarpPanelManager(addon);
         wpm.showWarpPanel(world, user, 3);
-        Mockito.verify(player).openInventory(Mockito.eq(top));
+        verify(player).openInventory(Mockito.eq(top));
         // Final amount, just previous sign
-        Mockito.verify(top, Mockito.times(46)).setItem(Mockito.anyInt(), Mockito.any(ItemStack.class));        
+        verify(top, Mockito.times(46)).setItem(Mockito.anyInt(), Mockito.any(ItemStack.class));
     }
 
     /**
@@ -167,10 +176,10 @@ public class WarpPanelManagerTest {
         // Get the panel again
         wpm.showWarpPanel(world, user, 3);
         // Should only check this 45 times because the sign text  is cached
-        Mockito.verify(wsm, Mockito.times(45)).getSignText(Mockito.any(), Mockito.any());        
+        verify(wsm, Mockito.times(45)).getSignInfo(any(), any());
     }
-    
-    
+
+
     /**
      * Test method for {@link WarpPanelManager#removeWarp(org.bukkit.World, java.util.UUID)}.
      */
@@ -182,8 +191,8 @@ public class WarpPanelManagerTest {
         wpm.removeWarp(world, uuid);
         wpm.showWarpPanel(world, user, 3);
         // Removing the UUID should force a refresh and therefore 46 lookups
-        Mockito.verify(wsm, Mockito.times(46)).getSignText(Mockito.any(), Mockito.any());
-        
+        verify(wsm, Mockito.times(46)).getSignInfo(any(), any());
+
     }
 
 }

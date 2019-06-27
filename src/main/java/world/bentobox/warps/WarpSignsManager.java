@@ -3,6 +3,7 @@ package world.bentobox.warps;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -242,13 +244,13 @@ public class WarpSignsManager {
     }
 
     /**
-     * Gets the warp sign text for player's UUID in world
+     * Gets the warp sign text and material type for player's UUID in world
      *
      * @param world - world to look in
      * @param uuid - player's uuid
-     * @return List of lines
+     * @return Sign's content and type
      */
-    public List<String> getSignText(World world, UUID uuid) {
+    public SignCache getSignInfo(World world, UUID uuid) {
         List<String> result = new ArrayList<>();
         //get the sign info
         Location signLocation = getWarp(world, uuid);
@@ -259,10 +261,13 @@ public class WarpSignsManager {
             result.remove(0);
             // Remove any trailing blank lines
             result.removeIf(String::isEmpty);
+            // Get the sign type
+            Material type = Material.valueOf(sign.getType().name().replace("WALL_", ""));
+            return new SignCache(result, type);
         } else {
             addon.getWarpSignsManager().removeWarp(world, uuid);
         }
-        return result;
+        return new SignCache(Collections.emptyList(), Material.AIR);
     }
 
     /**
