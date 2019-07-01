@@ -59,7 +59,7 @@ public class WarpSignsListener implements Listener {
         if (s == null) {
             return;
         }
-        if (s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getConfig().getString("welcomeLine"))) {
+        if (s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getSettings().getWelcomeLine())) {
             // Do a quick check to see if this sign location is in
             // the list of warp signs
             Map<UUID, Location> list = addon.getWarpSignsManager().getWarpMap(b.getWorld());
@@ -93,7 +93,7 @@ public class WarpSignsListener implements Listener {
         String title = e.getLine(0);
         User user = User.getInstance(e.getPlayer());
         // Check if someone is changing their own sign
-        if (title.equalsIgnoreCase(addon.getConfig().getString("welcomeLine"))) {
+        if (title.equalsIgnoreCase(addon.getSettings().getWelcomeLine())) {
             // Welcome sign detected - check permissions
             if (!(user.hasPermission(addon.getPermPrefix(b.getWorld()) + ".island.addwarp"))) {
                 user.sendMessage("warps.error.no-permission");
@@ -113,7 +113,7 @@ public class WarpSignsListener implements Listener {
             // Check that the player is on their island
             if (!(plugin.getIslands().userIsOnIsland(b.getWorld(), user))) {
                 user.sendMessage("warps.error.not-on-island");
-                e.setLine(0, ChatColor.RED + addon.getConfig().getString("welcomeLine"));
+                e.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
                 return;
             }
             // Check if the player already has a sign
@@ -132,8 +132,8 @@ public class WarpSignsListener implements Listener {
                     // The block is still a sign
                     Sign oldSign = (Sign) oldSignBlock.getState();
                     if (oldSign != null) {
-                        if (oldSign.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getConfig().getString("welcomeLine"))) {
-                            oldSign.setLine(0, ChatColor.RED + addon.getConfig().getString("welcomeLine"));
+                        if (oldSign.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getSettings().getWelcomeLine())) {
+                            oldSign.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
                             oldSign.update(true, false);
                             user.sendMessage("warps.deactivate");
                             addon.getWarpSignsManager().removeWarp(oldSignBlock.getWorld(), user.getUniqueId());
@@ -151,13 +151,13 @@ public class WarpSignsListener implements Listener {
     private void addSign(SignChangeEvent e, User user, Block b) {
         if (addon.getWarpSignsManager().addWarp(user.getUniqueId(), b.getLocation())) {
             user.sendMessage("warps.success");
-            e.setLine(0, ChatColor.GREEN + addon.getConfig().getString("welcomeLine"));
+            e.setLine(0, ChatColor.GREEN + addon.getSettings().getWelcomeLine());
             for (int i = 1; i<4; i++) {
                 e.setLine(i, ChatColor.translateAlternateColorCodes('&', e.getLine(i)));
             }
         } else {
             user.sendMessage("warps.error.duplicate");
-            e.setLine(0, ChatColor.RED + addon.getConfig().getString("welcomeLine"));
+            e.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
             for (int i = 1; i<4; i++) {
                 e.setLine(i, ChatColor.translateAlternateColorCodes('&', e.getLine(i)));
             }

@@ -20,9 +20,9 @@ public class WarpCommand extends CompositeCommand {
 
     private Warp addon;
 
-    public WarpCommand(Warp plugin, CompositeCommand bsbIslandCmd) {
+    public WarpCommand(Warp addon, CompositeCommand bsbIslandCmd) {
         super(bsbIslandCmd, "warp");
-        this.addon = plugin;
+        this.addon = addon;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class WarpCommand extends CompositeCommand {
             Set<UUID> warpList = addon.getWarpSignsManager().listWarps(getWorld());
             if (warpList.isEmpty()) {
                 user.sendMessage("warps.error.no-warps-yet");
-                user.sendMessage("warps.warpTip", "[text]", getAddon().getConfig().getString("welcomeLine", "[WELCOME]"));
+                user.sendMessage("warps.warpTip", "[text]", addon.getSettings().getWelcomeLine());
                 return true;
             } else {
                 // Check if this is part of a name

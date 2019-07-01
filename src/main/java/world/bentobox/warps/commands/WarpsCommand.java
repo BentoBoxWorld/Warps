@@ -15,11 +15,11 @@ import world.bentobox.bentobox.api.user.User;
  */
 public class WarpsCommand extends CompositeCommand {
 
-    private Warp plugin;
+    private Warp addon;
 
-    public WarpsCommand(Warp plugin, CompositeCommand bsbIslandCmd) {
+    public WarpsCommand(Warp addon, CompositeCommand bsbIslandCmd) {
         super(bsbIslandCmd, "warps");
-        this.plugin = plugin;
+        this.addon = addon;
     }
 
     /* (non-Javadoc)
@@ -37,11 +37,11 @@ public class WarpsCommand extends CompositeCommand {
      */
     @Override
     public boolean execute(User user, String label, List<String> args) {
-        if (plugin.getWarpSignsManager().listWarps(getWorld()).isEmpty()) {
+        if (addon.getWarpSignsManager().listWarps(getWorld()).isEmpty()) {
             user.sendMessage("warps.error.no-warps-yet");
-            user.sendMessage("warps.warpTip", "[text]", getAddon().getConfig().getString("welcomeLine", "[WELCOME]"));
+            user.sendMessage("warps.warpTip", "[text]", addon.getSettings().getWelcomeLine());
         } else {
-            plugin.getWarpPanelManager().showWarpPanel(getWorld(), user,0);
+            addon.getWarpPanelManager().showWarpPanel(getWorld(), user,0);
         }
         return true;
     }

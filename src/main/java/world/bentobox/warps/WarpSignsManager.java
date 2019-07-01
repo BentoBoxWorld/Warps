@@ -188,8 +188,8 @@ public class WarpSignsManager {
         if (b.getType().name().contains("SIGN")) {
             Sign s = (Sign) b.getState();
             if (s != null) {
-                if (s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getConfig().getString("welcomeLine"))) {
-                    s.setLine(0, ChatColor.RED + addon.getConfig().getString("welcomeLine"));
+                if (s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getSettings().getWelcomeLine())) {
+                    s.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
                     s.update(true, false);
                 }
             }
