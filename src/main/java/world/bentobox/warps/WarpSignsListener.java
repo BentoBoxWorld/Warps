@@ -67,7 +67,7 @@ public class WarpSignsListener implements Listener {
                 // Welcome sign detected - check to see if it is
                 // this player's sign
                 if ((list.containsKey(user.getUniqueId()) && list.get(user.getUniqueId()).equals(s.getLocation()))
-                        || user.isOp()  || user.hasPermission(addon.getPermPrefix(e.getBlock().getWorld()) + ".mod.removesign")) {
+                        || user.isOp()  || user.hasPermission(addon.getPermPrefix(e.getBlock().getWorld()) + "mod.removesign")) {
                     addon.getWarpSignsManager().removeWarp(s.getLocation());
                     Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(addon, s.getLocation(), user.getUniqueId()));
                 } else {
@@ -95,9 +95,9 @@ public class WarpSignsListener implements Listener {
         // Check if someone is changing their own sign
         if (title.equalsIgnoreCase(addon.getSettings().getWelcomeLine())) {
             // Welcome sign detected - check permissions
-            if (!(user.hasPermission(addon.getPermPrefix(b.getWorld()) + ".island.addwarp"))) {
+            if (!(user.hasPermission(addon.getPermPrefix(b.getWorld()) + "island.addwarp"))) {
                 user.sendMessage("warps.error.no-permission");
-                user.sendMessage("general.errors.you-need", "[permission]", addon.getPermPrefix(b.getWorld()) + ".island.addwarp");
+                user.sendMessage("general.errors.you-need", "[permission]", addon.getPermPrefix(b.getWorld()) + "island.addwarp");
                 return;
             }
             // Get level if level addon is available
