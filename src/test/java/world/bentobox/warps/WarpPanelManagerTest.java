@@ -1,6 +1,3 @@
-/**
- *
- */
 package world.bentobox.warps;
 
 import static org.mockito.Mockito.mock;
@@ -26,6 +23,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -39,18 +37,24 @@ import world.bentobox.bentobox.managers.PlayersManager;
 import world.bentobox.warps.config.Settings;
 
 /**
- * @author ben
+ * @author tastybento
  *
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Bukkit.class})
 public class WarpPanelManagerTest {
 
+    @Mock
     private WarpSignsManager wsm;
+    @Mock
     private Warp addon;
+    @Mock
     private Player player;
+    @Mock
     private User user;
+    @Mock
     private World world;
+    @Mock
     private Inventory top;
     private UUID uuid;
 
@@ -59,8 +63,6 @@ public class WarpPanelManagerTest {
      */
     @Before
     public void setUp() throws Exception {
-        addon = mock(Warp.class);
-        wsm = mock(WarpSignsManager.class);
         when(addon.getWarpSignsManager()).thenReturn(wsm);
         // Fill with 200 fake warps (I'm banking on them all being different, but there could be a clash)
         List<UUID> list = new ArrayList<>();
@@ -73,18 +75,15 @@ public class WarpPanelManagerTest {
 
         when(wsm.getSortedWarps(any())).thenReturn(list);
 
-        user = mock(User.class);
-        player = mock(Player.class);
+        // User and player
         when(user.getPlayer()).thenReturn(player);
-        when(user.getTranslation(Mockito.anyVararg())).thenAnswer(new Answer<String>() {
+        when(user.getTranslation(Mockito.any())).thenAnswer(new Answer<String>() {
 
             @Override
             public String answer(InvocationOnMock invocation) throws Throwable {
-                return invocation.getArgumentAt(0, String.class);
+                return invocation.getArgument(0, String.class);
             }});
 
-        // World
-        world = mock(World.class);
 
         // BentoBox
         BentoBox plugin = mock(BentoBox.class);
@@ -100,7 +99,7 @@ public class WarpPanelManagerTest {
         when(itemF.getItemMeta(any())).thenReturn(imeta);
         when(Bukkit.getItemFactory()).thenReturn(itemF);
 
-        top = mock(Inventory.class);
+        // Inventory
         when(top.getSize()).thenReturn(9);
 
         when(Bukkit.createInventory(any(), Mockito.anyInt(), any())).thenReturn(top);

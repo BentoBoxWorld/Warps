@@ -51,6 +51,10 @@ import world.bentobox.bentobox.managers.PlaceholdersManager;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.config.Settings;
 
+/**
+ * @author tastybento
+ *
+ */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Bukkit.class, Util.class, NamespacedKey.class, Tag.class})
 public class WarpSignsListenerTest {
@@ -133,7 +137,7 @@ public class WarpSignsListenerTest {
 
             @Override
             public String answer(InvocationOnMock invocation) throws Throwable {
-                return invocation.getArgumentAt(1, String.class);
+                return invocation.getArgument(1, String.class);
             }});
         when(plugin.getLocalesManager()).thenReturn(lm);
 
@@ -160,7 +164,7 @@ public class WarpSignsListenerTest {
         when(Util.getWorld(any())).thenReturn(world);
 
         // Locales
-        Answer<String> answer = invocation -> invocation.getArgumentAt(1, String.class);
+        Answer<String> answer = invocation -> invocation.getArgument(1, String.class);
         when(lm.get(any(User.class), anyString())).thenAnswer(answer);
         when(plugin.getLocalesManager()).thenReturn(lm);
 

@@ -1,6 +1,6 @@
 name: WelcomeWarps
 main: world.bentobox.warps.Warp
-version: ${version}
+version: ${version}${build.number}
 
 authors: tastybento
 
