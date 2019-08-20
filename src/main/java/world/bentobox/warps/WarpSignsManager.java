@@ -50,6 +50,7 @@ public class WarpSignsManager {
     private Database<WarpsData> handler;
 
     private Warp addon;
+    private WarpsData warpsData = new WarpsData();
 
     /**
      * Get the warp map for this world
@@ -164,12 +165,11 @@ public class WarpSignsManager {
     private void loadWarpList() {
         addon.getLogger().info("Loading warps...");
         worldsWarpList = new HashMap<>();
-        WarpsData warps = new WarpsData();
         if (handler.objectExists("warps")) {
-            warps = handler.loadObject("warps");
+            warpsData = handler.loadObject("warps");
             // Load into map
-            if (warps != null) {
-                warps.getWarpSigns().forEach((k,v) -> {
+            if (warpsData != null) {
+                warpsData.getWarpSigns().forEach((k,v) -> {
                     if (k != null && k.getWorld() != null && k.getBlock().getType().name().contains("SIGN")) {
                         // Add to map
                         getWarpMap(k.getWorld()).put(v, k);
@@ -240,7 +240,7 @@ public class WarpSignsManager {
      * Saves the warp lists to the database
      */
     public void saveWarpList() {
-        handler.saveObject(new WarpsData().save(worldsWarpList));
+        handler.saveObject(warpsData .save(worldsWarpList));
     }
 
     /**

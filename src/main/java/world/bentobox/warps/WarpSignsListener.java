@@ -97,7 +97,7 @@ public class WarpSignsListener implements Listener {
             // Welcome sign detected - check permissions
             if (!(user.hasPermission(addon.getPermPrefix(b.getWorld()) + "island.addwarp"))) {
                 user.sendMessage("warps.error.no-permission");
-                user.sendMessage("general.errors.you-need", "[permission]", addon.getPermPrefix(b.getWorld()) + "island.addwarp");
+                user.sendMessage("general.errors.no-permission", "[permission]", addon.getPermPrefix(b.getWorld()) + "island.addwarp");
                 return;
             }
             // Get level if level addon is available
