@@ -6,7 +6,7 @@
 warp: 
   help: 
     description: "warp to the player's warp sign"
-    parameters: <name>
+    parameters: <player name>
 warps: 
   deactivate: "&cOld warp sign deactivated!"
   error: 
@@ -18,7 +18,7 @@ warps:
     not-enough-level: "&CYour island level is not high enough!"
     not-on-island: "&CYou must be on your island to do that!"
     not-safe: "&cThat warp is not safe!"
-    your-level-is: "&cYou island level is only [level] and must be higher than [required]"
+    your-level-is: "&cYou island level is only [level] and must be higher than [required]. Run the level command."
   help: 
     description: "open the warps panel"
   next: "&6Next page"

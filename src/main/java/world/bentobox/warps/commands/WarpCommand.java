@@ -56,6 +56,7 @@ public class WarpCommand extends CompositeCommand {
                 }
             }
         }
+        showHelp(this, user);
         return false;
     }
 
