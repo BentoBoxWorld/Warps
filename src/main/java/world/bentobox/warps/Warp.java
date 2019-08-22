@@ -2,9 +2,11 @@ package world.bentobox.warps;
 
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 import world.bentobox.bentobox.api.addons.Addon;
@@ -190,6 +192,49 @@ public class Warp extends Addon {
      */
     public Long getLevel(World world, UUID uniqueId) {
         return this.getPlugin().getAddonsManager().getAddonByName(LEVEL_ADDON_NAME).map(l -> ((Level) l).getIslandLevel(world, uniqueId)).orElse(null);
+    }
+
+    /* (non-Javadoc)
+     * @see world.bentobox.bentobox.api.addons.Addon#request(java.lang.String, java.util.Map)
+     *
+     * This API enables plugins to request data from the WarpSignsManager
+     *
+     */
+    @Override
+    public Object request(String requestLabel, Map<String, Object> metaData) {
+        if (metaData.isEmpty()) return null;
+        World world = null;
+        UUID uuid = null;
+        // Parse keys
+        if (metaData.containsKey("world")) {
+            world = Bukkit.getWorld((String)metaData.get("world"));
+            if (world == null) return null;
+        }
+        if (metaData.containsKey("uuid")) {
+            try {
+                uuid = UUID.fromString((String)metaData.get("uuid"));
+            } catch (Exception e) {
+                logError("Requested UUID is invalid");
+                return null;
+            }
+        }
+        switch(requestLabel) {
+        case "getSignInfo":
+            return getWarpSignsManager().getSignInfo(world, uuid);
+        case "getSortedWarps":
+            return getWarpSignsManager().getSortedWarps(world);
+        case "getWarp":
+            return getWarpSignsManager().getWarp(world, uuid);
+        case "getWarpMap":
+            return getWarpSignsManager().getWarpMap(world);
+        case "hasWarp":
+            return getWarpSignsManager().hasWarp(world, uuid);
+        case "listWarps":
+            return getWarpSignsManager().listWarps(world);
+        default:
+            return null;
+        }
+
     }
 
 }
