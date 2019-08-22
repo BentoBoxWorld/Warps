@@ -30,9 +30,10 @@ public class Settings implements ConfigObject
     private String welcomeLine;
 
     @ConfigComment("")
-    @ConfigComment("Icon that will be displayed in Warps list.")
-    @ConfigComment("It uses native Minecraft material strings, but using string 'PLAYER', it is possible to")
-    @ConfigComment("use player heads instead.")
+    @ConfigComment("Icon that will be displayed in Warps list. SIGN counts for any kind of sign and the type of")
+    @ConfigComment("wood used will be reflected in the panel if the server supports it.")
+    @ConfigComment("It uses native Minecraft material strings, but using string 'PLAYER_HEAD', it is possible to")
+    @ConfigComment("use player heads instead. Beware that Mojang API rate limiting may prevent heads from loading.")
     @ConfigEntry(path = "icon")
     private String icon = "SIGN";
 

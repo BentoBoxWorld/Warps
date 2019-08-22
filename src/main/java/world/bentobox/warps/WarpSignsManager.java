@@ -262,8 +262,12 @@ public class WarpSignsManager {
             // Remove any trailing blank lines
             result.removeIf(String::isEmpty);
             // Get the sign type
-            Material type = Material.valueOf(sign.getType().name().replace("WALL_", ""));
-            return new SignCache(result, type);
+            Material icon = Material.matchMaterial(addon.getSettings().getIcon());
+            if (icon == null || icon.name().contains("SIGN")) {
+                return new SignCache(result, Material.valueOf(sign.getType().name().replace("WALL_", "")));
+            } else {
+                return new SignCache(result, icon);
+            }
         } else {
             addon.getWarpSignsManager().removeWarp(world, uuid);
         }
