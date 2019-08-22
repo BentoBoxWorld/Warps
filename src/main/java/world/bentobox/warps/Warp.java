@@ -219,8 +219,6 @@ public class Warp extends Addon {
             }
         }
         switch(requestLabel) {
-        case "getSignInfo":
-            return getWarpSignsManager().getSignInfo(world, uuid);
         case "getSortedWarps":
             return getWarpSignsManager().getSortedWarps(world);
         case "getWarp":
