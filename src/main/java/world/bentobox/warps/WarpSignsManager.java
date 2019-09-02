@@ -24,8 +24,10 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.database.objects.Island;
@@ -262,7 +264,24 @@ public class WarpSignsManager {
             // Remove any trailing blank lines
             result.removeIf(String::isEmpty);
             // Get the sign type
-            Material icon = Material.matchMaterial(addon.getSettings().getIcon());
+
+            String prefix = this.plugin.getIWM().getAddon(world).map(
+                Addon::getPermissionPrefix).orElse("");
+
+            Material icon;
+
+            if (!prefix.isEmpty())
+            {
+                icon = Material.matchMaterial(
+                    this.getPermissionValue(User.getInstance(uuid),
+                        prefix + "island.warp",
+                        this.addon.getSettings().getIcon()));
+            }
+            else
+            {
+                icon = Material.matchMaterial(this.addon.getSettings().getIcon());
+            }
+
             if (icon == null || icon.name().contains("SIGN")) {
                 return new SignCache(result, Material.valueOf(sign.getType().name().replace("WALL_", "")));
             } else {
@@ -444,4 +463,53 @@ public class WarpSignsManager {
         return getWarpMap(world).containsKey(playerUUID);
     }
 
+
+    // ---------------------------------------------------------------------
+    // Section: Other methods
+    // ---------------------------------------------------------------------
+
+
+    /**
+     * This method gets string value of given permission prefix. If user does not have
+     * given permission or it have all (*), then return default value.
+     * @param user User who's permission should be checked.
+     * @param permissionPrefix Prefix that need to be found.
+     * @param defaultValue Default value that will be returned if permission not found.
+     * @return String value that follows permissionPrefix.
+     */
+    private String getPermissionValue(User user, String permissionPrefix, String defaultValue)
+    {
+        if (user.isPlayer())
+        {
+            if (permissionPrefix.endsWith("."))
+            {
+                permissionPrefix = permissionPrefix.substring(0, permissionPrefix.length() - 1);
+            }
+
+            String permPrefix = permissionPrefix + ".";
+
+            List<String> permissions = user.getEffectivePermissions().stream().
+                map(PermissionAttachmentInfo::getPermission).
+                filter(permission -> permission.startsWith(permPrefix)).
+                collect(Collectors.toList());
+
+            for (String permission : permissions)
+            {
+                if (permission.contains(permPrefix + "*"))
+                {
+                    // * means all. So continue to search more specific.
+                    continue;
+                }
+
+                String[] parts = permission.split(permPrefix);
+
+                if (parts.length > 1)
+                {
+                    return parts[1];
+                }
+            }
+        }
+
+        return defaultValue;
+    }
 }
