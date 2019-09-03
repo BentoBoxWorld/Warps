@@ -1,0 +1,32 @@
+###########################################################################################
+# This is a YML file. Be careful when editing. Check your edits in a YAML checker like    #
+# the one at http://yaml-online-parser.appspot.com                                        #
+###########################################################################################
+
+warp: 
+  help: 
+    description: "Oyuncunun bölge tabelası."
+    parameters: <name>
+warps: 
+  deactivate: "&cEski ada warpı silindi!"
+  error: 
+    does-not-exist: "&4Malasef sorun oluştu. Tekrar dene."
+    duplicate: "&9İki bölge tabelası birleştirildi."
+    no-permission: "&4Buna yetkin yok!"
+    no-remove: "&4Bu tabelayı kıramazsın!"
+    no-warps-yet: "&4Böyle bir bölge henüz yok."
+    not-enough-level: "&4Bunu koyman için daha fazla ada leveline ihtiyacın var."
+    not-on-island: "&4Adanda değilsin."
+    not-safe: "&4Ada bölgesi güvenli değil!"
+    your-level-is: "&9Ada levelin &e[level] &9ve &e[required]&9'den fazla olması gerek!"
+  help: 
+    description: "Bölge panelini açar."
+  next: "&6Sonraki Sayfa"
+  player-warped: "&d[name] &9ada bölgene ışınlandı!"
+  previous: "&6Önceki sayfa"
+  sign-removed: "&4Ada tabelası kaldırıldı!"
+  success: "&9Başarılı!"
+  title: "&3&lSon&b&lCesurlar &e&lBölgeler &5"
+  warpTip: "&9Ada warpı açmak için tabelanın en üstüne &e[text] &9yaz!"
+  warpToPlayersSign: "&d[player] &9bölgesine gidiliyor!"
+    
