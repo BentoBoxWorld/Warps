@@ -1,0 +1,28 @@
+---
+warp:
+  help:
+    description: pārvietoties pie spēlētāja uzaicinājuma zīmes
+    parameters: "<spēlētāja vārds>"
+warps:
+  deactivate: "&cIepriekšējā uzaicinājumu zīme ir deaktivizēta!"
+  error:
+    does-not-exist: "&cAk vai! Uzaicinājuma zīme vairāk neeksistē!"
+    duplicate: "&CAtkārtota zīme uzlikta"
+    no-permission: "&CTev nav nepieciešamās atļaujas, lai veiktu darbību!"
+    no-remove: "&CTu nevari noņemt šo zīmi!"
+    no-warps-yet: "&CNav neviena aktīva uzaicinājuma zīme."
+    not-enough-level: "&CTavas salas līmenis ir pārāk zems!"
+    not-on-island: "&CTev ir jāatrodas uz savas salas, lai veiktu šo darbību!"
+    not-safe: "&cŠī uzaicinājuma zīme nav droša!"
+    your-level-is: "&cTavas salas līmenis ir tikai [level], bet ir nepieciešams vismaz
+      [required]. Vari mēģināt pārrēķināt savas salas līmeni."
+  help:
+    description: atver uzaicinājumu zīmju sarakstu
+  next: "&6Nākošā lapa"
+  player-warped: "&2[name] pārvietotojās pie tavas uzaicinājuma zīmes!"
+  previous: "&6Iepriekšējā lapa"
+  sign-removed: "&CUzaicinājuma zīme noņemta!"
+  success: "&AVeiksmīgi!"
+  title: Uzaicinājuma Zīmes
+  warpTip: "&6Novieto zīmi ar tekstu [text] pirmajā rindā"
+  warpToPlayersSign: "&6Pārvietojās uz [player] uzaicinājuma zīmes"
