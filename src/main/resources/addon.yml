@@ -1,6 +1,7 @@
-name: WelcomeWarps
+name: Warps
 main: world.bentobox.warps.Warp
 version: ${version}${build.number}
+icon: OAK_SIGN
 
 authors: tastybento
 
