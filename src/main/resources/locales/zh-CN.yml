@@ -11,7 +11,6 @@ warps:
   deactivate: "&c禁用的旧转移标志!" 
   error: 
     does-not-exist: "&c转移不再存在!"
-    duplicate: "&C木牌重复"
     no-permission: "&C权限不足!"
     no-remove: "&C无权移除传送木牌!"
     no-warps-yet: "&C暂无可用传送木牌"

@@ -7,7 +7,6 @@ warps:
   deactivate: "&cIepriekšējā uzaicinājumu zīme ir deaktivizēta!"
   error:
     does-not-exist: "&cAk vai! Uzaicinājuma zīme vairāk neeksistē!"
-    duplicate: "&CAtkārtota zīme uzlikta"
     no-permission: "&CTev nav nepieciešamās atļaujas, lai veiktu darbību!"
     no-remove: "&CTu nevari noņemt šo zīmi!"
     no-warps-yet: "&CNav neviena aktīva uzaicinājuma zīme."

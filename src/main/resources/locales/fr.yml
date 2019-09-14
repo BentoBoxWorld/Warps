@@ -11,7 +11,6 @@ warps:
   deactivate: "&cAncien panneau de Warp désactivé !"
   error: 
     does-not-exist: "&cCe Warp n'existe plus !"
-    duplicate: "&cPanneau dupliqué placé."
     no-permission: "&cVous n'avez pas la permission pour faire cela !"
     no-remove: "&cVous ne pouvez pas supprimer ce panneau !"
     no-warps-yet: "&cIl n'y a encore aucun Warp sur ce serveur."

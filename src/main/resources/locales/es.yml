@@ -11,7 +11,6 @@ warps:
   deactivate: "&cViejo cartel a sido desactivado!"
   error: 
     does-not-exist: "&cOh snap! Ese warp ya no existe!"
-    duplicate: "&CCartel duplicado puesto"
     no-permission: "&CNo tienes permiso para hacer eso!"
     no-remove: "&CNo puedes quitar ese cartel!"
     no-warps-yet: "&CNo hay warps disponibles aun"

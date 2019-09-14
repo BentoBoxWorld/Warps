@@ -11,7 +11,6 @@ warps:
   deactivate: "&cEski ada warpı silindi!"
   error: 
     does-not-exist: "&4Malasef sorun oluştu. Tekrar dene."
-    duplicate: "&9İki bölge tabelası birleştirildi."
     no-permission: "&4Buna yetkin yok!"
     no-remove: "&4Bu tabelayı kıramazsın!"
     no-warps-yet: "&4Böyle bir bölge henüz yok."

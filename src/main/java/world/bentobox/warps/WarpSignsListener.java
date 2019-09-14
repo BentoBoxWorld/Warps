@@ -155,13 +155,8 @@ public class WarpSignsListener implements Listener {
             for (int i = 1; i<4; i++) {
                 e.setLine(i, ChatColor.translateAlternateColorCodes('&', e.getLine(i)));
             }
-        } else {
-            user.sendMessage("warps.error.duplicate");
-            e.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
-            for (int i = 1; i<4; i++) {
-                e.setLine(i, ChatColor.translateAlternateColorCodes('&', e.getLine(i)));
-            }
         }
+        // Else null player
     }
 
 }

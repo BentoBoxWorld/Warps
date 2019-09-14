@@ -85,9 +85,14 @@ public class WarpSignsManager {
      * @return true if successful, false if not
      */
     public boolean addWarp(final UUID playerUUID, final Location loc) {
-        // Do not allow null players to set warps or warps to be in the same location
-        if (playerUUID == null || getWarpMap(loc.getWorld()).containsValue(loc)) {
+        // Do not allow null players to set warps
+        if (playerUUID == null) {
             return false;
+        }
+        // Check for warps placed in a location where there was a warp before
+        if (getWarpMap(loc.getWorld()).containsValue(loc)) {
+            // remove the warp at this location, then place it
+            this.removeWarp(loc);
         }
         getWarpMap(loc.getWorld()).put(playerUUID, loc);
         saveWarpList();
@@ -266,16 +271,16 @@ public class WarpSignsManager {
             // Get the sign type
 
             String prefix = this.plugin.getIWM().getAddon(world).map(
-                Addon::getPermissionPrefix).orElse("");
+                    Addon::getPermissionPrefix).orElse("");
 
             Material icon;
 
             if (!prefix.isEmpty())
             {
                 icon = Material.matchMaterial(
-                    this.getPermissionValue(User.getInstance(uuid),
-                        prefix + "island.warp",
-                        this.addon.getSettings().getIcon()));
+                        this.getPermissionValue(User.getInstance(uuid),
+                                prefix + "island.warp",
+                                this.addon.getSettings().getIcon()));
             }
             else
             {
@@ -489,9 +494,9 @@ public class WarpSignsManager {
             String permPrefix = permissionPrefix + ".";
 
             List<String> permissions = user.getEffectivePermissions().stream().
-                map(PermissionAttachmentInfo::getPermission).
-                filter(permission -> permission.startsWith(permPrefix)).
-                collect(Collectors.toList());
+                    map(PermissionAttachmentInfo::getPermission).
+                    filter(permission -> permission.startsWith(permPrefix)).
+                    collect(Collectors.toList());
 
             for (String permission : permissions)
             {

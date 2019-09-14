@@ -57,6 +57,11 @@ public class Warp extends Addon {
      */
     private boolean hooked;
 
+    /**
+     * Settings config object
+     */
+    private Config<Settings> settingsConfig;
+
     // ---------------------------------------------------------------------
     // Section: Methods
     // ---------------------------------------------------------------------
@@ -142,8 +147,10 @@ public class Warp extends Addon {
      * This method loads addon configuration settings in memory.
      */
     private void loadSettings() {
-        this.settings = new Config<>(this, Settings.class).loadConfigObject();
-
+        if (settingsConfig == null) {
+            settingsConfig = new Config<>(this, Settings.class);
+        }
+        this.settings = settingsConfig.loadConfigObject();
         if (this.settings == null) {
             // Disable
             this.logError("WelcomeWarp settings could not load! Addon disabled.");

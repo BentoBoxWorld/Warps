@@ -346,18 +346,6 @@ public class WarpSignsListenerTest {
     }
 
     @Test
-    public void testCreateNoSignAlreadyDuplicateSpot() {
-        when(wsm.addWarp(any(), any())).thenReturn(false);
-        when(wsm.getWarp(any(), any())).thenReturn(null);
-        when(player.hasPermission(anyString())).thenReturn(true);
-        WarpSignsListener wsl = new WarpSignsListener(addon);
-        SignChangeEvent e = new SignChangeEvent(block, player, lines);
-        wsl.onSignWarpCreate(e);
-        verify(player).sendMessage("warps.error.duplicate");
-        assertEquals(ChatColor.RED + "[WELCOME]", e.getLine(0));
-    }
-
-    @Test
     public void testCreateNoSignDeactivateOldSign() {
         when(player.hasPermission(anyString())).thenReturn(true);
         WarpSignsListener wsl = new WarpSignsListener(addon);

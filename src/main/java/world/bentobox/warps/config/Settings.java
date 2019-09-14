@@ -9,7 +9,7 @@ import world.bentobox.bentobox.api.configuration.ConfigObject;
 import world.bentobox.bentobox.api.configuration.StoreAt;
 
 
-@StoreAt(filename="config.yml", path="addons/WelcomeWarps")
+@StoreAt(filename="config.yml", path="addons/Warps")
 @ConfigComment("WelcomeWarps Configuration [version]")
 @ConfigComment("This config file is dynamic and saved when the server is shutdown.")
 @ConfigComment("You cannot edit it while the server is running because changes will")
@@ -21,13 +21,13 @@ public class Settings implements ConfigObject
     @ConfigComment("Warp Restriction - needed levels to be able to create a warp")
     @ConfigComment("0 or negative values will disable this restriction 10 is default")
     @ConfigEntry(path = "warplevelrestriction")
-    private int warpLevelRestriction;
+    private int warpLevelRestriction = 10;
 
     @ConfigComment("")
     @ConfigComment("Text that player must put on sign to make it a warp sign")
     @ConfigComment("Not case sensitive!")
     @ConfigEntry(path = "welcomeLine")
-    private String welcomeLine;
+    private String welcomeLine = "[Welcome]";
 
     @ConfigComment("")
     @ConfigComment("Icon that will be displayed in Warps list. SIGN counts for any kind of sign and the type of")

@@ -11,7 +11,6 @@ warps:
   deactivate: "&c前のワープサインが無効になりました!"
   error: 
     does-not-exist: "&cそのワープはもう存在しません！"
-    duplicate: "&C重複サインを配置"
     no-permission: "&C許可がありません！"
     no-remove: "&Cワープサインは外せません！"
     no-warps-yet: "&C利用可能なワープはまだありません"
