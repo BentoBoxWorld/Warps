@@ -130,7 +130,7 @@ public class Warp extends Addon {
             warpSignsManager = new WarpSignsManager(this, this.getPlugin());
             warpPanelManager = new WarpPanelManager(this);
             // Load the listener
-            getServer().getPluginManager().registerEvents(new WarpSignsListener(this), this.getPlugin());
+            this.registerListener(new WarpSignsListener(this));
         }
     }
 
