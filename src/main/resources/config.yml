@@ -23,3 +23,11 @@ icon: 'SIGN'
 # disabled-gamemodes:
 #  - BSkyBlock
 disabled-gamemodes: []
+#
+# Warp panel name formatting.
+# Example: &c will make names red, &f is white
+name-format: &f
+#
+# Warp panel default lore formatting.
+# Example: &c will make lore red. &f is white
+lore-format: &f

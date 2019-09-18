@@ -30,7 +30,7 @@ public class WarpPanelManager {
 
     private PanelItem getPanelItem(World world, UUID warpOwner) {
         PanelItemBuilder pib = new PanelItemBuilder()
-                .name(addon.getPlugin().getPlayers().getName(warpOwner))
+                .name(addon.getSettings().getNameFormat() + addon.getPlugin().getPlayers().getName(warpOwner))
                 .description(getSign(world, warpOwner))
                 .clickHandler((panel, clicker, click, slot) -> { {
                     clicker.closeInventory();

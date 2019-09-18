@@ -155,7 +155,9 @@ public class Warp extends Addon {
             // Disable
             this.logError("WelcomeWarp settings could not load! Addon disabled.");
             this.setState(State.DISABLED);
+            return;
         }
+        settingsConfig.saveConfigObject(settings);
     }
 
 

@@ -86,7 +86,7 @@ public class WarpSignsManager {
      */
     public boolean addWarp(final UUID playerUUID, final Location loc) {
         // Do not allow null players to set warps
-        if (playerUUID == null) {
+        if (playerUUID == null || loc == null) {
             return false;
         }
         // Check for warps placed in a location where there was a warp before
@@ -148,7 +148,7 @@ public class WarpSignsManager {
         }
         // Fire event
         WarpListEvent event = new WarpListEvent(addon, list);
-        addon.getServer().getPluginManager().callEvent(event);
+        Bukkit.getPluginManager().callEvent(event);
         // Get the result of any changes by listeners
         list = event.getWarps();
         return list;
@@ -268,10 +268,13 @@ public class WarpSignsManager {
             result.remove(0);
             // Remove any trailing blank lines
             result.removeIf(String::isEmpty);
+            // Set the initial color per lore setting
+            for (int i = 0; i< result.size(); i++) {
+                result.set(i, ChatColor.translateAlternateColorCodes('&', addon.getSettings().getLoreFormat()) + result.get(i));
+            }
             // Get the sign type
 
-            String prefix = this.plugin.getIWM().getAddon(world).map(
-                    Addon::getPermissionPrefix).orElse("");
+            String prefix = plugin.getIWM().getAddon(world).map(Addon::getPermissionPrefix).orElse("");
 
             Material icon;
 
@@ -394,7 +397,7 @@ public class WarpSignsManager {
             return;
         }
 
-        Island island = addon.getPlugin().getIslands().getIsland(world, owner);
+        Island island = addon.getIslands().getIsland(world, owner);
         boolean pvp = false;
         if (island != null) {
             // Check for PVP
@@ -421,25 +424,25 @@ public class WarpSignsManager {
             Location inFront = b.getRelative(directionFacing).getLocation();
             Location oneDown = b.getRelative(directionFacing).getRelative(BlockFace.DOWN).getLocation();
             if ((plugin.getIslands().isSafeLocation(inFront))) {
-                addon.getWarpSignsManager().warpPlayer(user, inFront, owner, directionFacing, pvp);
+                warpPlayer(user, inFront, owner, directionFacing, pvp);
                 return;
             } else if (plugin.getIslands().isSafeLocation(oneDown)) {
                 // Try one block down if this is a wall sign
-                addon.getWarpSignsManager().warpPlayer(user, oneDown, owner, directionFacing, pvp);
+                warpPlayer(user, oneDown, owner, directionFacing, pvp);
                 return;
             }
         } else if (b.getType().name().contains("SIGN")) {
             org.bukkit.block.data.type.Sign s = (org.bukkit.block.data.type.Sign) b.getBlockData();
             BlockFace directionFacing = s.getRotation();
             Location inFront = b.getRelative(directionFacing).getLocation();
-            if ((plugin.getIslands().isSafeLocation(inFront))) {
-                addon.getWarpSignsManager().warpPlayer(user, inFront, owner, directionFacing, pvp);
+            if ((addon.getIslands().isSafeLocation(inFront))) {
+                warpPlayer(user, inFront, owner, directionFacing, pvp);
                 return;
             }
         } else {
             // Warp has been removed
             user.sendMessage("warps.error.does-not-exist");
-            addon.getWarpSignsManager().removeWarp(warpSpot);
+            removeWarp(warpSpot);
             return;
         }
         if (!(plugin.getIslands().isSafeLocation(warpSpot))) {

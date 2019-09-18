@@ -44,7 +44,19 @@ public class Settings implements ConfigObject
     @ConfigComment(" - BSkyBlock")
     @ConfigEntry(path = "disabled-gamemodes")
     private Set<String> disabledGameModes = new HashSet<>();
+    
+    @ConfigComment("")
+    @ConfigComment("Warp panel name formatting.")
+    @ConfigComment("Example: &c will make names red. &f is white")
+    @ConfigEntry(path = "name-format")
+    private String nameFormat = "&f";
 
+    @ConfigComment("")
+    @ConfigComment("Warp panel default lore formatting.")
+    @ConfigComment("Example: &c will make lore red. &f is white")
+    @ConfigEntry(path = "lore-format")
+    private String loreFormat = "&f";
+    
     // ---------------------------------------------------------------------
     // Section: Constructor
     // ---------------------------------------------------------------------
@@ -143,4 +155,38 @@ public class Settings implements ConfigObject
     {
         this.icon = icon;
     }
+
+
+    /**
+     * @return the nameFormat
+     */
+    public String getNameFormat() {
+        return nameFormat;
+    }
+
+
+    /**
+     * @param nameFormat the nameFormat to set
+     */
+    public void setNameFormat(String nameFormat) {
+        this.nameFormat = nameFormat;
+    }
+
+
+    /**
+     * @return the loreFormat
+     */
+    public String getLoreFormat() {
+        return loreFormat;
+    }
+
+
+    /**
+     * @param loreFormat the loreFormat to set
+     */
+    public void setLoreFormat(String loreFormat) {
+        this.loreFormat = loreFormat;
+    }
+
+
 }
