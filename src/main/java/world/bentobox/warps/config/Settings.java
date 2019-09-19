@@ -57,6 +57,11 @@ public class Settings implements ConfigObject
     @ConfigEntry(path = "lore-format")
     private String loreFormat = "&f";
     
+    @ConfigComment("")
+    @ConfigComment("Allow random teleport - adds a button to the warp panel that goes to a random warp sign")
+    @ConfigEntry(path = "random-allowed")
+    private boolean randomAllowed = true;
+    
     // ---------------------------------------------------------------------
     // Section: Constructor
     // ---------------------------------------------------------------------
@@ -186,6 +191,22 @@ public class Settings implements ConfigObject
      */
     public void setLoreFormat(String loreFormat) {
         this.loreFormat = loreFormat;
+    }
+
+
+    /**
+     * @return the randomAllowed
+     */
+    public boolean isRandomAllowed() {
+        return randomAllowed;
+    }
+
+
+    /**
+     * @param randomAllowed the randomAllowed to set
+     */
+    public void setRandomAllowed(boolean randomAllowed) {
+        this.randomAllowed = randomAllowed;
     }
 
 

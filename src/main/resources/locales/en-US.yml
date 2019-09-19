@@ -23,6 +23,7 @@ warps:
   next: "&6Next page"
   player-warped: "&2[name] warped to your warp sign!"
   previous: "&6Previous page"
+  random: "&4Random Warp"
   sign-removed: "&CWarp sign removed!"
   success: "&ASuccess!"
   title: "Warp Signs"

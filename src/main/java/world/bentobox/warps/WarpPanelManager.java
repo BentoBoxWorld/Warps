@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -46,6 +47,19 @@ public class WarpPanelManager {
         }
     }
 
+    private PanelItem getRandomButton(World world, User user, UUID warpOwner) {
+        ///give @p minecraft:player_head{display:{Name:"{\"text\":\"Question Mark\"}"},SkullOwner:"MHF_Question"} 1        
+        return new PanelItemBuilder()
+                .name(addon.getSettings().getNameFormat() + user.getTranslation("warps.random"))
+                .clickHandler((panel, clicker, click, slot) -> { {
+                    clicker.closeInventory();
+                    addon.getWarpSignsManager().warpPlayer(world, clicker, warpOwner);
+                    return true;
+                }
+                })
+                .icon(Material.END_CRYSTAL).build();
+    }
+
     private Material getSignIcon(World world, UUID warpOwner) {
         // Add the worlds if we haven't seen this before
         cachedSigns.putIfAbsent(world, new HashMap<>());
@@ -83,6 +97,12 @@ public class WarpPanelManager {
      */
     public void showWarpPanel(World world, User user, int index) {
         List<UUID> warps = new ArrayList<>(addon.getWarpSignsManager().getSortedWarps(world));
+        UUID randomWarp = null;
+        // Add random UUID
+        if (!warps.isEmpty() && addon.getSettings().isRandomAllowed()) { 
+            randomWarp = warps.get(new Random().nextInt(warps.size()));
+            warps.add(0, randomWarp);
+        }
         if (index < 0) {
             index = 0;
         } else if (index > (warps.size() / PANEL_MAX_SIZE)) {
@@ -94,14 +114,18 @@ public class WarpPanelManager {
 
         int i = index * PANEL_MAX_SIZE;
         for (; i < (index * PANEL_MAX_SIZE + PANEL_MAX_SIZE) && i < warps.size(); i++) {
-            panelBuilder.item(getPanelItem(world, warps.get(i)));
+            if (i == 0 && randomWarp != null) {
+                panelBuilder.item(getRandomButton(world, user, randomWarp));
+            } else {
+                panelBuilder.item(getPanelItem(world, warps.get(i)));
+            }
         }
         final int panelNum = index;
         // Add signs
         if (i < warps.size()) {
             // Next
             panelBuilder.item(new PanelItemBuilder()
-                    .name("Next")
+                    .name(user.getTranslation("warps.next"))
                     .icon(new ItemStack(Material.STONE))
                     .clickHandler((panel, clicker, click, slot) -> {
                         user.closeInventory();
@@ -112,7 +136,7 @@ public class WarpPanelManager {
         if (i > PANEL_MAX_SIZE) {
             // Previous
             panelBuilder.item(new PanelItemBuilder()
-                    .name("Previous")
+                    .name(user.getTranslation("warps.previous"))
                     .icon(new ItemStack(Material.COBBLESTONE))
                     .clickHandler((panel, clicker, click, slot) -> {
                         user.closeInventory();
