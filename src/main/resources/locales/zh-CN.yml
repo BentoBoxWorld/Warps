@@ -1,32 +1,27 @@
-###########################################################################################
-# 本文件是 YML 格式的文件. 编辑时请务必小心.                                              #
-# 请在 http://yaml-online-parser.appspot.com 等 YAML 检查器中检查您的编辑.                #
-###########################################################################################
-
-warp: 
-  help: 
+---
+warp:
+  help:
     description: 传送到该玩家的传送木牌处
-    parameters: <玩家名称>
+    parameters: "<player name>"
 warps:
-  deactivate: "&c禁用的旧转移标志!" 
-  error: 
-    does-not-exist: "&c转移不再存在!"
+  error:
     no-permission: "&C权限不足!"
     no-remove: "&C无权移除传送木牌!"
-    no-warps-yet: "&C暂无可用传送木牌"
     not-enough-level: "&C岛屿等级不够高!"
-    not-on-island: "&C操作必须在空岛上进行!"
-    not-safe: "&c转移不安全!"
+    no-warps-yet: "&C暂无可用传送木牌"
     your-level-is: "&c岛屿当前等级 [level], 需要等级 [required]"
-  help: 
+    does-not-exist: "&c那个传送已经不存在了！"
+    not-on-island: "&C操作必须在你的岛屿上进行!"
+    not-safe: "&c那个传送不安全！"
+  help:
     description: 打开传送面板
   next: "&6下一页"
-  player-warped: "&2[name]转移到你的标志！"
   previous: "&6上一页"
   sign-removed: "&C传送木牌已移除!"
   success: "&A成功!"
   title: 传送木牌
   warpTip: "&6放置一个第一行是 [text] 的木牌以创建传送木牌"
   warpToPlayersSign: "&6正传送到 [player] 的传送木牌"
-
-    
+  deactivate: "&c旧传送牌已不再使用！"
+  player-warped: "&2[name] 刚刚传送到了你的传送牌！"
+  random: "&4随机传送"
