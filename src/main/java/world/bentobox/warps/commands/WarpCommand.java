@@ -54,7 +54,7 @@ public class WarpCommand extends CompositeCommand {
                 return true;
             } else {
                 // Check if this is part of a name
-                UUID foundWarp = warpList.stream().filter(u -> getPlayers().getName(u).toLowerCase().equals(args.get(0).toLowerCase())
+                UUID foundWarp = warpList.stream().filter(u -> getPlayers().getName(u).equalsIgnoreCase(args.get(0))
                         || getPlayers().getName(u).toLowerCase().startsWith(args.get(0).toLowerCase())).findFirst().orElse(null);
                 if (foundWarp == null) {
                     user.sendMessage("warps.error.does-not-exist");

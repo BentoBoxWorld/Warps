@@ -115,16 +115,14 @@ public class Warp extends Addon {
 
         // Register commands
         this.getPlugin().getAddonsManager().getGameModeAddons().forEach(gameModeAddon -> {
-            if (!this.settings.getDisabledGameModes().contains(gameModeAddon.getDescription().getName()))
+            if (!this.settings.getDisabledGameModes().contains(gameModeAddon.getDescription().getName())
+                    && gameModeAddon.getPlayerCommand().isPresent())
             {
-                if (gameModeAddon.getPlayerCommand().isPresent())
-                {
-                    this.registeredWorlds.add(gameModeAddon.getOverWorld());
+                this.registeredWorlds.add(gameModeAddon.getOverWorld());
 
-                    new WarpCommand(this, gameModeAddon.getPlayerCommand().get());
-                    new WarpsCommand(this, gameModeAddon.getPlayerCommand().get());
-                    this.hooked = true;
-                }
+                new WarpCommand(this, gameModeAddon.getPlayerCommand().get());
+                new WarpsCommand(this, gameModeAddon.getPlayerCommand().get());
+                this.hooked = true;
             }
         });
 

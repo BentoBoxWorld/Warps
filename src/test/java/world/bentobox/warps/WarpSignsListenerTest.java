@@ -204,16 +204,6 @@ public class WarpSignsListenerTest {
     }
 
     @Test
-    public void testOnSignBreakNullState() {
-        WarpSignsListener wsl = new WarpSignsListener(addon);
-        BlockBreakEvent e = new BlockBreakEvent(block, player);
-        when(block.getState()).thenReturn(null);
-        wsl.onSignBreak(e);
-        assertFalse(e.isCancelled());
-        verify(block).getState();
-    }
-
-    @Test
     public void testOnSignNotWelcomeSign() {
         WarpSignsListener wsl = new WarpSignsListener(addon);
         BlockBreakEvent e = new BlockBreakEvent(block, player);

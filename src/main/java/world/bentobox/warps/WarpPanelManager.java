@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
+import world.bentobox.bentobox.api.panels.Panel;
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
@@ -33,12 +34,7 @@ public class WarpPanelManager {
         PanelItemBuilder pib = new PanelItemBuilder()
                 .name(addon.getSettings().getNameFormat() + addon.getPlugin().getPlayers().getName(warpOwner))
                 .description(getSign(world, warpOwner))
-                .clickHandler((panel, clicker, click, slot) -> { {
-                    clicker.closeInventory();
-                    addon.getWarpSignsManager().warpPlayer(world, clicker, warpOwner);
-                    return true;
-                }
-                });
+                .clickHandler((panel, clicker, click, slot) -> hander(panel, world, clicker, warpOwner));
         Material icon = getSignIcon(world, warpOwner);
         if (icon.equals(Material.PLAYER_HEAD)) {
             return pib.icon(addon.getPlayers().getName(warpOwner)).build();
@@ -47,16 +43,17 @@ public class WarpPanelManager {
         }
     }
 
+    private boolean hander(Panel panel, World world, User clicker, UUID warpOwner) {
+        clicker.closeInventory();
+        addon.getWarpSignsManager().warpPlayer(world, clicker, warpOwner);
+        return true;
+    }
+
     private PanelItem getRandomButton(World world, User user, UUID warpOwner) {
-        ///give @p minecraft:player_head{display:{Name:"{\"text\":\"Question Mark\"}"},SkullOwner:"MHF_Question"} 1        
+        ///give @p minecraft:player_head{display:{Name:"{\"text\":\"Question Mark\"}"},SkullOwner:"MHF_Question"} 1
         return new PanelItemBuilder()
                 .name(addon.getSettings().getNameFormat() + user.getTranslation("warps.random"))
-                .clickHandler((panel, clicker, click, slot) -> { {
-                    clicker.closeInventory();
-                    addon.getWarpSignsManager().warpPlayer(world, clicker, warpOwner);
-                    return true;
-                }
-                })
+                .clickHandler((panel, clicker, click, slot) -> hander(panel, world, clicker, warpOwner))
                 .icon(Material.END_CRYSTAL).build();
     }
 
@@ -99,7 +96,7 @@ public class WarpPanelManager {
         List<UUID> warps = new ArrayList<>(addon.getWarpSignsManager().getSortedWarps(world));
         UUID randomWarp = null;
         // Add random UUID
-        if (!warps.isEmpty() && addon.getSettings().isRandomAllowed()) { 
+        if (!warps.isEmpty() && addon.getSettings().isRandomAllowed()) {
             randomWarp = warps.get(new Random().nextInt(warps.size()));
             warps.add(0, randomWarp);
         }
@@ -110,7 +107,7 @@ public class WarpPanelManager {
         }
         PanelBuilder panelBuilder = new PanelBuilder()
                 .user(user)
-                .name(user.getTranslation("warps.title") + " " + String.valueOf(index + 1));
+                .name(user.getTranslation("warps.title") + " " + (index + 1));
 
         int i = index * PANEL_MAX_SIZE;
         for (; i < (index * PANEL_MAX_SIZE + PANEL_MAX_SIZE) && i < warps.size(); i++) {
