@@ -113,14 +113,14 @@
             <id>sonar</id>
             <properties>
                 <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-                <sonar.organization>tastybento-github</sonar.organization>
+                <sonar.organization>bentobox-world</sonar.organization>
             </properties>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.sonarsource.scanner.maven</groupId>
                         <artifactId>sonar-maven-plugin</artifactId>
-                        <version>3.4.1.1168</version>
+                        <version>3.6.0.1398</version>
                         <executions>
                             <execution>
                                 <phase>verify</phase>
