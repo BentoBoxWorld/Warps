@@ -31,7 +31,7 @@ public class WarpCommand extends CompositeCommand {
     public WarpCommand(Warp addon) {
         super(addon.getSettings().getWarpCommand());
         this.addon = addon;
-        perm = "welcomewarpsigns";
+        perm = Warp.WELCOME_WARP_SIGNS;
     }
 
     @Override

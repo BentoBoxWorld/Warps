@@ -65,7 +65,7 @@ public class WarpSignsListener implements Listener {
             if (list.containsValue(s.getLocation())) {
                 // Welcome sign detected - check to see if it is
                 // this player's sign
-                String reqPerm = inWorld ? addon.getPermPrefix(e.getBlock().getWorld()) + "mod.removesign" : "welcomewarpsigns.mod.removesign";
+                String reqPerm = inWorld ? addon.getPermPrefix(e.getBlock().getWorld()) + "mod.removesign" : Warp.WELCOME_WARP_SIGNS + ".mod.removesign";
                 if ((list.containsKey(user.getUniqueId()) && list.get(user.getUniqueId()).equals(s.getLocation()))
                         || user.isOp()  || user.hasPermission(reqPerm)) {
                     addon.getWarpSignsManager().removeWarp(s.getLocation());
@@ -160,7 +160,7 @@ public class WarpSignsListener implements Listener {
      * @return true if player does not have the required perms, false otherwise
      */
     private boolean noPerms(User user, World world, boolean inWorld) {
-        String permReq = inWorld ? addon.getPermPrefix(world) + "island.addwarp" : "welcomewarpsigns.addwarp";
+        String permReq = inWorld ? addon.getPermPrefix(world) + "island.addwarp" : Warp.WELCOME_WARP_SIGNS + ".addwarp";
         if (!(user.hasPermission(permReq))) {
             user.sendMessage("warps.error.no-permission");
             user.sendMessage("general.errors.no-permission", "[permission]", permReq);

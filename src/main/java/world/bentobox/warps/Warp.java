@@ -18,7 +18,7 @@ import world.bentobox.warps.commands.WarpsCommand;
 import world.bentobox.warps.config.Settings;
 
 /**
- * Addin to BSkyBlock that enables welcome warp signs
+ * Addin to BentoBox that enables welcome warp signs
  * @author tastybento
  *
  */
@@ -31,6 +31,11 @@ public class Warp extends Addon {
      * This variable stores string for Level addon.
      */
     private static final String LEVEL_ADDON_NAME = "Level";
+
+    /**
+     * Permission prefix for non-game world operation
+     */
+    public static final String WELCOME_WARP_SIGNS = "welcomewarpsigns";
 
     /**
      * Warp panel Manager
@@ -220,8 +225,8 @@ public class Warp extends Addon {
         // Parse keys
         if (metaData.containsKey("world")) {
             world = Bukkit.getWorld((String)metaData.get("world"));
-            if (world == null) return null;
         }
+        if (world == null) return null;
         if (metaData.containsKey("uuid")) {
             try {
                 uuid = UUID.fromString((String)metaData.get("uuid"));
@@ -234,11 +239,11 @@ public class Warp extends Addon {
         case "getSortedWarps":
             return getWarpSignsManager().getSortedWarps(world);
         case "getWarp":
-            return getWarpSignsManager().getWarp(world, uuid);
+            return uuid == null ? null : getWarpSignsManager().getWarp(world, uuid);
         case "getWarpMap":
             return getWarpSignsManager().getWarpMap(world);
         case "hasWarp":
-            return getWarpSignsManager().hasWarp(world, uuid);
+            return uuid == null ? null : getWarpSignsManager().hasWarp(world, uuid);
         case "listWarps":
             return getWarpSignsManager().listWarps(world);
         default:
