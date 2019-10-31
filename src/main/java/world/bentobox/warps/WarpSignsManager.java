@@ -70,7 +70,7 @@ public class WarpSignsManager {
     public WarpSignsManager(Warp addon, BentoBox plugin) {
         this.addon = addon;
         this.plugin = plugin;
-        // Set up the database handler to store and retrieve Island classes
+        // Set up the database handler
         // Note that these are saved by the BSkyBlock database
         handler = new Database<>(addon, WarpsData.class);
         // Load the warps

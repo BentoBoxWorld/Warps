@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -79,6 +80,8 @@ public class WarpSignsListenerTest {
     private Settings settings;
     @Mock
     private IslandsManager im;
+    @Mock
+    private IslandWorldManager iwm;
 
     @Before
     public void setUp() throws Exception {
@@ -155,9 +158,10 @@ public class WarpSignsListenerTest {
         // Sufficient level
         when(addon.getLevel(any(), any())).thenReturn(100L);
 
-        IslandWorldManager iwm = mock(IslandWorldManager.class);
+        // IWM
         when(plugin.getIWM()).thenReturn(iwm);
         when(iwm.getAddon(any())).thenReturn(Optional.empty());
+        when(iwm.inWorld(any(World.class))).thenReturn(true);
 
         // Util
         PowerMockito.mockStatic(Util.class);
@@ -190,7 +194,7 @@ public class WarpSignsListenerTest {
     }
 
     @Test
-    public void testOnSignBreakWrongWorld() {
+    public void testOnSignNotGameWorld() {
         WarpSignsListener wsl = new WarpSignsListener(addon);
         BlockBreakEvent e = new BlockBreakEvent(block, player);
         when(addon.inRegisteredWorld(any())).thenReturn(false);
@@ -283,13 +287,50 @@ public class WarpSignsListenerTest {
      * Sign create
      */
     @Test
-    public void testOnCreateWrongWorld() {
+    public void testOnCreateWrongWorldGameWorld() {
         when(player.hasPermission(anyString())).thenReturn(true);
         WarpSignsListener wsl = new WarpSignsListener(addon);
         SignChangeEvent e = new SignChangeEvent(block, player, lines);
         when(addon.inRegisteredWorld(any())).thenReturn(false);
         wsl.onSignWarpCreate(e);
         verify(addon).inRegisteredWorld(Mockito.eq(world));
+    }
+
+    @Test
+    public void testOnCreateNotGameWorldAllowed() {
+        when(settings.isAllowInOtherWorlds()).thenReturn(true);
+        when(iwm.inWorld(any(World.class))).thenReturn(false);
+        when(player.hasPermission(anyString())).thenReturn(true);
+        WarpSignsListener wsl = new WarpSignsListener(addon);
+        SignChangeEvent e = new SignChangeEvent(block, player, lines);
+        when(addon.inRegisteredWorld(any())).thenReturn(false);
+        wsl.onSignWarpCreate(e);
+        verify(player).sendMessage("warps.success");
+        assertEquals(ChatColor.GREEN + "[WELCOME]", e.getLine(0));
+    }
+
+    @Test
+    public void testOnCreateNotGameWorldNotAllowed() {
+        when(settings.isAllowInOtherWorlds()).thenReturn(false);
+        when(iwm.inWorld(any(World.class))).thenReturn(false);
+        when(player.hasPermission(anyString())).thenReturn(true);
+        WarpSignsListener wsl = new WarpSignsListener(addon);
+        SignChangeEvent e = new SignChangeEvent(block, player, lines);
+        when(addon.inRegisteredWorld(any())).thenReturn(false);
+        wsl.onSignWarpCreate(e);
+        verify(player, never()).sendMessage("warps.success");
+    }
+
+    @Test
+    public void testOnCreateNotGameWorldNoPerm() {
+        when(settings.isAllowInOtherWorlds()).thenReturn(true);
+        when(iwm.inWorld(any(World.class))).thenReturn(false);
+        when(player.hasPermission(anyString())).thenReturn(false);
+        WarpSignsListener wsl = new WarpSignsListener(addon);
+        SignChangeEvent e = new SignChangeEvent(block, player, lines);
+        when(addon.inRegisteredWorld(any())).thenReturn(false);
+        wsl.onSignWarpCreate(e);
+        verify(player).sendMessage("warps.error.no-permission");
     }
 
     @Test

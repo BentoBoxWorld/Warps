@@ -1,25 +1,31 @@
-/**
- *
- */
 package world.bentobox.warps.commands;
 
 import java.util.List;
+
+import org.bukkit.World;
 
 import world.bentobox.warps.Warp;
 import world.bentobox.bentobox.api.commands.CompositeCommand;
 import world.bentobox.bentobox.api.user.User;
 
 /**
- * @author ben
+ * @author tastybento
  *
  */
 public class WarpsCommand extends CompositeCommand {
 
     private Warp addon;
+    private String perm = "island";
 
     public WarpsCommand(Warp addon, CompositeCommand bsbIslandCmd) {
-        super(bsbIslandCmd, "warps");
+        super(bsbIslandCmd, addon.getSettings().getWarpsCommand());
         this.addon = addon;
+    }
+
+    public WarpsCommand(Warp addon) {
+        super(addon.getSettings().getWarpsCommand());
+        this.addon = addon;
+        perm = "welcomewarpsigns";
     }
 
     /* (non-Javadoc)
@@ -27,7 +33,7 @@ public class WarpsCommand extends CompositeCommand {
      */
     @Override
     public void setup() {
-        this.setPermission("island.warp");
+        this.setPermission(perm + ".warp");
         this.setOnlyPlayer(true);
         this.setDescription("warps.help.description");
     }
@@ -37,11 +43,12 @@ public class WarpsCommand extends CompositeCommand {
      */
     @Override
     public boolean execute(User user, String label, List<String> args) {
-        if (addon.getWarpSignsManager().listWarps(getWorld()).isEmpty()) {
+        World world = getWorld() == null ? user.getWorld() : getWorld();
+        if (addon.getWarpSignsManager().listWarps(world).isEmpty()) {
             user.sendMessage("warps.error.no-warps-yet");
             user.sendMessage("warps.warpTip", "[text]", addon.getSettings().getWelcomeLine());
         } else {
-            addon.getWarpPanelManager().showWarpPanel(getWorld(), user,0);
+            addon.getWarpPanelManager().showWarpPanel(world, user,0);
         }
         return true;
     }

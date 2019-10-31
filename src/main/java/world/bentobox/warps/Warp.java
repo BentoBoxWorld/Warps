@@ -78,7 +78,11 @@ public class Warp extends Addon {
         // Save default config.yml
         this.saveDefaultConfig();
         // Load the plugin's config
-        this.loadSettings();
+        if (this.loadSettings()) {
+            // Load the master warp and warps command
+            new WarpCommand(this);
+            new WarpsCommand(this);
+        }
     }
 
 
@@ -146,7 +150,7 @@ public class Warp extends Addon {
     /**
      * This method loads addon configuration settings in memory.
      */
-    private void loadSettings() {
+    private boolean loadSettings() {
         if (settingsConfig == null) {
             settingsConfig = new Config<>(this, Settings.class);
         }
@@ -155,9 +159,10 @@ public class Warp extends Addon {
             // Disable
             this.logError("WelcomeWarp settings could not load! Addon disabled.");
             this.setState(State.DISABLED);
-            return;
+            return false;
         }
         settingsConfig.saveConfigObject(settings);
+        return true;
     }
 
 

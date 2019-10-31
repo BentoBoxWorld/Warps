@@ -6,6 +6,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bukkit.World;
+
 import world.bentobox.bentobox.api.commands.CompositeCommand;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.warps.Warp;
@@ -19,15 +21,22 @@ import world.bentobox.warps.Warp;
 public class WarpCommand extends CompositeCommand {
 
     private Warp addon;
+    private String perm = "island";
 
     public WarpCommand(Warp addon, CompositeCommand bsbIslandCmd) {
-        super(bsbIslandCmd, "warp");
+        super(bsbIslandCmd, addon.getSettings().getWarpCommand());
         this.addon = addon;
+    }
+
+    public WarpCommand(Warp addon) {
+        super(addon.getSettings().getWarpCommand());
+        this.addon = addon;
+        perm = "welcomewarpsigns";
     }
 
     @Override
     public void setup() {
-        this.setPermission("island.warp");
+        this.setPermission(perm + ".warp");
         this.setOnlyPlayer(true);
         this.setParametersHelp("warp.help.parameters");
         this.setDescription("warp.help.description");
@@ -35,9 +44,10 @@ public class WarpCommand extends CompositeCommand {
 
     @Override
     public boolean execute(User user, String label, List<String> args) {
+        World world = getWorld() == null ? user.getWorld() : getWorld();
         if (args.size() == 1) {
             // Warp somewhere command
-            Set<UUID> warpList = addon.getWarpSignsManager().listWarps(getWorld());
+            Set<UUID> warpList = addon.getWarpSignsManager().listWarps(world);
             if (warpList.isEmpty()) {
                 user.sendMessage("warps.error.no-warps-yet");
                 user.sendMessage("warps.warpTip", "[text]", addon.getSettings().getWelcomeLine());
@@ -51,7 +61,7 @@ public class WarpCommand extends CompositeCommand {
                     return false;
                 } else {
                     // Warp exists!
-                    addon.getWarpSignsManager().warpPlayer(getWorld(), user, foundWarp);
+                    addon.getWarpSignsManager().warpPlayer(world, user, foundWarp);
                     return true;
                 }
             }
@@ -62,8 +72,9 @@ public class WarpCommand extends CompositeCommand {
 
     @Override
     public Optional<List<String>> tabComplete(User user, String alias, List<String> args) {
+        World world = getWorld() == null ? user.getWorld() : getWorld();
         List<String> options = new ArrayList<>();
-        final Set<UUID> warpList = addon.getWarpSignsManager().listWarps(getWorld());
+        final Set<UUID> warpList = addon.getWarpSignsManager().listWarps(world);
 
         for (UUID warp : warpList) {
             options.add(addon.getPlugin().getPlayers().getName(warp));

@@ -44,7 +44,7 @@ public class Settings implements ConfigObject
     @ConfigComment(" - BSkyBlock")
     @ConfigEntry(path = "disabled-gamemodes")
     private Set<String> disabledGameModes = new HashSet<>();
-    
+
     @ConfigComment("")
     @ConfigComment("Warp panel name formatting.")
     @ConfigComment("Example: &c will make names red. &f is white")
@@ -56,12 +56,25 @@ public class Settings implements ConfigObject
     @ConfigComment("Example: &c will make lore red. &f is white")
     @ConfigEntry(path = "lore-format")
     private String loreFormat = "&f";
-    
+
     @ConfigComment("")
     @ConfigComment("Allow random teleport - adds a button to the warp panel that goes to a random warp sign")
     @ConfigEntry(path = "random-allowed")
     private boolean randomAllowed = true;
-    
+
+    @ConfigComment("")
+    @ConfigComment("Allow use in other worlds. Players must have the welcomewarpsigns.warp permission.")
+    @ConfigEntry(path = "allow-in-other-worlds")
+    private boolean allowInOtherWorlds = false;
+
+    @ConfigComment("")
+    @ConfigComment("Warp and warps commands. You can change them if they clash with other addons or plugins.")
+    @ConfigEntry(path = "warp-command")
+    String warpCommand = "warp";
+    @ConfigEntry(path = "warps-command")
+    String warpsCommand = "warps";
+
+
     // ---------------------------------------------------------------------
     // Section: Constructor
     // ---------------------------------------------------------------------
@@ -207,6 +220,54 @@ public class Settings implements ConfigObject
      */
     public void setRandomAllowed(boolean randomAllowed) {
         this.randomAllowed = randomAllowed;
+    }
+
+
+    /**
+     * @return the allowInOtherWorlds
+     */
+    public boolean isAllowInOtherWorlds() {
+        return allowInOtherWorlds;
+    }
+
+
+    /**
+     * @param allowInOtherWorlds the allowInOtherWorlds to set
+     */
+    public void setAllowInOtherWorlds(boolean allowInOtherWorlds) {
+        this.allowInOtherWorlds = allowInOtherWorlds;
+    }
+
+
+    /**
+     * @return the warpCommand
+     */
+    public String getWarpCommand() {
+        return warpCommand;
+    }
+
+
+    /**
+     * @param warpCommand the warpCommand to set
+     */
+    public void setWarpCommand(String warpCommand) {
+        this.warpCommand = warpCommand;
+    }
+
+
+    /**
+     * @return the warpsCommand
+     */
+    public String getWarpsCommand() {
+        return warpsCommand;
+    }
+
+
+    /**
+     * @param warpsCommand the warpsCommand to set
+     */
+    public void setWarpsCommand(String warpsCommand) {
+        this.warpsCommand = warpsCommand;
     }
 
 

@@ -51,7 +51,8 @@ public class WarpSignsListener implements Listener {
         if (!e.getBlock().getType().name().contains("SIGN")) {
             return;
         }
-        if (!addon.inRegisteredWorld(b.getWorld())) {
+        if ((addon.getPlugin().getIWM().inWorld(b.getWorld()) && !addon.inRegisteredWorld(b.getWorld()))
+                || (!addon.getPlugin().getIWM().inWorld(b.getWorld()) && !addon.getSettings().isAllowInOtherWorlds()) ) {
             return;
         }
         User user = User.getInstance(e.getPlayer());
@@ -87,7 +88,8 @@ public class WarpSignsListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onSignWarpCreate(SignChangeEvent e) {
         Block b = e.getBlock();
-        if (!addon.inRegisteredWorld(b.getWorld())) {
+        if ((addon.getPlugin().getIWM().inWorld(b.getWorld()) && !addon.inRegisteredWorld(b.getWorld()))
+                || (!addon.getPlugin().getIWM().inWorld(b.getWorld()) && !addon.getSettings().isAllowInOtherWorlds()) ) {
             return;
         }
         String title = e.getLine(0);
@@ -100,21 +102,23 @@ public class WarpSignsListener implements Listener {
                 user.sendMessage("general.errors.no-permission", "[permission]", addon.getPermPrefix(b.getWorld()) + "island.addwarp");
                 return;
             }
-            // Get level if level addon is available
-            Long level = addon.getLevel(Util.getWorld(b.getWorld()), user.getUniqueId());
-            if (level != null && level < addon.getSettings().getWarpLevelRestriction()) {
-                user.sendMessage("warps.error.not-enough-level");
-                user.sendMessage("warps.error.your-level-is",
-                        "[level]", String.valueOf(level),
-                        "[required]", String.valueOf(addon.getSettings().getWarpLevelRestriction()));
-                return;
-            }
+            if (addon.getPlugin().getIWM().inWorld(b.getWorld())) {
+                // Get level if level addon is available
+                Long level = addon.getLevel(Util.getWorld(b.getWorld()), user.getUniqueId());
+                if (level != null && level < addon.getSettings().getWarpLevelRestriction()) {
+                    user.sendMessage("warps.error.not-enough-level");
+                    user.sendMessage("warps.error.your-level-is",
+                            "[level]", String.valueOf(level),
+                            "[required]", String.valueOf(addon.getSettings().getWarpLevelRestriction()));
+                    return;
+                }
 
-            // Check that the player is on their island
-            if (!(plugin.getIslands().userIsOnIsland(b.getWorld(), user))) {
-                user.sendMessage("warps.error.not-on-island");
-                e.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
-                return;
+                // Check that the player is on their island
+                if (!(plugin.getIslands().userIsOnIsland(b.getWorld(), user))) {
+                    user.sendMessage("warps.error.not-on-island");
+                    e.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
+                    return;
+                }
             }
             // Check if the player already has a sign
             final Location oldSignLoc = addon.getWarpSignsManager().getWarp(b.getWorld(), user.getUniqueId());
