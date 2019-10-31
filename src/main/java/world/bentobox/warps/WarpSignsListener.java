@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -50,33 +51,36 @@ public class WarpSignsListener implements Listener {
         boolean inWorld = addon.getPlugin().getIWM().inWorld(b.getWorld());
         // Signs only
         // FIXME: When we drop support for 1.13, switch to Tag.SIGNS
-        if (!e.getBlock().getType().name().contains("SIGN")) {
-            return;
-        }
-        if ((inWorld && !addon.inRegisteredWorld(b.getWorld())) || (!inWorld && !addon.getSettings().isAllowInOtherWorlds()) ) {
+        if (!e.getBlock().getType().name().contains("SIGN")
+                || (inWorld && !addon.inRegisteredWorld(b.getWorld()))
+                || (!inWorld && !addon.getSettings().isAllowInOtherWorlds()) ) {
             return;
         }
         User user = User.getInstance(e.getPlayer());
-        Sign s = (Sign) b.getState();
-        if (s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getSettings().getWelcomeLine())) {
-            // Do a quick check to see if this sign location is in
-            // the list of warp signs
-            Map<UUID, Location> list = addon.getWarpSignsManager().getWarpMap(b.getWorld());
-            if (list.containsValue(s.getLocation())) {
-                // Welcome sign detected - check to see if it is
-                // this player's sign
-                String reqPerm = inWorld ? addon.getPermPrefix(e.getBlock().getWorld()) + "mod.removesign" : Warp.WELCOME_WARP_SIGNS + ".mod.removesign";
-                if ((list.containsKey(user.getUniqueId()) && list.get(user.getUniqueId()).equals(s.getLocation()))
-                        || user.isOp()  || user.hasPermission(reqPerm)) {
-                    addon.getWarpSignsManager().removeWarp(s.getLocation());
-                    Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(addon, s.getLocation(), user.getUniqueId()));
-                } else {
-                    // Someone else's sign - not allowed
-                    user.sendMessage("warps.error.no-remove");
-                    e.setCancelled(true);
-                }
+        if (isWarpSign(b)) {
+            if (isPlayersSign(e.getPlayer(), b, inWorld)) {
+                addon.getWarpSignsManager().removeWarp(b.getLocation());
+                Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(addon, b.getLocation(), user.getUniqueId()));
+            } else {
+                // Someone else's sign - not allowed
+                user.sendMessage("warps.error.no-remove");
+                e.setCancelled(true);
             }
         }
+    }
+
+    private boolean isPlayersSign(Player player, Block b, boolean inWorld) {
+        // Welcome sign detected - check to see if it is this player's sign
+        Map<UUID, Location> list = addon.getWarpSignsManager().getWarpMap(b.getWorld());
+        String reqPerm = inWorld ? addon.getPermPrefix(b.getWorld()) + "mod.removesign" : Warp.WELCOME_WARP_SIGNS + ".mod.removesign";
+        return ((list.containsKey(player.getUniqueId()) && list.get(player.getUniqueId()).equals(b.getLocation()))
+                || player.isOp()  || player.hasPermission(reqPerm));
+    }
+
+    private boolean isWarpSign(Block b) {
+        Sign s = (Sign) b.getState();
+        return s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getSettings().getWelcomeLine())
+                && addon.getWarpSignsManager().getWarpMap(b.getWorld()).containsValue(s.getLocation());
     }
 
     /**

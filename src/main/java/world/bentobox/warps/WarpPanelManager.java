@@ -11,7 +11,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
-import world.bentobox.bentobox.api.panels.Panel;
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
@@ -34,7 +33,7 @@ public class WarpPanelManager {
         PanelItemBuilder pib = new PanelItemBuilder()
                 .name(addon.getSettings().getNameFormat() + addon.getPlugin().getPlayers().getName(warpOwner))
                 .description(getSign(world, warpOwner))
-                .clickHandler((panel, clicker, click, slot) -> hander(panel, world, clicker, warpOwner));
+                .clickHandler((panel, clicker, click, slot) -> hander(world, clicker, warpOwner));
         Material icon = getSignIcon(world, warpOwner);
         if (icon.equals(Material.PLAYER_HEAD)) {
             return pib.icon(addon.getPlayers().getName(warpOwner)).build();
@@ -43,7 +42,7 @@ public class WarpPanelManager {
         }
     }
 
-    private boolean hander(Panel panel, World world, User clicker, UUID warpOwner) {
+    private boolean hander(World world, User clicker, UUID warpOwner) {
         clicker.closeInventory();
         addon.getWarpSignsManager().warpPlayer(world, clicker, warpOwner);
         return true;
@@ -53,7 +52,7 @@ public class WarpPanelManager {
         ///give @p minecraft:player_head{display:{Name:"{\"text\":\"Question Mark\"}"},SkullOwner:"MHF_Question"} 1
         return new PanelItemBuilder()
                 .name(addon.getSettings().getNameFormat() + user.getTranslation("warps.random"))
-                .clickHandler((panel, clicker, click, slot) -> hander(panel, world, clicker, warpOwner))
+                .clickHandler((panel, clicker, click, slot) -> hander(world, clicker, warpOwner))
                 .icon(Material.END_CRYSTAL).build();
     }
 

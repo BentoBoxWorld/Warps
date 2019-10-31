@@ -124,6 +124,7 @@ public class WarpSignsListenerTest {
         Location location = mock(Location.class);
         when(location.getBlock()).thenReturn(block);
         when(s.getLocation()).thenReturn(location);
+        when(block.getLocation()).thenReturn(location);
         list.put(uuid, location);
         // Player is in world
         when(wsm.getWarpMap(Mockito.eq(world))).thenReturn(list);
