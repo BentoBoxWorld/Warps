@@ -9,13 +9,13 @@ import world.bentobox.bentobox.api.commands.CompositeCommand;
 import world.bentobox.bentobox.api.user.User;
 
 /**
+ * Handles the warps command
  * @author tastybento
  *
  */
 public class WarpsCommand extends CompositeCommand {
 
     private Warp addon;
-    private String perm = "island";
 
     public WarpsCommand(Warp addon, CompositeCommand bsbIslandCmd) {
         super(bsbIslandCmd, addon.getSettings().getWarpsCommand());
@@ -25,7 +25,6 @@ public class WarpsCommand extends CompositeCommand {
     public WarpsCommand(Warp addon) {
         super(addon.getSettings().getWarpsCommand());
         this.addon = addon;
-        perm = "welcomewarpsigns";
     }
 
     /* (non-Javadoc)
@@ -33,7 +32,7 @@ public class WarpsCommand extends CompositeCommand {
      */
     @Override
     public void setup() {
-        this.setPermission(perm + ".warp");
+        this.setPermission(this.getParent() == null ? Warp.WELCOME_WARP_SIGNS + ".warp" : "island.warp");
         this.setOnlyPlayer(true);
         this.setDescription("warps.help.description");
     }
