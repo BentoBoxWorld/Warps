@@ -46,9 +46,9 @@ public class WarpsCommand extends CompositeCommand {
         if (addon.getWarpSignsManager().listWarps(world).isEmpty()) {
             user.sendMessage("warps.error.no-warps-yet");
             user.sendMessage("warps.warpTip", "[text]", addon.getSettings().getWelcomeLine());
-        } else {
-            addon.getWarpPanelManager().showWarpPanel(world, user,0);
+            return false;
         }
+        addon.getWarpPanelManager().showWarpPanel(world, user, 0);
         return true;
     }
 
