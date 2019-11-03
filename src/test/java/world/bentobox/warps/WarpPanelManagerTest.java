@@ -1,9 +1,12 @@
 package world.bentobox.warps;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +26,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -57,6 +61,8 @@ public class WarpPanelManagerTest {
     @Mock
     private Inventory top;
     private UUID uuid;
+    @Mock
+    private Settings settings;
 
     /**
      * @throws java.lang.Exception
@@ -104,7 +110,6 @@ public class WarpPanelManagerTest {
 
         when(Bukkit.createInventory(any(), Mockito.anyInt(), any())).thenReturn(top);
 
-        Settings settings = mock(Settings.class);
         when(settings.getIcon()).thenReturn("SIGN");
         when(addon.getSettings()).thenReturn(settings);
 
@@ -133,11 +138,43 @@ public class WarpPanelManagerTest {
      */
     @Test
     public void testShowWarpPanelFirst() {
+        ArgumentCaptor<ItemStack> argument = ArgumentCaptor.forClass(ItemStack.class);
         WarpPanelManager wpm = new WarpPanelManager(addon);
         wpm.showWarpPanel(world, user, 0);
         verify(player).openInventory(Mockito.eq(top));
         // Just next sign
-        verify(top, Mockito.times(53)).setItem(Mockito.anyInt(), Mockito.any(ItemStack.class));
+        verify(top, Mockito.times(53)).setItem(Mockito.anyInt(),argument.capture());
+        assertEquals(Material.STONE, argument.getAllValues().get(52).getType());
+    }
+    
+    /**
+     * Test method for {@link WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
+     */
+    @Test
+    public void testShowWarpPanelFirstRandom() {
+        when(settings.isRandomAllowed()).thenReturn(true);
+        ArgumentCaptor<ItemStack> argument = ArgumentCaptor.forClass(ItemStack.class);
+        WarpPanelManager wpm = new WarpPanelManager(addon);
+        wpm.showWarpPanel(world, user, 0);
+        verify(player).openInventory(Mockito.eq(top));
+        // Check crystal
+        verify(top, Mockito.atLeastOnce()).setItem(anyInt(), argument.capture());
+        assertEquals(Material.END_CRYSTAL, argument.getAllValues().get(0).getType());
+    }
+    
+    /**
+     * Test method for {@link WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
+     */
+    @Test
+    public void testShowWarpPanelNoRandom() {
+        when(settings.isRandomAllowed()).thenReturn(false);
+        ArgumentCaptor<ItemStack> argument = ArgumentCaptor.forClass(ItemStack.class);
+        WarpPanelManager wpm = new WarpPanelManager(addon);
+        wpm.showWarpPanel(world, user, 0);
+        verify(player).openInventory(Mockito.eq(top));
+        // Check crystal
+        verify(top, Mockito.atLeastOnce()).setItem(anyInt(), argument.capture());
+        assertFalse(argument.getAllValues().get(0).getType().equals(Material.END_CRYSTAL));
     }
 
     /**
@@ -145,11 +182,14 @@ public class WarpPanelManagerTest {
      */
     @Test
     public void testShowWarpPanelMiddle() {
+        ArgumentCaptor<ItemStack> argument = ArgumentCaptor.forClass(ItemStack.class);
         WarpPanelManager wpm = new WarpPanelManager(addon);
         wpm.showWarpPanel(world, user, 1);
         verify(player).openInventory(Mockito.eq(top));
         // includes previous and next signs
-        verify(top, Mockito.times(54)).setItem(Mockito.anyInt(), Mockito.any(ItemStack.class));
+        verify(top, Mockito.times(54)).setItem(Mockito.anyInt(), argument.capture());
+        assertEquals(Material.STONE, argument.getAllValues().get(52).getType());
+        assertEquals(Material.COBBLESTONE, argument.getAllValues().get(53).getType());
     }
 
     /**
@@ -157,11 +197,13 @@ public class WarpPanelManagerTest {
      */
     @Test
     public void testShowWarpPanelLast() {
+        ArgumentCaptor<ItemStack> argument = ArgumentCaptor.forClass(ItemStack.class);
         WarpPanelManager wpm = new WarpPanelManager(addon);
         wpm.showWarpPanel(world, user, 3);
         verify(player).openInventory(Mockito.eq(top));
         // Final amount, just previous sign
-        verify(top, Mockito.times(46)).setItem(Mockito.anyInt(), Mockito.any(ItemStack.class));
+        verify(top, Mockito.times(46)).setItem(Mockito.anyInt(), argument.capture());
+        assertEquals(Material.COBBLESTONE, argument.getAllValues().get(45).getType());
     }
 
     /**

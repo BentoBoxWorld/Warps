@@ -23,3 +23,21 @@ icon: 'SIGN'
 # disabled-gamemodes:
 #  - BSkyBlock
 disabled-gamemodes: []
+#
+# Warp panel name formatting.
+# Example: &c will make names red, &f is white
+name-format: &f
+#
+# Warp panel default lore formatting.
+# Example: &c will make lore red. &f is white
+lore-format: &f
+#
+# Allow random teleport - adds a button to the warp panel that goes to a random warp sign
+random-allowed: true
+#
+# Allow use in other worlds. Players must have the welcomewarpsigns.warp permission.
+allow-in-other-worlds: false
+#
+# Warp and warps commands. You can change them if they clash with other addons or plugins.
+warp-command: warp
+warps-command: warps

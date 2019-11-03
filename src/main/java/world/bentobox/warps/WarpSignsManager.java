@@ -25,6 +25,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.addons.Addon;
@@ -59,7 +61,8 @@ public class WarpSignsManager {
      * @param world - world
      * @return map of warps
      */
-    public Map<UUID, Location> getWarpMap(World world) {
+    @NonNull
+    public Map<UUID, Location> getWarpMap(@Nullable World world) {
         return worldsWarpList.computeIfAbsent(Util.getWorld(world), k -> new HashMap<>());
     }
 
@@ -70,7 +73,7 @@ public class WarpSignsManager {
     public WarpSignsManager(Warp addon, BentoBox plugin) {
         this.addon = addon;
         this.plugin = plugin;
-        // Set up the database handler to store and retrieve Island classes
+        // Set up the database handler
         // Note that these are saved by the BSkyBlock database
         handler = new Database<>(addon, WarpsData.class);
         // Load the warps
@@ -86,7 +89,7 @@ public class WarpSignsManager {
      */
     public boolean addWarp(final UUID playerUUID, final Location loc) {
         // Do not allow null players to set warps
-        if (playerUUID == null) {
+        if (playerUUID == null || loc == null) {
             return false;
         }
         // Check for warps placed in a location where there was a warp before
@@ -108,6 +111,7 @@ public class WarpSignsManager {
      *            - the warp requested
      * @return Location of warp or null
      */
+    @Nullable
     public Location getWarp(World world, UUID playerUUID) {
         return getWarpMap(world).get(playerUUID);
     }
@@ -117,6 +121,7 @@ public class WarpSignsManager {
      * @param location to search
      * @return Name of warp owner or empty string if there is none
      */
+    @NonNull
     public String getWarpOwner(Location location) {
         return getWarpMap(location.getWorld()).entrySet().stream().filter(en -> en.getValue().equals(location))
                 .findFirst().map(en -> plugin.getPlayers().getName(en.getKey())).orElse("");
@@ -126,11 +131,12 @@ public class WarpSignsManager {
      * Get sorted list of warps with most recent players listed first
      * @return UUID list
      */
-    public List<UUID> getSortedWarps(World world) {
+    @NonNull
+    public List<UUID> getSortedWarps(@NonNull World world) {
         // Remove any null locations - this can happen if an admin changes the name of the world and signs point to old locations
         getWarpMap(world).values().removeIf(Objects::isNull);
         // Bigger value of time means a more recent login
-        TreeMap<Long, UUID> map = new TreeMap<Long, UUID>();
+        TreeMap<Long, UUID> map = new TreeMap<>();
         getWarpMap(world).entrySet().forEach(en -> {
             UUID uuid = en.getKey();
             // If never played, will be zero
@@ -148,7 +154,7 @@ public class WarpSignsManager {
         }
         // Fire event
         WarpListEvent event = new WarpListEvent(addon, list);
-        addon.getServer().getPluginManager().callEvent(event);
+        Bukkit.getPluginManager().callEvent(event);
         // Get the result of any changes by listeners
         list = event.getWarps();
         return list;
@@ -160,7 +166,8 @@ public class WarpSignsManager {
      *
      * @return UUID set of warps
      */
-    public Set<UUID> listWarps(World world) {
+    @NonNull
+    public Set<UUID> listWarps(@NonNull World world) {
         // Remove any null locations
         getWarpMap(world).values().removeIf(Objects::isNull);
         return getWarpMap(world).entrySet().stream().filter(e -> Util.sameWorld(world, e.getValue().getWorld())).map(Map.Entry::getKey).collect(Collectors.toSet());
@@ -194,11 +201,9 @@ public class WarpSignsManager {
         Block b = loc.getBlock();
         if (b.getType().name().contains("SIGN")) {
             Sign s = (Sign) b.getState();
-            if (s != null) {
-                if (s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getSettings().getWelcomeLine())) {
-                    s.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
-                    s.update(true, false);
-                }
+            if (s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getSettings().getWelcomeLine())) {
+                s.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
+                s.update(true, false);
             }
         }
     }
@@ -257,7 +262,8 @@ public class WarpSignsManager {
      * @param uuid - player's uuid
      * @return Sign's content and type
      */
-    public SignCache getSignInfo(World world, UUID uuid) {
+    @NonNull
+    public SignCache getSignInfo(@NonNull World world, @NonNull UUID uuid) {
         List<String> result = new ArrayList<>();
         //get the sign info
         Location signLocation = getWarp(world, uuid);
@@ -268,10 +274,13 @@ public class WarpSignsManager {
             result.remove(0);
             // Remove any trailing blank lines
             result.removeIf(String::isEmpty);
+            // Set the initial color per lore setting
+            for (int i = 0; i< result.size(); i++) {
+                result.set(i, ChatColor.translateAlternateColorCodes('&', addon.getSettings().getLoreFormat()) + result.get(i));
+            }
             // Get the sign type
 
-            String prefix = this.plugin.getIWM().getAddon(world).map(
-                    Addon::getPermissionPrefix).orElse("");
+            String prefix = plugin.getIWM().getAddon(world).map(Addon::getPermissionPrefix).orElse("");
 
             Material icon;
 
@@ -306,7 +315,7 @@ public class WarpSignsManager {
      * @param directionFacing - direction that sign is facing
      * @param pvp - true if this location allowed PVP
      */
-    private void warpPlayer(User user, Location inFront, UUID signOwner, BlockFace directionFacing, boolean pvp) {
+    private void warpPlayer(@NonNull User user, @NonNull Location inFront, @NonNull UUID signOwner, @NonNull BlockFace directionFacing, boolean pvp) {
         // convert blockface to angle
         float yaw = blockFaceToFloat(directionFacing);
         final Location actualWarp = new Location(inFront.getWorld(), inFront.getBlockX() + 0.5D, inFront.getBlockY(),
@@ -331,7 +340,7 @@ public class WarpSignsManager {
      * @param face
      * @return degrees
      */
-    private float blockFaceToFloat(BlockFace face) {
+    private float blockFaceToFloat(@NonNull BlockFace face) {
         switch (face) {
         case EAST:
             return 90F;
@@ -377,7 +386,7 @@ public class WarpSignsManager {
      * @param user - user who is warping
      * @param owner - owner of the warp
      */
-    public void warpPlayer(World world, User user, UUID owner) {
+    public void warpPlayer(@NonNull World world, @NonNull User user, @NonNull UUID owner) {
         final Location warpSpot = getWarp(world, owner);
         // Check if the warp spot is safe
         if (warpSpot == null) {
@@ -394,7 +403,7 @@ public class WarpSignsManager {
             return;
         }
 
-        Island island = addon.getPlugin().getIslands().getIsland(world, owner);
+        Island island = addon.getIslands().getIsland(world, owner);
         boolean pvp = false;
         if (island != null) {
             // Check for PVP
@@ -421,30 +430,29 @@ public class WarpSignsManager {
             Location inFront = b.getRelative(directionFacing).getLocation();
             Location oneDown = b.getRelative(directionFacing).getRelative(BlockFace.DOWN).getLocation();
             if ((plugin.getIslands().isSafeLocation(inFront))) {
-                addon.getWarpSignsManager().warpPlayer(user, inFront, owner, directionFacing, pvp);
+                warpPlayer(user, inFront, owner, directionFacing, pvp);
                 return;
             } else if (plugin.getIslands().isSafeLocation(oneDown)) {
                 // Try one block down if this is a wall sign
-                addon.getWarpSignsManager().warpPlayer(user, oneDown, owner, directionFacing, pvp);
+                warpPlayer(user, oneDown, owner, directionFacing, pvp);
                 return;
             }
         } else if (b.getType().name().contains("SIGN")) {
             org.bukkit.block.data.type.Sign s = (org.bukkit.block.data.type.Sign) b.getBlockData();
             BlockFace directionFacing = s.getRotation();
             Location inFront = b.getRelative(directionFacing).getLocation();
-            if ((plugin.getIslands().isSafeLocation(inFront))) {
-                addon.getWarpSignsManager().warpPlayer(user, inFront, owner, directionFacing, pvp);
+            if ((addon.getIslands().isSafeLocation(inFront))) {
+                warpPlayer(user, inFront, owner, directionFacing, pvp);
                 return;
             }
         } else {
             // Warp has been removed
             user.sendMessage("warps.error.does-not-exist");
-            addon.getWarpSignsManager().removeWarp(warpSpot);
+            removeWarp(warpSpot);
             return;
         }
         if (!(plugin.getIslands().isSafeLocation(warpSpot))) {
             user.sendMessage("warps.error.not-safe");
-            return;
         } else {
             final Location actualWarp = new Location(warpSpot.getWorld(), warpSpot.getBlockX() + 0.5D, warpSpot.getBlockY(),
                     warpSpot.getBlockZ() + 0.5D);
@@ -455,7 +463,6 @@ public class WarpSignsManager {
                 user.getWorld().playSound(user.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
             }
             user.teleport(actualWarp);
-            return;
         }
     }
 
@@ -464,7 +471,7 @@ public class WarpSignsManager {
      * @param playerUUID - player's UUID
      * @return true if they have warp
      */
-    public boolean hasWarp(World world, UUID playerUUID) {
+    public boolean hasWarp(@NonNull World world, @NonNull UUID playerUUID) {
         return getWarpMap(world).containsKey(playerUUID);
     }
 
@@ -482,7 +489,7 @@ public class WarpSignsManager {
      * @param defaultValue Default value that will be returned if permission not found.
      * @return String value that follows permissionPrefix.
      */
-    private String getPermissionValue(User user, String permissionPrefix, String defaultValue)
+    private String getPermissionValue(@NonNull User user, @NonNull String permissionPrefix, @NonNull String defaultValue)
     {
         if (user.isPlayer())
         {

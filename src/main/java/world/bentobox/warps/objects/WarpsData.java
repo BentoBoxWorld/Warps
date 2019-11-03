@@ -12,13 +12,15 @@ import com.google.gson.annotations.Expose;
 import world.bentobox.bentobox.database.objects.DataObject;
 
 public class WarpsData implements DataObject {
-    
+
     @Expose
     private String uniqueId = "warps";
     @Expose
     private Map<Location, UUID> warpSigns = new HashMap<>();
-    
-    public WarpsData() {}
+
+    public WarpsData() {
+        // Required by YAML database
+    }
 
     @Override
     public String getUniqueId() {
@@ -31,8 +33,8 @@ public class WarpsData implements DataObject {
     }
 
     public Map<Location,  UUID> getWarpSigns() {
-    		if (warpSigns == null)
-    			return new HashMap<>();
+        if (warpSigns == null)
+            return new HashMap<>();
         return warpSigns;
     }
 

@@ -18,7 +18,7 @@ import world.bentobox.warps.commands.WarpsCommand;
 import world.bentobox.warps.config.Settings;
 
 /**
- * Addin to BSkyBlock that enables welcome warp signs
+ * Addin to BentoBox that enables welcome warp signs
  * @author tastybento
  *
  */
@@ -31,6 +31,11 @@ public class Warp extends Addon {
      * This variable stores string for Level addon.
      */
     private static final String LEVEL_ADDON_NAME = "Level";
+
+    /**
+     * Permission prefix for non-game world operation
+     */
+    public static final String WELCOME_WARP_SIGNS = "welcomewarpsigns";
 
     /**
      * Warp panel Manager
@@ -78,7 +83,11 @@ public class Warp extends Addon {
         // Save default config.yml
         this.saveDefaultConfig();
         // Load the plugin's config
-        this.loadSettings();
+        if (this.loadSettings()) {
+            // Load the master warp and warps command
+            new WarpCommand(this);
+            new WarpsCommand(this);
+        }
     }
 
 
@@ -111,16 +120,14 @@ public class Warp extends Addon {
 
         // Register commands
         this.getPlugin().getAddonsManager().getGameModeAddons().forEach(gameModeAddon -> {
-            if (!this.settings.getDisabledGameModes().contains(gameModeAddon.getDescription().getName()))
+            if (!this.settings.getDisabledGameModes().contains(gameModeAddon.getDescription().getName())
+                    && gameModeAddon.getPlayerCommand().isPresent())
             {
-                if (gameModeAddon.getPlayerCommand().isPresent())
-                {
-                    this.registeredWorlds.add(gameModeAddon.getOverWorld());
+                this.registeredWorlds.add(gameModeAddon.getOverWorld());
 
-                    new WarpCommand(this, gameModeAddon.getPlayerCommand().get());
-                    new WarpsCommand(this, gameModeAddon.getPlayerCommand().get());
-                    this.hooked = true;
-                }
+                new WarpCommand(this, gameModeAddon.getPlayerCommand().get());
+                new WarpsCommand(this, gameModeAddon.getPlayerCommand().get());
+                this.hooked = true;
             }
         });
 
@@ -130,7 +137,7 @@ public class Warp extends Addon {
             warpSignsManager = new WarpSignsManager(this, this.getPlugin());
             warpPanelManager = new WarpPanelManager(this);
             // Load the listener
-            getServer().getPluginManager().registerEvents(new WarpSignsListener(this), this.getPlugin());
+            this.registerListener(new WarpSignsListener(this));
         }
     }
 
@@ -146,7 +153,7 @@ public class Warp extends Addon {
     /**
      * This method loads addon configuration settings in memory.
      */
-    private void loadSettings() {
+    private boolean loadSettings() {
         if (settingsConfig == null) {
             settingsConfig = new Config<>(this, Settings.class);
         }
@@ -155,7 +162,10 @@ public class Warp extends Addon {
             // Disable
             this.logError("WelcomeWarp settings could not load! Addon disabled.");
             this.setState(State.DISABLED);
+            return false;
         }
+        settingsConfig.saveConfigObject(settings);
+        return true;
     }
 
 
@@ -215,8 +225,8 @@ public class Warp extends Addon {
         // Parse keys
         if (metaData.containsKey("world")) {
             world = Bukkit.getWorld((String)metaData.get("world"));
-            if (world == null) return null;
         }
+        if (world == null) return null;
         if (metaData.containsKey("uuid")) {
             try {
                 uuid = UUID.fromString((String)metaData.get("uuid"));
@@ -229,11 +239,11 @@ public class Warp extends Addon {
         case "getSortedWarps":
             return getWarpSignsManager().getSortedWarps(world);
         case "getWarp":
-            return getWarpSignsManager().getWarp(world, uuid);
+            return uuid == null ? null : getWarpSignsManager().getWarp(world, uuid);
         case "getWarpMap":
             return getWarpSignsManager().getWarpMap(world);
         case "hasWarp":
-            return getWarpSignsManager().hasWarp(world, uuid);
+            return uuid == null ? null : getWarpSignsManager().hasWarp(world, uuid);
         case "listWarps":
             return getWarpSignsManager().listWarps(world);
         default:
