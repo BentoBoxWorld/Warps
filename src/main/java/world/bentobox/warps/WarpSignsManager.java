@@ -317,7 +317,7 @@ public class WarpSignsManager {
      */
     private void warpPlayer(@NonNull User user, @NonNull Location inFront, @NonNull UUID signOwner, @NonNull BlockFace directionFacing, boolean pvp) {
         // convert blockface to angle
-        float yaw = blockFaceToFloat(directionFacing);
+        float yaw = Util.blockFaceToFloat(directionFacing);
         final Location actualWarp = new Location(inFront.getWorld(), inFront.getBlockX() + 0.5D, inFront.getBlockY(),
                 inFront.getBlockZ() + 0.5D, yaw, 30F);
         user.teleport(actualWarp);
@@ -330,52 +330,6 @@ public class WarpSignsManager {
         User warpOwner = User.getInstance(signOwner);
         if (!warpOwner.equals(user)) {
             warpOwner.sendMessage("warps.player-warped", "[name]", user.getName());
-        }
-    }
-
-    /**
-     * Converts block face direction to radial degrees. Returns 0 if block face
-     * is not radial.
-     *
-     * @param face
-     * @return degrees
-     */
-    private float blockFaceToFloat(@NonNull BlockFace face) {
-        switch (face) {
-        case EAST:
-            return 90F;
-        case EAST_NORTH_EAST:
-            return 67.5F;
-        case EAST_SOUTH_EAST:
-            return 0F;
-        case NORTH:
-            return 0F;
-        case NORTH_EAST:
-            return 45F;
-        case NORTH_NORTH_EAST:
-            return 22.5F;
-        case NORTH_NORTH_WEST:
-            return 337.5F;
-        case NORTH_WEST:
-            return 315F;
-        case SOUTH:
-            return 180F;
-        case SOUTH_EAST:
-            return 135F;
-        case SOUTH_SOUTH_EAST:
-            return 157.5F;
-        case SOUTH_SOUTH_WEST:
-            return 202.5F;
-        case SOUTH_WEST:
-            return 225F;
-        case WEST:
-            return 270F;
-        case WEST_NORTH_WEST:
-            return 292.5F;
-        case WEST_SOUTH_WEST:
-            return 247.5F;
-        default:
-            return 0F;
         }
     }
 
