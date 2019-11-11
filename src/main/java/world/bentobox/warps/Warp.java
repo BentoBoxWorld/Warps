@@ -83,7 +83,7 @@ public class Warp extends Addon {
         // Save default config.yml
         this.saveDefaultConfig();
         // Load the plugin's config
-        if (this.loadSettings()) {
+        if (this.loadSettings() && settings.isAllowInOtherWorlds()) {
             // Load the master warp and warps command
             new WarpCommand(this);
             new WarpsCommand(this);
