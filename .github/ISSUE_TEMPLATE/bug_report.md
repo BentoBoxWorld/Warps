@@ -5,7 +5,7 @@ about: Create a report to help us improve
 ---
 
 **Description**
-A clear and concise description of what the bug is.
+<!-- A clear and concise description of what the bug is. -->
 
 **Steps to reproduce the behavior:**
 1. Go to '...'
@@ -14,20 +14,13 @@ A clear and concise description of what the bug is.
 4. See error
 
 **Expected behavior**
-A clear and concise description of what you expected to happen.
+<!-- A clear and concise description of what you expected to happen. -->
 
 **Screenshots**
-If applicable, add screenshots to help explain your problem.
+<!-- If applicable, add screenshots to help explain your problem. -->
 
 **Server Information:**
-
-[Please complete the following information:]
- - Database being used (YAML, JSON, MySQL, MongoDB): []
- - OS: [e.g. iOS]
- - Java Version: [e.g. Java 8]
- - BentoBox version: [e.g. 1.7.2.21]
- - Addons installed? [Do '/bentobox version' and copy/paste from the console]
- - Other plugins? [Do '/plugins' and copy/paste from the console]
+Do `bbox version` in the console and paste the result here:
 
 **Additional context**
-Add any other context about the problem here.
+<!-- Add any other context about the problem here. -->
