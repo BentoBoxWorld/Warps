@@ -44,7 +44,10 @@ public class WarpPanelManager {
 
     private boolean hander(World world, User clicker, UUID warpOwner) {
         clicker.closeInventory();
-        addon.getWarpSignsManager().warpPlayer(world, clicker, warpOwner);
+        String playerCommand = addon.getPlugin().getIWM().getAddon(world).map(gm -> gm.getPlayerCommand().map(c -> c.getLabel()).orElse("")).orElse("");
+        String command = addon.getSettings().getWarpCommand() + " " + addon.getPlayers().getName(warpOwner);
+        clicker.getPlayer().performCommand((playerCommand.isEmpty() ? "" : playerCommand + " ") + command);
+        //addon.getWarpSignsManager().warpPlayer(world, clicker, warpOwner);
         return true;
     }
 
