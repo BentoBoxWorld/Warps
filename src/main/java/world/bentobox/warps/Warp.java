@@ -16,6 +16,7 @@ import world.bentobox.level.Level;
 import world.bentobox.warps.commands.WarpCommand;
 import world.bentobox.warps.commands.WarpsCommand;
 import world.bentobox.warps.config.Settings;
+import world.bentobox.warps.listeners.WarpSignsListener;
 
 /**
  * Addin to BentoBox that enables welcome warp signs

@@ -1,4 +1,4 @@
-package world.bentobox.warps;
+package world.bentobox.warps.listeners;
 
 
 import static org.junit.Assert.assertEquals;
@@ -50,7 +50,10 @@ import world.bentobox.bentobox.managers.IslandsManager;
 import world.bentobox.bentobox.managers.LocalesManager;
 import world.bentobox.bentobox.managers.PlaceholdersManager;
 import world.bentobox.bentobox.util.Util;
+import world.bentobox.warps.Warp;
+import world.bentobox.warps.WarpSignsManager;
 import world.bentobox.warps.config.Settings;
+import world.bentobox.warps.listeners.WarpSignsListener;
 
 /**
  * @author tastybento
