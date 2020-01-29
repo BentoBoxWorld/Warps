@@ -1,9 +1,7 @@
 package world.bentobox.warps;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +16,6 @@ import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -29,7 +26,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 import world.bentobox.bentobox.BentoBox;
-import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.database.objects.Island;
@@ -187,6 +183,8 @@ public class WarpSignsManager {
                     if (k != null && k.getWorld() != null && k.getBlock().getType().name().contains("SIGN")) {
                         // Add to map
                         getWarpMap(k.getWorld()).put(v, k);
+                        // Add to cache
+                        addon.getWarpPanelManager().getSignCacheManager().cacheSign(k.getWorld(), v);
                     }
                 });
             }
@@ -253,58 +251,6 @@ public class WarpSignsManager {
      */
     public void saveWarpList() {
         handler.saveObject(warpsData .save(worldsWarpList));
-    }
-
-    /**
-     * Gets the warp sign text and material type for player's UUID in world
-     *
-     * @param world - world to look in
-     * @param uuid - player's uuid
-     * @return Sign's content and type
-     */
-    @NonNull
-    public SignCacheItem getSignInfo(@NonNull World world, @NonNull UUID uuid) {
-        List<String> result = new ArrayList<>();
-        //get the sign info
-        Location signLocation = getWarp(world, uuid);
-        if (signLocation != null && signLocation.getBlock().getType().name().contains("SIGN")) {
-            Sign sign = (Sign)signLocation.getBlock().getState();
-            result.addAll(Arrays.asList(sign.getLines()));
-            // Clean up - remove the [WELCOME] line
-            result.remove(0);
-            // Remove any trailing blank lines
-            result.removeIf(String::isEmpty);
-            // Set the initial color per lore setting
-            for (int i = 0; i< result.size(); i++) {
-                result.set(i, ChatColor.translateAlternateColorCodes('&', addon.getSettings().getLoreFormat()) + result.get(i));
-            }
-            // Get the sign type
-
-            String prefix = plugin.getIWM().getAddon(world).map(Addon::getPermissionPrefix).orElse("");
-
-            Material icon;
-
-            if (!prefix.isEmpty())
-            {
-                icon = Material.matchMaterial(
-                        this.getPermissionValue(User.getInstance(uuid),
-                                prefix + "island.warp",
-                                this.addon.getSettings().getIcon()));
-            }
-            else
-            {
-                icon = Material.matchMaterial(this.addon.getSettings().getIcon());
-            }
-
-            if (icon == null || icon.name().contains("SIGN")) {
-                return new SignCacheItem(result, Material.valueOf(sign.getType().name().replace("WALL_", "")));
-            } else {
-                return new SignCacheItem(result, icon);
-            }
-        } else {
-            addon.getWarpSignsManager().removeWarp(world, uuid);
-        }
-        return new SignCacheItem(Collections.emptyList(), Material.AIR);
     }
 
     /**

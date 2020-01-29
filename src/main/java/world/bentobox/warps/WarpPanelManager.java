@@ -127,4 +127,8 @@ public class WarpPanelManager {
         signCacheManager.saveCache();        
     }
 
+    public SignCacheManager getSignCacheManager() {
+        return this.signCacheManager;
+    }
+
 }

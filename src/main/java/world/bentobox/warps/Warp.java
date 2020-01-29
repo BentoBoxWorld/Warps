@@ -135,8 +135,8 @@ public class Warp extends Addon {
         if (hooked)
         {
             // Start warp signs
-            warpSignsManager = new WarpSignsManager(this, this.getPlugin());
             warpPanelManager = new WarpPanelManager(this);
+            warpSignsManager = new WarpSignsManager(this, this.getPlugin());            
             // Load the listener
             this.registerListener(new WarpSignsListener(this));
         }
