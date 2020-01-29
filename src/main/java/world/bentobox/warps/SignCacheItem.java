@@ -4,19 +4,23 @@ import java.util.List;
 
 import org.bukkit.Material;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * Stores info on a warp sign
  * @author tastybento
  *
  */
-public class SignCache {
+public class SignCacheItem {
+    @Expose
     private final List<String> signText;
+    @Expose
     private final Material type;
     /**
      * @param signText
      * @param type
      */
-    public SignCache(List<String> signText, Material type) {
+    public SignCacheItem(List<String> signText, Material type) {
         this.signText = signText;
         this.type = type;
     }

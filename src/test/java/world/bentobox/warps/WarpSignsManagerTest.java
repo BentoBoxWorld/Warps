@@ -211,10 +211,7 @@ public class WarpSignsManagerTest {
         
         // WarpPanelManager
         when(addon.getWarpPanelManager()).thenReturn(wpm);
-        
-        // User
-        
-        
+                
         wsm = new WarpSignsManager(addon, plugin);
     }
 
@@ -417,7 +414,7 @@ public class WarpSignsManagerTest {
      */
     @Test
     public void testGetSignInfo() {
-        SignCache sc = wsm.getSignInfo(world, uuid);
+        SignCacheItem sc = wsm.getSignInfo(world, uuid);
         assertEquals(Material.ACACIA_SIGN, sc.getType());
     }
 

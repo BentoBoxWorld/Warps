@@ -74,7 +74,7 @@ public class WarpSignsManager {
         this.addon = addon;
         this.plugin = plugin;
         // Set up the database handler
-        // Note that these are saved by the BSkyBlock database
+        // Note that these are saved by the BentoBox database
         handler = new Database<>(addon, WarpsData.class);
         // Load the warps
         loadWarpList();
@@ -263,7 +263,7 @@ public class WarpSignsManager {
      * @return Sign's content and type
      */
     @NonNull
-    public SignCache getSignInfo(@NonNull World world, @NonNull UUID uuid) {
+    public SignCacheItem getSignInfo(@NonNull World world, @NonNull UUID uuid) {
         List<String> result = new ArrayList<>();
         //get the sign info
         Location signLocation = getWarp(world, uuid);
@@ -297,14 +297,14 @@ public class WarpSignsManager {
             }
 
             if (icon == null || icon.name().contains("SIGN")) {
-                return new SignCache(result, Material.valueOf(sign.getType().name().replace("WALL_", "")));
+                return new SignCacheItem(result, Material.valueOf(sign.getType().name().replace("WALL_", "")));
             } else {
-                return new SignCache(result, icon);
+                return new SignCacheItem(result, icon);
             }
         } else {
             addon.getWarpSignsManager().removeWarp(world, uuid);
         }
-        return new SignCache(Collections.emptyList(), Material.AIR);
+        return new SignCacheItem(Collections.emptyList(), Material.AIR);
     }
 
     /**

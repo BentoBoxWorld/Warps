@@ -148,6 +148,8 @@ public class Warp extends Addon {
         // Save the warps
         if (warpSignsManager != null)
             warpSignsManager.saveWarpList();
+        if (warpPanelManager != null)
+            warpPanelManager.saveCache();
     }
 
 
@@ -172,7 +174,7 @@ public class Warp extends Addon {
 
     /**
      * Get warp panel manager
-     * @return
+     * @return Warp Panel Manager
      */
     public WarpPanelManager getWarpPanelManager() {
         return warpPanelManager;

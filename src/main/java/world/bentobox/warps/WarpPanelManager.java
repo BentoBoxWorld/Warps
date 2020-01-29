@@ -1,9 +1,7 @@
 package world.bentobox.warps;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
@@ -21,20 +19,19 @@ public class WarpPanelManager {
     private static final int PANEL_MAX_SIZE = 52;
     private Warp addon;
     // This is a cache of signs
-    private Map<World, Map<UUID, SignCache>> cachedSigns = new HashMap<>();
-
-
+    private SignCacheManager signCacheManager;
 
     public WarpPanelManager(Warp addon) {
         this.addon = addon;
+        signCacheManager = new SignCacheManager(addon);
     }
 
     private PanelItem getPanelItem(World world, UUID warpOwner) {
         PanelItemBuilder pib = new PanelItemBuilder()
                 .name(addon.getSettings().getNameFormat() + addon.getPlugin().getPlayers().getName(warpOwner))
-                .description(getSign(world, warpOwner))
+                .description(signCacheManager.getSign(world, warpOwner))
                 .clickHandler((panel, clicker, click, slot) -> hander(world, clicker, warpOwner));
-        Material icon = getSignIcon(world, warpOwner);
+        Material icon = signCacheManager.getSignIcon(world, warpOwner);
         if (icon.equals(Material.PLAYER_HEAD)) {
             return pib.icon(addon.getPlayers().getName(warpOwner)).build();
         } else {
@@ -57,35 +54,6 @@ public class WarpPanelManager {
                 .name(addon.getSettings().getNameFormat() + user.getTranslation("warps.random"))
                 .clickHandler((panel, clicker, click, slot) -> hander(world, clicker, warpOwner))
                 .icon(Material.END_CRYSTAL).build();
-    }
-
-    private Material getSignIcon(World world, UUID warpOwner) {
-        // Add the worlds if we haven't seen this before
-        cachedSigns.putIfAbsent(world, new HashMap<>());
-        if (cachedSigns.get(world).containsKey(warpOwner)) {
-            return cachedSigns.get(world).get(warpOwner).getType();
-        }
-        // Not in cache
-        SignCache sc = addon.getWarpSignsManager().getSignInfo(world, warpOwner);
-        cachedSigns.get(world).put(warpOwner, sc);
-        return sc.getType();
-    }
-
-
-    /**
-     * Gets sign text and cache it
-     * @param playerUUID
-     * @return sign text in a list
-     */
-    private List<String> getSign(World world, UUID playerUUID) {
-        // Add the worlds if we haven't seen this before
-        cachedSigns.putIfAbsent(world, new HashMap<>());
-        if (cachedSigns.get(world).containsKey(playerUUID)) {
-            return cachedSigns.get(world).get(playerUUID).getSignText();
-        }
-        SignCache result = addon.getWarpSignsManager().getSignInfo(world, playerUUID);
-        cachedSigns.get(world).put(playerUUID, result);
-        return result.getSignText();
     }
 
     /**
@@ -148,11 +116,15 @@ public class WarpPanelManager {
 
     /**
      * Removes sign text from the cache
-     * @param key
+     * @param world - world
+     * @param key - uuid of owner
      */
     public void removeWarp(World world, UUID key) {
-        cachedSigns.putIfAbsent(world, new HashMap<>());
-        cachedSigns.get(world).remove(key);
+        signCacheManager.removeWarp(world, key);        
+    }
+
+    public void saveCache() {
+        signCacheManager.saveCache();        
     }
 
 }
