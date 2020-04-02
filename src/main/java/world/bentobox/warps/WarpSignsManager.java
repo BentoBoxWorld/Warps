@@ -47,6 +47,7 @@ import world.bentobox.warps.objects.WarpsData;
  */
 public class WarpSignsManager {
     private static final int MAX_WARPS = 600;
+    private static final String WARPS = "warps";
     private BentoBox plugin;
     // Map of all warps stored as player, warp sign Location
     private Map<World, Map<UUID, Location>> worldsWarpList;
@@ -176,11 +177,11 @@ public class WarpSignsManager {
     /**
      * Load the warps and check if they still exist
      */
-    private void loadWarpList() {
-        addon.getLogger().info("Loading warps...");
+    void loadWarpList() {
+        addon.log("Loading warps...");
         worldsWarpList = new HashMap<>();
-        if (handler.objectExists("warps")) {
-            warpsData = handler.loadObject("warps");
+        if (handler.objectExists(WARPS)) {
+            warpsData = handler.loadObject(WARPS);
             // Load into map
             if (warpsData != null) {
                 warpsData.getWarpSigns().forEach((k,v) -> {
@@ -189,6 +190,8 @@ public class WarpSignsManager {
                         getWarpMap(k.getWorld()).put(v, k);
                     }
                 });
+            } else {
+                warpsData = new WarpsData();
             }
         }
     }
