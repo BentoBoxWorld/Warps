@@ -1,4 +1,4 @@
-package world.bentobox.warps;
+package world.bentobox.warps.listeners;
 
 import java.util.Map;
 import java.util.UUID;
@@ -17,8 +17,11 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
 import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.api.events.team.TeamEvent.TeamKickEvent;
+import world.bentobox.bentobox.api.events.team.TeamEvent.TeamLeaveEvent;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.util.Util;
+import world.bentobox.warps.Warp;
 import world.bentobox.warps.event.WarpRemoveEvent;
 
 /**
@@ -41,6 +44,20 @@ public class WarpSignsListener implements Listener {
         this.plugin = addon.getPlugin();
     }
 
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onPlayerLeave(TeamLeaveEvent e) {
+        // Remove any warp signs from this game mode
+        addon.getWarpSignsManager().removeWarp(e.getIsland().getWorld(), e.getPlayerUUID());
+        User.getInstance(e.getPlayerUUID()).sendMessage("warps.deactivate");
+    }
+    
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void onPlayerLeave(TeamKickEvent e) {
+        // Remove any warp signs from this game mode
+        addon.getWarpSignsManager().removeWarp(e.getIsland().getWorld(), e.getPlayerUUID());
+        User.getInstance(e.getPlayerUUID()).sendMessage("warps.deactivate");
+    }
+    
     /**
      * Checks to see if a sign has been broken
      * @param e - event

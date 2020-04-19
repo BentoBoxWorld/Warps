@@ -24,6 +24,7 @@ import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -37,6 +38,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.database.AbstractDatabaseHandler;
+import world.bentobox.bentobox.database.DatabaseSetup;
 import world.bentobox.bentobox.managers.PlayersManager;
 import world.bentobox.warps.config.Settings;
 
@@ -45,7 +48,7 @@ import world.bentobox.warps.config.Settings;
  *
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Bukkit.class})
+@PrepareForTest({Bukkit.class, DatabaseSetup.class})
 public class WarpPanelManagerTest {
 
     @Mock
@@ -63,6 +66,20 @@ public class WarpPanelManagerTest {
     private UUID uuid;
     @Mock
     private Settings settings;
+    @Mock
+    private static AbstractDatabaseHandler<Object> handler;
+    
+    @SuppressWarnings("unchecked")
+    @BeforeClass
+    public static void beforeClass() {
+        // This has to be done beforeClass otherwise the tests will interfere with each other
+        handler = mock(AbstractDatabaseHandler.class);
+        // Database
+        PowerMockito.mockStatic(DatabaseSetup.class);
+        DatabaseSetup dbSetup = mock(DatabaseSetup.class);
+        when(DatabaseSetup.getDatabase()).thenReturn(dbSetup);
+        when(dbSetup.getHandler(any())).thenReturn(handler);
+    }
 
     /**
      * @throws java.lang.Exception
@@ -127,7 +144,7 @@ public class WarpPanelManagerTest {
         when(wsm.getWarp(any(), any())).thenReturn(location);
 
         // Sign cache
-        SignCache sc = mock(SignCache.class);
+        SignCacheItem sc = mock(SignCacheItem.class);
         when(sc.getSignText()).thenReturn(Collections.singletonList("[welcome]"));
         when(sc.getType()).thenReturn(sign_type);
         when(wsm.getSignInfo(any(), any())).thenReturn(sc);

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.bukkit.World;
 
 import world.bentobox.bentobox.api.commands.CompositeCommand;
+import world.bentobox.bentobox.api.commands.DelayedTeleportCommand;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.warps.Warp;
 
@@ -18,7 +19,7 @@ import world.bentobox.warps.Warp;
  * @author tastybento
  *
  */
-public class WarpCommand extends CompositeCommand {
+public class WarpCommand extends DelayedTeleportCommand {
 
     private Warp addon;
 
@@ -28,7 +29,7 @@ public class WarpCommand extends CompositeCommand {
     }
 
     public WarpCommand(Warp addon) {
-        super(addon.getSettings().getWarpCommand());
+        super(addon, addon.getSettings().getWarpCommand());
         this.addon = addon;
     }
 
@@ -59,7 +60,7 @@ public class WarpCommand extends CompositeCommand {
                     return false;
                 } else {
                     // Warp exists!
-                    addon.getWarpSignsManager().warpPlayer(world, user, foundWarp);
+                    this.delayCommand(user, () -> addon.getWarpSignsManager().warpPlayer(world, user, foundWarp));
                     return true;
                 }
             }

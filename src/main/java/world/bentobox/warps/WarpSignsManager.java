@@ -47,6 +47,7 @@ import world.bentobox.warps.objects.WarpsData;
  */
 public class WarpSignsManager {
     private static final int MAX_WARPS = 600;
+    private static final String WARPS = "warps";
     private BentoBox plugin;
     // Map of all warps stored as player, warp sign Location
     private Map<World, Map<UUID, Location>> worldsWarpList;
@@ -74,7 +75,7 @@ public class WarpSignsManager {
         this.addon = addon;
         this.plugin = plugin;
         // Set up the database handler
-        // Note that these are saved by the BSkyBlock database
+        // Note that these are saved by the BentoBox database
         handler = new Database<>(addon, WarpsData.class);
         // Load the warps
         loadWarpList();
@@ -176,11 +177,11 @@ public class WarpSignsManager {
     /**
      * Load the warps and check if they still exist
      */
-    private void loadWarpList() {
-        addon.getLogger().info("Loading warps...");
+    void loadWarpList() {
+        addon.log("Loading warps...");
         worldsWarpList = new HashMap<>();
-        if (handler.objectExists("warps")) {
-            warpsData = handler.loadObject("warps");
+        if (handler.objectExists(WARPS)) {
+            warpsData = handler.loadObject(WARPS);
             // Load into map
             if (warpsData != null) {
                 warpsData.getWarpSigns().forEach((k,v) -> {
@@ -189,6 +190,8 @@ public class WarpSignsManager {
                         getWarpMap(k.getWorld()).put(v, k);
                     }
                 });
+            } else {
+                warpsData = new WarpsData();
             }
         }
     }
@@ -263,7 +266,7 @@ public class WarpSignsManager {
      * @return Sign's content and type
      */
     @NonNull
-    public SignCache getSignInfo(@NonNull World world, @NonNull UUID uuid) {
+    public SignCacheItem getSignInfo(@NonNull World world, @NonNull UUID uuid) {
         List<String> result = new ArrayList<>();
         //get the sign info
         Location signLocation = getWarp(world, uuid);
@@ -297,14 +300,14 @@ public class WarpSignsManager {
             }
 
             if (icon == null || icon.name().contains("SIGN")) {
-                return new SignCache(result, Material.valueOf(sign.getType().name().replace("WALL_", "")));
+                return new SignCacheItem(result, Material.valueOf(sign.getType().name().replace("WALL_", "")));
             } else {
-                return new SignCache(result, icon);
+                return new SignCacheItem(result, icon);
             }
         } else {
             addon.getWarpSignsManager().removeWarp(world, uuid);
         }
-        return new SignCache(Collections.emptyList(), Material.AIR);
+        return new SignCacheItem(Collections.emptyList(), Material.AIR);
     }
 
     /**

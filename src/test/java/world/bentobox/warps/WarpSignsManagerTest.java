@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -211,10 +212,7 @@ public class WarpSignsManagerTest {
         
         // WarpPanelManager
         when(addon.getWarpPanelManager()).thenReturn(wpm);
-        
-        // User
-        
-        
+                
         wsm = new WarpSignsManager(addon, plugin);
     }
 
@@ -292,7 +290,7 @@ public class WarpSignsManagerTest {
      */
     @Test
     public void testWarpSignsManager() throws Exception {
-        verify(logger).info("Loading warps...");
+        verify(addon).log("Loading warps...");
         verify(load).getWarpSigns();
         verify(block).getType();
     }
@@ -417,7 +415,7 @@ public class WarpSignsManagerTest {
      */
     @Test
     public void testGetSignInfo() {
-        SignCache sc = wsm.getSignInfo(world, uuid);
+        SignCacheItem sc = wsm.getSignInfo(world, uuid);
         assertEquals(Material.ACACIA_SIGN, sc.getType());
     }
 
@@ -447,4 +445,34 @@ public class WarpSignsManagerTest {
         assertFalse(wsm.hasWarp(world, UUID.randomUUID()));
     }
 
+    /**
+     * Test method for {@link world.bentobox.warps.WarpSignsManager#loadWarpList()}.
+     */
+    @Test
+    public void testLoadWarpListNoWarpTable() {
+        // Run again but with no database table
+        when(handler.objectExists(anyString())).thenReturn(false);
+        wsm = new WarpSignsManager(addon, plugin);
+        // Save
+        wsm.saveWarpList();
+        // Default load in constructor check
+        verify(addon, times(2)).log(eq("Loading warps..."));
+        assertTrue(wsm.getWarpMap(world).isEmpty());
+    }
+    
+    /**
+     * Test method for {@link world.bentobox.warps.WarpSignsManager#loadWarpList()}.
+     * @throws Exception 
+     */
+    @Test
+    public void testLoadWarpListEmptyWarpTable() throws Exception {
+        // Run again but with no data in table
+        when(handler.loadObject(anyString())).thenReturn(null);
+        wsm = new WarpSignsManager(addon, plugin);
+        // Save
+        wsm.saveWarpList();
+        // Default load in constructor check
+        verify(addon, times(2)).log(eq("Loading warps..."));
+        assertTrue(wsm.getWarpMap(world).isEmpty());
+    }
 }

@@ -8,9 +8,9 @@
     <artifactId>warps</artifactId>
     <version>${revision}</version>
 
-    <name>WelcomeWarpSigns</name>
-    <description>WelcomeWarpSigns is an add-on for BentoBox, an expandable Minecraft Bukkit plugin for island-type games like ASkyBlock or AcidIsland.</description>
-    <url>https://github.com/BentoBoxWorld/addon-welcomewarpsigns</url>
+    <name>Warps</name>
+    <description>Warps is an add-on for BentoBox, an expandable Minecraft Bukkit plugin for island-type games like ASkyBlock or AcidIsland.</description>
+    <url>https://github.com/BentoBoxWorld/Warps</url>
     <inceptionYear>2018</inceptionYear>
 
     <developers>
@@ -25,19 +25,19 @@
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/BentoBoxWorld/addon-welcomewarpsigns.git</connection>
-        <developerConnection>scm:git:git@github.com:BentoBoxWorld/addon-welcomewarpsigns.git</developerConnection>
-        <url>https://github.com/BentoBoxWorld/addon-welcomewarpsigns</url>
+        <connection>scm:git:https://github.com/BentoBoxWorld/Warps.git</connection>
+        <developerConnection>scm:git:git@github.com:BentoBoxWorld/Warps.git</developerConnection>
+        <url>https://github.com/BentoBoxWorld/Warps</url>
     </scm>
 
     <ciManagement>
         <system>jenkins</system>
-        <url>http://ci.codemc.org/job/BentoBoxWorld/job/addon-welcomewarpsigns</url>
+        <url>http://ci.codemc.org/job/BentoBoxWorld/job/Warps</url>
     </ciManagement>
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/BentoBoxWorld/addon-welcomewarpsigns/issues</url>
+        <url>https://github.com/BentoBoxWorld/Warps/issues</url>
     </issueManagement>
 
     <distributionManagement>
@@ -66,7 +66,7 @@
         <!-- Do not change unless you want different name for local builds. -->
         <build.number>-LOCAL</build.number>
         <!-- This allows to change between versions. -->
-        <build.version>1.9.1</build.version>
+        <build.version>1.9.3</build.version>
     </properties>
 
     <!-- Profiles will allow to automatically change build version. -->
