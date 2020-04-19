@@ -5,7 +5,7 @@ icon: OAK_SIGN
 
 authors: tastybento
 
-softdepend: AcidIsland, BSkyBlock
+softdepend: AcidIsland, BSkyBlock, CaveBlock, SkyGrid, AOneBlock
 
 permissions:
   bskyblock.island.warp:
@@ -33,5 +33,12 @@ permissions:
     description: Player can use warp or warps commands
     default: true
   skygrid.island.addwarp:
+    description: Player can create a welcome warp sign
+    default: true
+
+  aoneblock.island.warp:
+    description: Player can use warp or warps commands
+    default: true
+  aoneblock.island.addwarp:
     description: Player can create a welcome warp sign
     default: true
