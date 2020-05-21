@@ -84,7 +84,7 @@ public class Warp extends Addon {
         // Save default config.yml
         this.saveDefaultConfig();
         // Load the plugin's config
-        if (this.loadSettings() && settings.isAllowInOtherWorlds()) {
+        if (this.loadSettings() && getSettings().isAllowInOtherWorlds()) {
             // Load the master warp and warps command
             new WarpCommand(this);
             new WarpsCommand(this);
@@ -100,7 +100,7 @@ public class Warp extends Addon {
     {
         super.onReload();
 
-        if (this.hooked) {
+        if (this.hooked || getSettings().isAllowInOtherWorlds()) {
             this.warpSignsManager.saveWarpList();
 
             this.loadSettings();
@@ -132,13 +132,16 @@ public class Warp extends Addon {
             }
         });
 
-        if (hooked)
+        if (hooked || getSettings().isAllowInOtherWorlds())
         {
             // Start warp signs
             warpSignsManager = new WarpSignsManager(this, this.getPlugin());
             warpPanelManager = new WarpPanelManager(this);
             // Load the listener
             this.registerListener(new WarpSignsListener(this));
+        } else {
+            logWarning("Addon did not hook into anything and is not running stand-alone");
+            this.setState(State.DISABLED);
         }
     }
 

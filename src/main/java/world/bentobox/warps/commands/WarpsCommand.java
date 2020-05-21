@@ -43,7 +43,10 @@ public class WarpsCommand extends CompositeCommand {
     @Override
     public boolean execute(User user, String label, List<String> args) {
         World world = getWorld() == null ? user.getWorld() : getWorld();
-        if (addon.getWarpSignsManager().listWarps(world).isEmpty()) {
+        if (addon
+                .getWarpSignsManager()
+                .listWarps(world)
+                .isEmpty()) {
             user.sendMessage("warps.error.no-warps-yet");
             user.sendMessage("warps.warpTip", "[text]", addon.getSettings().getWelcomeLine());
             return false;
