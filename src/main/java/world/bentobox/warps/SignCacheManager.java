@@ -72,8 +72,9 @@ public class SignCacheManager {
      * @param key - uuid of owner
      */
     void removeWarp(World world, UUID key) {
-        cachedSigns.putIfAbsent(world, new HashMap<>());
-        cachedSigns.get(world).remove(key);
+        if (cachedSigns.containsKey(world)) {
+            cachedSigns.get(world).remove(key);
+        }
     }
 
 }

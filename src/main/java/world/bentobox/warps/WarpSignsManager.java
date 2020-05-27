@@ -245,9 +245,10 @@ public class WarpSignsManager {
         if (getWarpMap(world).containsKey(uuid)) {
             popSign(getWarpMap(world).get(uuid));
             getWarpMap(world).remove(uuid);
-            // Remove sign from warp panel cache
-            addon.getWarpPanelManager().removeWarp(world, uuid);
+            
         }
+        // Remove sign from warp panel cache
+        addon.getWarpPanelManager().removeWarp(world, uuid);
         saveWarpList();
     }
 
@@ -255,7 +256,8 @@ public class WarpSignsManager {
      * Saves the warp lists to the database
      */
     public void saveWarpList() {
-        handler.saveObject(warpsData .save(worldsWarpList));
+        handler.saveObject(warpsData.save(worldsWarpList));
+        addon.getWarpPanelManager().saveCache();
     }
 
     /**
