@@ -24,6 +24,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -325,7 +326,7 @@ public class WarpSignsManager {
         float yaw = Util.blockFaceToFloat(directionFacing);
         final Location actualWarp = new Location(inFront.getWorld(), inFront.getBlockX() + 0.5D, inFront.getBlockY(),
                 inFront.getBlockZ() + 0.5D, yaw, 30F);
-        user.teleport(actualWarp);
+        Util.teleportAsync(user.getPlayer(), actualWarp, TeleportCause.COMMAND);
         if (pvp) {
             user.sendMessage("protection.flags.PVP_OVERWORLD.active");
             user.getWorld().playSound(user.getLocation(), Sound.ENTITY_ARROW_HIT, 1F, 1F);
@@ -339,7 +340,7 @@ public class WarpSignsManager {
     }
 
     /**
-     * Warps a user to the warp owner by owner
+     * Warps a user to the warp owned by owner
      *
      * @param world - world to check
      * @param user - user who is warping
@@ -421,7 +422,7 @@ public class WarpSignsManager {
             } else {
                 user.getWorld().playSound(user.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
             }
-            user.teleport(actualWarp);
+            Util.teleportAsync(user.getPlayer(), actualWarp, TeleportCause.COMMAND);
         }
     }
 

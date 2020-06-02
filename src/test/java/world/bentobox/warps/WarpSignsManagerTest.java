@@ -31,6 +31,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.plugin.PluginManager;
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.After;
@@ -431,7 +432,8 @@ public class WarpSignsManagerTest {
         @Nullable
         User u = User.getInstance(p);
         wsm.warpPlayer(world, u, uuid);
-        verify(p).teleport(any(Location.class));
+        PowerMockito.verifyStatic(Util.class);
+        Util.teleportAsync(eq(p), any(), eq(TeleportCause.COMMAND));
         verify(player).sendMessage("warps.player-warped");
     }
 
