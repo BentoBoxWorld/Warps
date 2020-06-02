@@ -21,6 +21,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -67,7 +68,7 @@ import world.bentobox.warps.objects.WarpsData;
  *
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Bukkit.class, Util.class, DatabaseSetup.class})
+@PrepareForTest({Bukkit.class, Util.class, DatabaseSetup.class, ChatColor.class})
 public class WarpSignsManagerTest {
 
     @Mock
@@ -135,11 +136,12 @@ public class WarpSignsManagerTest {
         
         // Player
         when(player.getUniqueId()).thenReturn(uuid);
+        User.setPlugin(plugin);
         User.getInstance(player);
         
         // Locales
         LocalesManager lm = mock(LocalesManager.class);
-        when(lm.get(Mockito.any(), Mockito.any())).thenAnswer((Answer<String>) invocation -> invocation.getArgument(1, String.class));
+        when(lm.get(Mockito.any(), Mockito.any())).thenReturn(null);
         when(plugin.getLocalesManager()).thenReturn(lm);
         // Return the same string
         PlaceholdersManager phm = mock(PlaceholdersManager.class);

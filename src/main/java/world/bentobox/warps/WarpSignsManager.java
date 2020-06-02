@@ -257,7 +257,7 @@ public class WarpSignsManager {
      * Saves the warp lists to the database
      */
     public void saveWarpList() {
-        handler.saveObject(warpsData.save(worldsWarpList));
+        handler.saveObjectAsync(warpsData.save(worldsWarpList));
         addon.getWarpPanelManager().saveCache();
     }
 

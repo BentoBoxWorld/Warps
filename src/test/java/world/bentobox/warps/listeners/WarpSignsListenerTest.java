@@ -5,12 +5,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +37,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -53,7 +52,6 @@ import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.Warp;
 import world.bentobox.warps.WarpSignsManager;
 import world.bentobox.warps.config.Settings;
-import world.bentobox.warps.listeners.WarpSignsListener;
 
 /**
  * @author tastybento
@@ -140,12 +138,7 @@ public class WarpSignsListenerTest {
         when(addon.getPlugin()).thenReturn(plugin);
         User.setPlugin(plugin);
         LocalesManager lm = mock(LocalesManager.class);
-        when(lm.get(any(), any())).thenAnswer(new Answer<String>(){
-
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable {
-                return invocation.getArgument(1, String.class);
-            }});
+        when(lm.get(any(), any())).thenReturn(null);
         when(plugin.getLocalesManager()).thenReturn(lm);
 
         // Lines
@@ -167,12 +160,14 @@ public class WarpSignsListenerTest {
         when(iwm.getAddon(any())).thenReturn(Optional.empty());
         when(iwm.inWorld(any(World.class))).thenReturn(true);
 
+        Answer<String> answer = invocation -> invocation.getArgument(1, String.class);
+
         // Util
         PowerMockito.mockStatic(Util.class);
         when(Util.getWorld(any())).thenReturn(world);
+        when(Util.stripSpaceAfterColorCodes(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class));
 
         // Locales
-        Answer<String> answer = invocation -> invocation.getArgument(1, String.class);
         when(lm.get(any(User.class), anyString())).thenAnswer(answer);
         when(plugin.getLocalesManager()).thenReturn(lm);
 
