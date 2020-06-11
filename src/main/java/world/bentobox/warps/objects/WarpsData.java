@@ -10,7 +10,9 @@ import org.bukkit.World;
 import com.google.gson.annotations.Expose;
 
 import world.bentobox.bentobox.database.objects.DataObject;
+import world.bentobox.bentobox.database.objects.Table;
 
+@Table(name = "WarpsData")
 public class WarpsData implements DataObject {
 
     @Expose
