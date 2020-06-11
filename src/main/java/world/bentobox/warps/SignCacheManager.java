@@ -35,7 +35,7 @@ public class SignCacheManager {
     }
     
     void saveCache() {
-        cachedSigns.forEach((w, m) -> handler.saveObject(new SignCache(w, m)));
+        cachedSigns.forEach((w, m) -> handler.saveObjectAsync(new SignCache(w, m)));
     }
 
     Material getSignIcon(World world, UUID warpOwner) {
