@@ -2,16 +2,43 @@ name: Warps
 main: world.bentobox.warps.Warp
 version: ${version}${build.number}
 icon: OAK_SIGN
-api-version: 1.14
 
 authors: tastybento
 
 softdepend: AcidIsland, BSkyBlock, CaveBlock, SkyGrid, AOneBlock
 
 permissions:
-  '[gamemode].island.warp':
+  bskyblock.island.warp:
     description: Player can use warp or warps commands
     default: true
-  '[gamemode].island.addwarp':
+  bskyblock.island.addwarp:
+    description: Player can create a welcome warp sign
+    default: true
+
+  acidisland.island.warp:
+    description: Player can use warp or warps commands
+    default: true
+  acidisland.island.addwarp:
+    description: Player can create a welcome warp sign
+    default: true
+
+  caveblock.island.warp:
+    description: Player can use warp or warps commands
+    default: true
+  caveblock.island.addwarp:
+    description: Player can create a welcome warp sign
+    default: true
+
+  skygrid.island.warp:
+    description: Player can use warp or warps commands
+    default: true
+  skygrid.island.addwarp:
+    description: Player can create a welcome warp sign
+    default: true
+
+  aoneblock.island.warp:
+    description: Player can use warp or warps commands
+    default: true
+  aoneblock.island.addwarp:
     description: Player can create a welcome warp sign
     default: true
