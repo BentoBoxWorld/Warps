@@ -17,7 +17,7 @@ public class SignCacheManager {
     private Warp addon;
     // Database handler for level data
     private Database<SignCache> handler;
-    
+
     public SignCacheManager(Warp addon) {
         this.addon = addon;
         handler = new Database<>(addon, SignCache.class);
@@ -33,9 +33,9 @@ public class SignCacheManager {
             }
         });
     }
-    
+
     void saveCache() {
-        cachedSigns.forEach((w, m) -> handler.saveObject(new SignCache(w, m)));
+        cachedSigns.forEach((w, m) -> handler.saveObjectAsync(new SignCache(w, m)));
     }
 
     Material getSignIcon(World world, UUID warpOwner) {
@@ -65,7 +65,7 @@ public class SignCacheManager {
         cachedSigns.get(world).put(playerUUID, result);
         return result.getSignText();
     }
-    
+
     /**
      * Removes sign text from the cache
      * @param world - world
