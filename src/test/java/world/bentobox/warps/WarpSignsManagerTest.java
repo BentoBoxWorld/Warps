@@ -84,8 +84,6 @@ public class WarpSignsManagerTest {
     @Mock
     private Location location;
     @Mock
-    private Chunk chunk;
-    @Mock
     private Block block;
     @Mock
     private PluginManager pim;
@@ -161,14 +159,11 @@ public class WarpSignsManagerTest {
         when(location.getBlockY()).thenReturn(24);
         when(location.getBlockZ()).thenReturn(25);
         when(world.getEnvironment()).thenReturn(Environment.NORMAL);
-
-        // Chunk
-        when(chunk.isLoaded()).thenReturn(true);
+        when(world.isChunkLoaded(anyInt(), anyInt())).thenReturn(true);
 
         // Block
         when(block.getType()).thenReturn(Material.ACACIA_SIGN);
         when(block.getLocation()).thenReturn(location);
-        when(block.getChunk()).thenReturn(chunk);
         Sign sign = mock(Sign.class);
         String[] lines = {"[Welcome]", "line2", "line3", "line4"};
         when(sign.getLines()).thenReturn(lines);

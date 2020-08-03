@@ -187,7 +187,8 @@ public class WarpSignsManager {
             if (warpsData != null) {
                 warpsData.getWarpSigns().forEach((k,v) -> {
                     if (k != null && k.getWorld() != null) {
-                        if (k.getBlock().getChunk().isLoaded() && !k.getBlock().getType().name().contains("SIGN")) {
+                        if (k.getWorld().isChunkLoaded(k.getBlockX() >> 4, k.getBlockZ() >> 4)
+                                && !k.getBlock().getType().name().contains("SIGN")) {
                             return;
                         }
 
