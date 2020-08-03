@@ -4,10 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -53,11 +50,14 @@ public class WarpSignsListener implements Listener {
                 addon.getWarpSignsManager().getWarpMap(event.getWorld()).entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<UUID, Location> entry = iterator.next();
-            if (entry.getValue().getChunk().equals(event.getChunk())
-                    && !entry.getValue().getBlock().getType().name().contains("SIGN")) {
+            UUID uuid = entry.getKey();
+            Location location = entry.getValue();
+            if (event.getChunk().getX() == location.getBlockX() >> 4
+                    && event.getChunk().getZ() == location.getBlockZ() >> 4
+                    && !Tag.SIGNS.isTagged(location.getBlock().getType())) {
                 iterator.remove();
                 // Remove sign from warp panel cache
-                addon.getWarpPanelManager().removeWarp(event.getWorld(), entry.getKey());
+                addon.getWarpPanelManager().removeWarp(event.getWorld(), uuid);
                 changed = true;
             }
         }
