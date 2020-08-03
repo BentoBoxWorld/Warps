@@ -20,13 +20,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -89,6 +83,8 @@ public class WarpSignsManagerTest {
     private UUID uuid = UUID.randomUUID();
     @Mock
     private Location location;
+    @Mock
+    private Chunk chunk;
     @Mock
     private Block block;
     @Mock
@@ -165,10 +161,14 @@ public class WarpSignsManagerTest {
         when(location.getBlockY()).thenReturn(24);
         when(location.getBlockZ()).thenReturn(25);
         when(world.getEnvironment()).thenReturn(Environment.NORMAL);
-        
+
+        // Chunk
+        when(chunk.isLoaded()).thenReturn(true);
+
         // Block
         when(block.getType()).thenReturn(Material.ACACIA_SIGN);
         when(block.getLocation()).thenReturn(location);
+        when(block.getChunk()).thenReturn(chunk);
         Sign sign = mock(Sign.class);
         String[] lines = {"[Welcome]", "line2", "line3", "line4"};
         when(sign.getLines()).thenReturn(lines);

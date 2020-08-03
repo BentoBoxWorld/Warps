@@ -1,5 +1,6 @@
 package world.bentobox.warps.listeners;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
+import org.bukkit.event.world.ChunkLoadEvent;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.events.team.TeamEvent.TeamKickEvent;
 import world.bentobox.bentobox.api.events.team.TeamEvent.TeamLeaveEvent;
@@ -42,6 +44,26 @@ public class WarpSignsListener implements Listener {
     public WarpSignsListener(Warp addon) {
         this.addon = addon;
         this.plugin = addon.getPlugin();
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onChunkLoad(ChunkLoadEvent event) {
+        boolean changed = false;
+        Iterator<Map.Entry<UUID, Location>> iterator =
+                addon.getWarpSignsManager().getWarpMap(event.getWorld()).entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<UUID, Location> entry = iterator.next();
+            if (entry.getValue().getChunk().equals(event.getChunk())
+                    && !entry.getValue().getBlock().getType().name().contains("SIGN")) {
+                iterator.remove();
+                // Remove sign from warp panel cache
+                addon.getWarpPanelManager().removeWarp(event.getWorld(), entry.getKey());
+                changed = true;
+            }
+        }
+        if (changed) {
+            addon.getWarpSignsManager().saveWarpList();
+        }
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
