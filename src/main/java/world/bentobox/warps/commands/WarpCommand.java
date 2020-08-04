@@ -65,12 +65,10 @@ public class WarpCommand extends DelayedTeleportCommand {
                     } else {
                         // Alternative warp found!
                         this.delayCommand(user, () -> addon.getWarpSignsManager().warpPlayer(world, user, foundAlernativeWarp));
-                        addon.log("Found alternative, teleporting!");
                         return true;
                     }
                 } else {
                     // Warp exists!
-                    addon.log("Found exact warp, teleporting!");
                     this.delayCommand(user, () -> addon.getWarpSignsManager().warpPlayer(world, user, foundWarp));
                     return true;
                 }
