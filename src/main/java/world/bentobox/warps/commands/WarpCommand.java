@@ -17,7 +17,6 @@ import world.bentobox.warps.Warp;
  * The /is warp <name> command
  *
  * @author tastybento
- *
  */
 public class WarpCommand extends DelayedTeleportCommand {
 
@@ -52,12 +51,22 @@ public class WarpCommand extends DelayedTeleportCommand {
                 user.sendMessage("warps.warpTip", "[text]", addon.getSettings().getWelcomeLine());
                 return false;
             } else {
-                // Check if this is part of a name
-                UUID foundWarp = warpList.stream().filter(u -> getPlayers().getName(u).equalsIgnoreCase(args.get(0))
-                        || getPlayers().getName(u).toLowerCase().startsWith(args.get(0).toLowerCase())).findFirst().orElse(null);
+                // Attemp to find warp with exact player's name
+                UUID foundWarp = warpList.stream().filter(u -> getPlayers().getName(u).equalsIgnoreCase(args.get(0))).findFirst().orElse(null);
+
                 if (foundWarp == null) {
-                    user.sendMessage("warps.error.does-not-exist");
-                    return false;
+
+                    // Atempt to find warp which starts with the given name
+                    UUID foundAlernativeWarp = warpList.stream().filter(u -> getPlayers().getName(u).toLowerCase().startsWith(args.get(0).toLowerCase())).findFirst().orElse(null);
+
+                    if (foundAlernativeWarp == null) {
+                        user.sendMessage("warps.error.does-not-exist");
+                        return false;
+                    } else {
+                        // Alternative warp found!
+                        this.delayCommand(user, () -> addon.getWarpSignsManager().warpPlayer(world, user, foundAlernativeWarp));
+                        return true;
+                    }
                 } else {
                     // Warp exists!
                     this.delayCommand(user, () -> addon.getWarpSignsManager().warpPlayer(world, user, foundWarp));
