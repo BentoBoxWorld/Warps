@@ -327,13 +327,17 @@ public class WarpSignsManager {
         final Location actualWarp = new Location(inFront.getWorld(), inFront.getBlockX() + 0.5D, inFront.getBlockY(),
                 inFront.getBlockZ() + 0.5D, yaw, 30F);
         Util.teleportAsync(user.getPlayer(), actualWarp, TeleportCause.COMMAND);
+        User warpOwner = User.getInstance(signOwner);
+        // Hide invisible players
+        if (warpOwner.isOnline() && !warpOwner.getPlayer().canSee(user.getPlayer())) {
+            return;
+        }
         if (pvp) {
             user.sendMessage("protection.flags.PVP_OVERWORLD.active");
             user.getWorld().playSound(user.getLocation(), Sound.ENTITY_ARROW_HIT, 1F, 1F);
         } else {
             user.getWorld().playSound(user.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
-        }
-        User warpOwner = User.getInstance(signOwner);
+        }        
         if (!warpOwner.equals(user)) {
             warpOwner.sendMessage("warps.player-warped", "[name]", user.getName());
         }
