@@ -15,6 +15,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.events.team.TeamEvent.TeamKickEvent;
 import world.bentobox.bentobox.api.events.team.TeamEvent.TeamLeaveEvent;
@@ -45,25 +46,31 @@ public class WarpSignsListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onChunkLoad(ChunkLoadEvent event) {
-        boolean changed = false;
-        Iterator<Map.Entry<UUID, Location>> iterator =
-                addon.getWarpSignsManager().getWarpMap(event.getWorld()).entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<UUID, Location> entry = iterator.next();
-            UUID uuid = entry.getKey();
-            Location location = entry.getValue();
-            if (event.getChunk().getX() == location.getBlockX() >> 4
-                    && event.getChunk().getZ() == location.getBlockZ() >> 4
-                    && !Tag.SIGNS.isTagged(location.getBlock().getType())) {
-                iterator.remove();
-                // Remove sign from warp panel cache
-                addon.getWarpPanelManager().removeWarp(event.getWorld(), uuid);
-                changed = true;
+        // Delay to wait the chunk to be fully loaded
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                boolean changed = false;
+                Iterator<Map.Entry<UUID, Location>> iterator =
+                        addon.getWarpSignsManager().getWarpMap(event.getWorld()).entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<UUID, Location> entry = iterator.next();
+                    UUID uuid = entry.getKey();
+                    Location location = entry.getValue();
+                    if (event.getChunk().getX() == location.getBlockX() >> 4
+                            && event.getChunk().getZ() == location.getBlockZ() >> 4
+                            && !Tag.SIGNS.isTagged(location.getBlock().getType())) {
+                        iterator.remove();
+                        // Remove sign from warp panel cache
+                        addon.getWarpPanelManager().removeWarp(event.getWorld(), uuid);
+                        changed = true;
+                    }
+                }
+                if (changed) {
+                    addon.getWarpSignsManager().saveWarpList();
+                }
             }
-        }
-        if (changed) {
-            addon.getWarpSignsManager().saveWarpList();
-        }
+        }.runTask(plugin);
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
