@@ -1,5 +1,6 @@
 package world.bentobox.warps.listeners;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
@@ -17,6 +18,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.api.events.addon.AddonEvent;
 import world.bentobox.bentobox.api.events.team.TeamEvent.TeamKickEvent;
 import world.bentobox.bentobox.api.events.team.TeamEvent.TeamLeaveEvent;
 import world.bentobox.bentobox.api.user.User;
@@ -226,6 +228,13 @@ public class WarpSignsListener implements Listener {
             for (int i = 1; i<4; i++) {
                 e.setLine(i, ChatColor.translateAlternateColorCodes('&', e.getLine(i)));
             }
+
+            Map<String, Object> keyValues = new HashMap<>();
+            keyValues.put("eventName", "WarpCreateEvent");
+            keyValues.put("targetPlayer", user.getUniqueId());
+            keyValues.put("location", Util.getStringLocation(b.getLocation()));
+            
+            new AddonEvent().builder().addon(addon).keyValues(keyValues).build();
         }
         // Else null player
     }
