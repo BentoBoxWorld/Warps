@@ -19,8 +19,8 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.events.addon.AddonEvent;
-import world.bentobox.bentobox.api.events.team.TeamEvent.TeamKickEvent;
-import world.bentobox.bentobox.api.events.team.TeamEvent.TeamLeaveEvent;
+import world.bentobox.bentobox.api.events.team.TeamKickEvent;
+import world.bentobox.bentobox.api.events.team.TeamLeaveEvent;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.Warp;
@@ -81,14 +81,14 @@ public class WarpSignsListener implements Listener {
         addon.getWarpSignsManager().removeWarp(e.getIsland().getWorld(), e.getPlayerUUID());
         User.getInstance(e.getPlayerUUID()).sendMessage("warps.deactivate");
     }
-    
+
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerLeave(TeamKickEvent e) {
         // Remove any warp signs from this game mode
         addon.getWarpSignsManager().removeWarp(e.getIsland().getWorld(), e.getPlayerUUID());
         User.getInstance(e.getPlayerUUID()).sendMessage("warps.deactivate");
     }
-    
+
     /**
      * Checks to see if a sign has been broken
      * @param e - event
@@ -233,7 +233,7 @@ public class WarpSignsListener implements Listener {
             keyValues.put("eventName", "WarpCreateEvent");
             keyValues.put("targetPlayer", user.getUniqueId());
             keyValues.put("location", Util.getStringLocation(b.getLocation()));
-            
+
             new AddonEvent().builder().addon(addon).keyValues(keyValues).build();
         }
         // Else null player
