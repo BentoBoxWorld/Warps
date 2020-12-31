@@ -219,6 +219,7 @@ public class WarpCommandTest {
      */
     @Test
     public void testExecuteUserStringListOfStringKnownPlayerStartOnly() {
+        when(pm.getName(any())).thenReturn("tastybento");
         warpCommandWarpCompositeCommand();
         assertTrue(wc.execute(user, "warp", Collections.singletonList("tAsTy")));
         //verify(wsm).warpPlayer(eq(world), eq(user), any());

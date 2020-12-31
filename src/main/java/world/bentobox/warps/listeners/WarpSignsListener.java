@@ -1,12 +1,11 @@
 package world.bentobox.warps.listeners;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -16,9 +15,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
+import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import world.bentobox.bentobox.BentoBox;
-import world.bentobox.bentobox.api.events.team.TeamEvent.TeamKickEvent;
-import world.bentobox.bentobox.api.events.team.TeamEvent.TeamLeaveEvent;
+import world.bentobox.bentobox.api.events.addon.AddonEvent;
+import world.bentobox.bentobox.api.events.team.TeamKickEvent;
+import world.bentobox.bentobox.api.events.team.TeamLeaveEvent;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.Warp;
@@ -44,20 +46,49 @@ public class WarpSignsListener implements Listener {
         this.plugin = addon.getPlugin();
     }
 
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onChunkLoad(ChunkLoadEvent event) {
+        // Delay to wait the chunk to be fully loaded
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                boolean changed = false;
+                Iterator<Map.Entry<UUID, Location>> iterator =
+                        addon.getWarpSignsManager().getWarpMap(event.getWorld()).entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<UUID, Location> entry = iterator.next();
+                    UUID uuid = entry.getKey();
+                    Location location = entry.getValue();
+                    if (event.getChunk().getX() == location.getBlockX() >> 4
+                            && event.getChunk().getZ() == location.getBlockZ() >> 4
+                            && !Tag.SIGNS.isTagged(location.getBlock().getType())) {
+                        iterator.remove();
+                        // Remove sign from warp panel cache
+                        addon.getWarpPanelManager().removeWarp(event.getWorld(), uuid);
+                        changed = true;
+                    }
+                }
+                if (changed) {
+                    addon.getWarpSignsManager().saveWarpList();
+                }
+            }
+        }.runTask(plugin);
+    }
+
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerLeave(TeamLeaveEvent e) {
         // Remove any warp signs from this game mode
         addon.getWarpSignsManager().removeWarp(e.getIsland().getWorld(), e.getPlayerUUID());
         User.getInstance(e.getPlayerUUID()).sendMessage("warps.deactivate");
     }
-    
+
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerLeave(TeamKickEvent e) {
         // Remove any warp signs from this game mode
         addon.getWarpSignsManager().removeWarp(e.getIsland().getWorld(), e.getPlayerUUID());
         User.getInstance(e.getPlayerUUID()).sendMessage("warps.deactivate");
     }
-    
+
     /**
      * Checks to see if a sign has been broken
      * @param e - event
@@ -197,6 +228,13 @@ public class WarpSignsListener implements Listener {
             for (int i = 1; i<4; i++) {
                 e.setLine(i, ChatColor.translateAlternateColorCodes('&', e.getLine(i)));
             }
+
+            Map<String, Object> keyValues = new HashMap<>();
+            keyValues.put("eventName", "WarpCreateEvent");
+            keyValues.put("targetPlayer", user.getUniqueId());
+            keyValues.put("location", Util.getStringLocation(b.getLocation()));
+
+            new AddonEvent().builder().addon(addon).keyValues(keyValues).build();
         }
         // Else null player
     }
