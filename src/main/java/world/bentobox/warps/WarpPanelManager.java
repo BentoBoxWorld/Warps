@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
@@ -63,33 +64,65 @@ public class WarpPanelManager {
      * @param index - page to show - 0 is first
      */
     public void showWarpPanel(World world, User user, int index) {
+
+        PanelBuilder panelBuilder = new PanelBuilder()
+                .user(user)
+                .name(user.getTranslation("warps.title") + " " + (index + 1));
+
+        Bukkit.getScheduler().runTaskAsynchronously(addon.getPlugin(), () -> {
+            buildPanel(panelBuilder, user, index, world);
+            Bukkit.getScheduler().runTask(addon.getPlugin(), () -> panelBuilder.build());
+        });
+
+    }
+
+    void buildPanel(PanelBuilder panelBuilder, User user, int index, World world) {
         List<UUID> warps = new ArrayList<>(addon.getWarpSignsManager().getSortedWarps(world));
-        UUID randomWarp = null;
-        // Add random UUID
-        if (!warps.isEmpty() && addon.getSettings().isRandomAllowed()) {
-            randomWarp = warps.get(new Random().nextInt(warps.size()));
-            warps.add(0, randomWarp);
-        }
+        // Build the main body
+        int i = buildMainBody(panelBuilder, user, index, world, warps, getRandomWarp(warps));
+        // Add navigation
+        addNavigation(panelBuilder, user, world, i, index, warps.size());
+
+    }
+
+    int buildMainBody(PanelBuilder panelBuilder, User user, int index, World world, List<UUID> warps, boolean randomWarp) {
         if (index < 0) {
             index = 0;
         } else if (index > (warps.size() / PANEL_MAX_SIZE)) {
             index = warps.size() / PANEL_MAX_SIZE;
         }
-        PanelBuilder panelBuilder = new PanelBuilder()
-                .user(user)
-                .name(user.getTranslation("warps.title") + " " + (index + 1));
 
         int i = index * PANEL_MAX_SIZE;
         for (; i < (index * PANEL_MAX_SIZE + PANEL_MAX_SIZE) && i < warps.size(); i++) {
-            if (i == 0 && randomWarp != null) {
-                panelBuilder.item(getRandomButton(world, user, randomWarp));
+            if (randomWarp && i == 0) {
+                panelBuilder.item(getRandomButton(world, user, warps.get(i)));
             } else {
                 panelBuilder.item(getPanelItem(world, warps.get(i)));
             }
         }
-        final int panelNum = index;
-        // Add signs
-        if (i < warps.size()) {
+        return i;
+    }
+
+    private boolean getRandomWarp(List<UUID> warps) {
+        // Add random warp
+        if (!warps.isEmpty() && addon.getSettings().isRandomAllowed()) {
+            warps.add(0, warps.get(new Random().nextInt(warps.size())));
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Add Next and Previous icons to navigate
+     * @param panelBuilder - the panel builder
+     * @param user - user
+     * @param world - world
+     * @param numOfItems - number of items shown so far including in previous panels
+     * @param panelNum - panel number (page)
+     * @param totalNum - total number of items in the list
+     */
+    void addNavigation(PanelBuilder panelBuilder, User user, World world, int numOfItems, int panelNum, int totalNum) {
+        if (numOfItems < totalNum) {
             // Next
             panelBuilder.item(new PanelItemBuilder()
                     .name(user.getTranslation("warps.next"))
@@ -100,7 +133,7 @@ public class WarpPanelManager {
                         return true;
                     }).build());
         }
-        if (i > PANEL_MAX_SIZE) {
+        if (numOfItems > PANEL_MAX_SIZE) {
             // Previous
             panelBuilder.item(new PanelItemBuilder()
                     .name(user.getTranslation("warps.previous"))
@@ -111,20 +144,21 @@ public class WarpPanelManager {
                         return true;
                     }).build());
         }
-        panelBuilder.build();
+
     }
 
     /**
      * Removes sign text from the cache
      * @param world - world
      * @param key - uuid of owner
+     * @return true if the item was removed from the cache
      */
-    public void removeWarp(World world, UUID key) {
-        signCacheManager.removeWarp(world, key);        
+    public boolean removeWarp(World world, UUID key) {
+        return signCacheManager.removeWarp(world, key);
     }
 
     public void saveCache() {
-        signCacheManager.saveCache();        
+        signCacheManager.saveCache();
     }
 
 }
