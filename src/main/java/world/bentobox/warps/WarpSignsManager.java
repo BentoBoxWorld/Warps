@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -127,6 +128,16 @@ public class WarpSignsManager {
     public String getWarpOwner(Location location) {
         return getWarpMap(location.getWorld()).entrySet().stream().filter(en -> en.getValue().equals(location))
                 .findFirst().map(en -> plugin.getPlayers().getName(en.getKey())).orElse("");
+    }
+    
+    /**
+     * Get the optional UUID of the warp owner by location
+     * @param location to search
+     * @return Optional UUID of warp owner or empty if there is none
+     */
+    public Optional<UUID> getWarpOwnerUUID(Location location) {
+        return getWarpMap(location.getWorld()).entrySet().stream().filter(en -> en.getValue().equals(location))
+                .findFirst().map(Map.Entry::getKey);
     }
 
     /**

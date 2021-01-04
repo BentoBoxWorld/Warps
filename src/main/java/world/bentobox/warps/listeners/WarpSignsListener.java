@@ -5,7 +5,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Tag;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -14,9 +18,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
-
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.eclipse.jdt.annotation.Nullable;
+
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.events.addon.AddonEvent;
 import world.bentobox.bentobox.api.events.team.TeamKickEvent;
@@ -99,21 +104,21 @@ public class WarpSignsListener implements Listener {
         boolean inWorld = addon.getPlugin().getIWM().inWorld(b.getWorld());
         // Signs only
         // FIXME: When we drop support for 1.13, switch to Tag.SIGNS
-        if (!e.getBlock().getType().name().contains("SIGN")
+        if (!b.getType().name().contains("SIGN")
                 || (inWorld && !addon.inRegisteredWorld(b.getWorld()))
-                || (!inWorld && !addon.getSettings().isAllowInOtherWorlds()) ) {
+                || (!inWorld && !addon.getSettings().isAllowInOtherWorlds())
+                || !isWarpSign(b)) {
             return;
         }
         User user = User.getInstance(e.getPlayer());
-        if (isWarpSign(b)) {
-            if (isPlayersSign(e.getPlayer(), b, inWorld)) {
-                addon.getWarpSignsManager().removeWarp(b.getLocation());
-                Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(addon, b.getLocation(), user.getUniqueId()));
-            } else {
-                // Someone else's sign - not allowed
-                user.sendMessage("warps.error.no-remove");
-                e.setCancelled(true);
-            }
+        UUID owner = addon.getWarpSignsManager().getWarpOwnerUUID(b.getLocation()).orElse(null);
+        if (isPlayersSign(e.getPlayer(), b, inWorld)) {
+            addon.getWarpSignsManager().removeWarp(b.getLocation());
+            Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(b.getLocation(), user.getUniqueId(), owner));
+        } else {
+            // Someone else's sign - not allowed
+            user.sendMessage("warps.error.no-remove");
+            e.setCancelled(true);
         }
     }
 
@@ -175,7 +180,9 @@ public class WarpSignsListener implements Listener {
                         oldSign.update(true, false);
                         user.sendMessage("warps.deactivate");
                         addon.getWarpSignsManager().removeWarp(oldSignBlock.getWorld(), user.getUniqueId());
-                        Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(addon, oldSign.getLocation(), user.getUniqueId()));
+                        @Nullable
+                        UUID owner = addon.getWarpSignsManager().getWarpOwnerUUID(oldSignLoc).orElse(null);
+                        Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(oldSign.getLocation(), user.getUniqueId(), owner));
                     }
                 }
                 // Set up the new warp sign
