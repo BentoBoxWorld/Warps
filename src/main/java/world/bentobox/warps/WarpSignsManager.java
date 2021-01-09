@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -143,8 +144,13 @@ public class WarpSignsManager {
      * Get sorted list of warps with most recent players listed first
      * @return UUID list
      */
-    @NonNull
-    public List<UUID> getSortedWarps(@NonNull World world) {
+    public CompletableFuture<List<UUID>> getSortedWarps(@NonNull World world) {
+        CompletableFuture<List<UUID>> r = new CompletableFuture<>();
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> processWarpMap(r, world));
+        return r;
+    }
+
+    private void processWarpMap(CompletableFuture<List<UUID>> r, @NonNull World world) {
         // Remove any null locations - this can happen if an admin changes the name of the world and signs point to old locations
         getWarpMap(world).values().removeIf(Objects::isNull);
         // Bigger value of time means a more recent login
@@ -164,7 +170,9 @@ public class WarpSignsManager {
         if (list.size() > MAX_WARPS) {
             list.subList(0, MAX_WARPS).clear();
         }
-        return list;
+        // Return to main thread
+        Bukkit.getScheduler().runTask(plugin, () -> r.complete(list));
+
     }
 
     /**

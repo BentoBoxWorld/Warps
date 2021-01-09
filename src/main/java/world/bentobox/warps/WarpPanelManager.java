@@ -1,11 +1,10 @@
 package world.bentobox.warps;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
@@ -69,20 +68,23 @@ public class WarpPanelManager {
                 .user(user)
                 .name(user.getTranslation("warps.title") + " " + (index + 1));
 
-        Bukkit.getScheduler().runTaskAsynchronously(addon.getPlugin(), () -> {
-            buildPanel(panelBuilder, user, index, world);
-            Bukkit.getScheduler().runTask(addon.getPlugin(), () -> panelBuilder.build());
-        });
-
+        buildPanel(panelBuilder, user, index, world).thenRun(() -> panelBuilder.build());
     }
 
-    void buildPanel(PanelBuilder panelBuilder, User user, int index, World world) {
-        List<UUID> warps = new ArrayList<>(addon.getWarpSignsManager().getSortedWarps(world));
-        // Build the main body
-        int i = buildMainBody(panelBuilder, user, index, world, warps, getRandomWarp(warps));
-        // Add navigation
-        addNavigation(panelBuilder, user, world, i, index, warps.size());
+    CompletableFuture<Void> buildPanel(PanelBuilder panelBuilder, User user, int index, World world) {
+        CompletableFuture<Void> r = new CompletableFuture<>();
+        processSigns(r, panelBuilder, user, index, world);
+        return r;
+    }
 
+    void processSigns(CompletableFuture<Void> r, PanelBuilder panelBuilder, User user, int index, World world) {
+        addon.getWarpSignsManager().getSortedWarps(world).thenAccept(warps -> {
+            // Build the main body
+            int i = buildMainBody(panelBuilder, user, index, world, warps, getRandomWarp(warps));
+            // Add navigation
+            addNavigation(panelBuilder, user, world, i, index, warps.size());
+            r.complete(null);
+        });
     }
 
     int buildMainBody(PanelBuilder panelBuilder, User user, int index, World world, List<UUID> warps, boolean randomWarp) {
