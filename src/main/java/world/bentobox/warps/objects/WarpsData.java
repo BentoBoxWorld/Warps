@@ -50,6 +50,7 @@ public class WarpsData implements DataObject {
      * @return this class filled with data
      */
     public WarpsData save(Map<World, Map<UUID, Location>> worldsWarpList) {
+        getWarpSigns().clear();
         worldsWarpList.values().forEach(world -> world.forEach((uuid,location) -> warpSigns.put(location, uuid)));
         return this;
     }

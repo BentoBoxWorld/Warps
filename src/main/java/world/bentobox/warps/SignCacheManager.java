@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.eclipse.jdt.annotation.NonNull;
 
-import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.database.Database;
 import world.bentobox.warps.objects.SignCache;
 
@@ -27,6 +26,7 @@ public class SignCacheManager {
     }
 
     private void loadCache() {
+        cachedSigns.clear();
         handler.loadObjects().forEach(w -> {
             World world = Bukkit.getWorld(w.getUniqueId());
             if (world != null) {
@@ -57,12 +57,9 @@ public class SignCacheManager {
         // Generate and add to cache
         SignCacheItem result = addon.getWarpSignsManager().getSignInfo(world, warpOwner);
         if (result.isReal()) {
-            BentoBox.getInstance().logDebug("Warp is real - caching");
             cachedSigns.get(world).put(warpOwner, result);
         } else {
-            BentoBox.getInstance().logDebug("Warp is not real - removing");
             cachedSigns.get(world).remove(warpOwner);
-            addon.getWarpSignsManager().removeWarp(world, warpOwner);
         }
         return result;
     }

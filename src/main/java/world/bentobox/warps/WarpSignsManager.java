@@ -75,6 +75,7 @@ public class WarpSignsManager {
     public WarpSignsManager(Warp addon, BentoBox plugin) {
         this.addon = addon;
         this.plugin = plugin;
+        this.worldsWarpList = new HashMap<>();
         // Set up the database handler
         // Note that these are saved by the BentoBox database
         handler = new Database<>(addon, WarpsData.class);
@@ -149,7 +150,7 @@ public class WarpSignsManager {
         return r;
     }
 
-    private void processWarpMap(CompletableFuture<List<UUID>> r, @NonNull World world) {
+    List<UUID> processWarpMap(CompletableFuture<List<UUID>> r, @NonNull World world) {
         // Remove any null locations - this can happen if an admin changes the name of the world and signs point to old locations
         getWarpMap(world).values().removeIf(Objects::isNull);
         // Bigger value of time means a more recent login
@@ -171,7 +172,7 @@ public class WarpSignsManager {
         }
         // Return to main thread
         Bukkit.getScheduler().runTask(plugin, () -> r.complete(list));
-
+        return list;
     }
 
     /**
@@ -271,6 +272,15 @@ public class WarpSignsManager {
     }
 
     /**
+     * Remove the warp from the warp map
+     * @param world - world
+     * @param uuid - uuid of owner
+     */
+    public void removeWarpFromMap(World world, UUID uuid) {
+        getWarpMap(world).remove(uuid);
+    }
+
+    /**
      * Saves the warp lists to the database
      */
     public void saveWarpList() {
@@ -290,15 +300,9 @@ public class WarpSignsManager {
         List<String> result = new ArrayList<>();
         //get the sign info
         Location signLocation = getWarp(world, uuid);
-        if (signLocation == null) {
-            plugin.logDebug("Null warp found");
+        if (signLocation == null || !signLocation.getBlock().getType().name().contains("SIGN")) {
             return new SignCacheItem();
         }
-        if (!signLocation.getBlock().getType().name().contains("SIGN")) {
-            plugin.logDebug("Sign block is not");
-            return new SignCacheItem();
-        }
-        plugin.logDebug("Sign block is a sign");
         Sign sign = (Sign)signLocation.getBlock().getState();
         result.addAll(Arrays.asList(sign.getLines()));
         // Clean up - remove the [WELCOME] line

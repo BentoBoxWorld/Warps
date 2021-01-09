@@ -104,7 +104,7 @@ public class Warp extends Addon {
             this.warpSignsManager.saveWarpList();
 
             this.loadSettings();
-            this.getLogger().info("WelcomeWarp addon reloaded.");
+            this.getLogger().info("Warps addon reloaded.");
         }
     }
 
@@ -149,10 +149,9 @@ public class Warp extends Addon {
     @Override
     public void onDisable(){
         // Save the warps
-        if (warpSignsManager != null)
+        if (warpSignsManager != null) {
             warpSignsManager.saveWarpList();
-        if (warpPanelManager != null)
-            warpPanelManager.saveCache();
+        }
     }
 
 

@@ -1,5 +1,6 @@
 package world.bentobox.warps;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -10,7 +11,6 @@ import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.eclipse.jdt.annotation.NonNull;
 
-import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
@@ -52,7 +52,6 @@ public class WarpPanelManager {
     }
 
     private PanelItem getRandomButton(World world, User user, UUID warpOwner) {
-        ///give @p minecraft:player_head{display:{Name:"{\"text\":\"Question Mark\"}"},SkullOwner:"MHF_Question"} 1
         return new PanelItemBuilder()
                 .name(addon.getSettings().getNameFormat() + user.getTranslation("warps.random"))
                 .clickHandler((panel, clicker, click, slot) -> hander(world, clicker, warpOwner))
@@ -82,38 +81,25 @@ public class WarpPanelManager {
 
     void processSigns(CompletableFuture<Void> r, PanelBuilder panelBuilder, User user, int index, World world) {
         addon.getWarpSignsManager().getSortedWarps(world).thenAccept(warps -> {
+            // Cache and clean the signs
+            Iterator<UUID> it = warps.iterator();
+            while(it.hasNext()) {
+                UUID warpOwner = it.next();
+                @NonNull
+                SignCacheItem sign = signCacheManager.getSignItem(world, warpOwner);
+                if (!sign.isReal()) {
+                    it.remove();
+                    addon.getWarpSignsManager().removeWarpFromMap(world, warpOwner);
+                }
+            }
+            // Add random warp
+            getRandomWarp(warps);
             // Build the main body
-            int i = buildMainBody(panelBuilder, user, index, world, warps, getRandomWarp(warps));
+            int i = buildMainBody(panelBuilder, user, index, world, warps);
             // Add navigation
             addNavigation(panelBuilder, user, world, i, index, warps.size());
             r.complete(null);
         });
-    }
-
-    int buildMainBody(PanelBuilder panelBuilder, User user, int index, World world, List<UUID> warps, boolean randomWarp) {
-        if (index < 0) {
-            index = 0;
-        } else if (index > (warps.size() / PANEL_MAX_SIZE)) {
-            index = warps.size() / PANEL_MAX_SIZE;
-        }
-
-        int i = index * PANEL_MAX_SIZE;
-        for (; panelBuilder.getItems().size() < PANEL_MAX_SIZE && i < warps.size(); i++) {
-            UUID warpOwner = warps.get(i);
-            if (randomWarp && i == 0) {
-                panelBuilder.item(getRandomButton(world, user, warpOwner));
-            } else {
-                @NonNull
-                SignCacheItem sign = signCacheManager.getSignItem(world, warpOwner);
-                if (sign.isReal()) {
-                    BentoBox.getInstance().logDebug("Sign is real - adding to panel");
-                    panelBuilder.item(getPanelItem(world, warpOwner, sign));
-                } else {
-                    BentoBox.getInstance().logDebug("Sign is not real - not adding to panel");
-                }
-            }
-        }
-        return i;
     }
 
     private boolean getRandomWarp(List<UUID> warps) {
@@ -123,6 +109,31 @@ public class WarpPanelManager {
             return true;
         }
         return false;
+    }
+
+    int buildMainBody(PanelBuilder panelBuilder, User user, int index, World world, List<UUID> warps) {
+        if (index < 0) {
+            index = 0;
+        } else if (index > (warps.size() / PANEL_MAX_SIZE)) {
+            index = warps.size() / PANEL_MAX_SIZE;
+        }
+
+        int i = index * PANEL_MAX_SIZE;
+        for (; panelBuilder.getItems().size() < PANEL_MAX_SIZE && i < warps.size(); i++) {
+            UUID warpOwner = warps.get(i);
+            if (addon.getSettings().isRandomAllowed() && i == 0) {
+                panelBuilder.item(getRandomButton(world, user, warpOwner));
+            } else {
+                @NonNull
+                SignCacheItem sign = signCacheManager.getSignItem(world, warpOwner);
+                if (sign.isReal()) {
+                    panelBuilder.item(getPanelItem(world, warpOwner, sign));
+                } else {
+                    addon.getWarpSignsManager().removeWarpFromMap(world, warpOwner);
+                }
+            }
+        }
+        return i;
     }
 
     /**
@@ -135,18 +146,7 @@ public class WarpPanelManager {
      * @param totalNum - total number of items in the list
      */
     void addNavigation(PanelBuilder panelBuilder, User user, World world, int numOfItems, int panelNum, int totalNum) {
-        BentoBox.getInstance().logDebug("numOfItlems = " + numOfItems  + " panel Num " + panelNum + " total Num " + totalNum);
-        if (numOfItems < totalNum) {
-            // Next
-            panelBuilder.item(new PanelItemBuilder()
-                    .name(user.getTranslation("warps.next"))
-                    .icon(new ItemStack(Material.STONE))
-                    .clickHandler((panel, clicker, click, slot) -> {
-                        user.closeInventory();
-                        showWarpPanel(world, user, panelNum+1);
-                        return true;
-                    }).build());
-        }
+        // Previous
         if (panelNum > 0 && numOfItems > PANEL_MAX_SIZE) {
             // Previous
             panelBuilder.item(new PanelItemBuilder()
@@ -158,7 +158,18 @@ public class WarpPanelManager {
                         return true;
                     }).build());
         }
-
+        // Next
+        if (numOfItems < totalNum) {
+            // Next
+            panelBuilder.item(new PanelItemBuilder()
+                    .name(user.getTranslation("warps.next"))
+                    .icon(new ItemStack(Material.STONE))
+                    .clickHandler((panel, clicker, click, slot) -> {
+                        user.closeInventory();
+                        showWarpPanel(world, user, panelNum+1);
+                        return true;
+                    }).build());
+        }
     }
 
     /**

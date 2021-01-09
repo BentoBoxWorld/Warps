@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -105,7 +106,7 @@ public class WarpPanelManagerTest {
         uuid = UUID.randomUUID();
         list.add(uuid);
 
-        when(wsm.getSortedWarps(any())).thenReturn(list);
+        when(wsm.getSortedWarps(any())).thenReturn(CompletableFuture.completedFuture(list));
 
         // User and player
         when(user.getPlayer()).thenReturn(player);
@@ -142,21 +143,20 @@ public class WarpPanelManagerTest {
 
         Location location = mock(Location.class);
         Block block = mock(Block.class);
-        Material sign_type;
+        Material signType;
         try {
-            sign_type = Material.valueOf("SIGN");
+            signType = Material.valueOf("SIGN");
         } catch (Exception e) {
-            sign_type = Material.valueOf("OAK_SIGN");
+            signType = Material.valueOf("OAK_SIGN");
         }
-        when(block.getType()).thenReturn(sign_type);
+        when(block.getType()).thenReturn(signType);
         when(location.getBlock()).thenReturn(block);
         // Sign block
         when(wsm.getWarp(any(), any())).thenReturn(location);
 
         // Sign cache
-        SignCacheItem sc = mock(SignCacheItem.class);
-        when(sc.getSignText()).thenReturn(Collections.singletonList("[welcome]"));
-        when(sc.getType()).thenReturn(sign_type);
+
+        SignCacheItem sc = new SignCacheItem(Collections.singletonList("[welcome]"), signType);
         when(wsm.getSignInfo(any(), any())).thenReturn(sc);
 
         // Class under test
@@ -164,18 +164,17 @@ public class WarpPanelManagerTest {
     }
 
     /**
-     * Test method for {@link WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
+     * Test method for {@link WarpPanelManager#processSigns(CompletableFuture, PanelBuilder, User, int, World)}.
      */
     @Test
     public void testShowWarpPanelTestCache() {
         PanelBuilder pb = mock(PanelBuilder.class);
-        // Do 45 initial lookups of sign text
-        wpm.buildPanel(pb, user, 3, world);
-
+        // Do initial lookups of sign text
+        wpm.processSigns(new CompletableFuture<>(), pb, user, 3, world);
         // Get the panel again
-        wpm.buildPanel(pb, user, 3, world);
-        // Should only check this 45 times because the sign text  is cached
-        verify(wsm, times(45)).getSignInfo(any(), any());
+        wpm.processSigns(new CompletableFuture<>(), pb, user, 3, world);
+        // Should only check this 201 times in total because the sign text  is cached
+        verify(wsm, times(201)).getSignInfo(any(), any());
     }
 
 
@@ -194,8 +193,8 @@ public class WarpPanelManagerTest {
     public void testBuildPanel() {
         PanelBuilder pb = mock(PanelBuilder.class);
         wpm.buildPanel(pb, user, 3, world);
-        // Removing the UUID should force a refresh and therefore 46 lookups
-        verify(wsm, times(45)).getSignInfo(any(), any());
+        // Removing the UUID should force a refresh and therefore 201 lookups
+        verify(wsm, times(201)).getSignInfo(any(), any());
 
     }
 
@@ -245,8 +244,9 @@ public class WarpPanelManagerTest {
 
 
     private int mainBod(int page, int j, boolean random) {
+        when(settings.isRandomAllowed()).thenReturn(random);
         PanelBuilder pb = mock(PanelBuilder.class);
-        int r = wpm.buildMainBody(pb, user, page, world, list, random);
+        int r = wpm.buildMainBody(pb, user, page, world, list);
         verify(pb, times(j)).item(any());
         if (random && page <= 0) {
             verify(user).getTranslation(eq("warps.random"));
@@ -261,7 +261,7 @@ public class WarpPanelManagerTest {
      */
     @Test
     public void testBuildMainBodyNoRandomPage0() {
-        assertEquals(52, mainBod(0, 52, false));
+        assertEquals(201, mainBod(0, 201, false));
     }
 
     /**
@@ -269,7 +269,7 @@ public class WarpPanelManagerTest {
      */
     @Test
     public void testBuildMainBodyNoRandomPage1() {
-        assertEquals(104, mainBod(1, 52, false));
+        assertEquals(201, mainBod(1, 149, false));
     }
 
     /**
@@ -277,7 +277,7 @@ public class WarpPanelManagerTest {
      */
     @Test
     public void testBuildMainBodyNoRandomPage2() {
-        assertEquals(156, mainBod(2, 52, false));
+        assertEquals(201, mainBod(2, 97, false));
     }
 
     /**
@@ -293,7 +293,7 @@ public class WarpPanelManagerTest {
      */
     @Test
     public void testBuildMainBodyNoRandomPageMinus1() {
-        assertEquals(52, mainBod(-1, 52, false));
+        assertEquals(201, mainBod(-1, 201, false));
     }
 
     /**
@@ -301,7 +301,7 @@ public class WarpPanelManagerTest {
      */
     @Test
     public void testBuildMainBodyRandomPage0() {
-        assertEquals(52, mainBod(0, 52, true));
+        assertEquals(201, mainBod(0, 201, true));
     }
 
     /**
@@ -309,7 +309,7 @@ public class WarpPanelManagerTest {
      */
     @Test
     public void testBuildMainBodyRandomPage1() {
-        assertEquals(104, mainBod(1, 52, true));
+        assertEquals(201, mainBod(1, 149, true));
     }
 
     /**
@@ -317,7 +317,7 @@ public class WarpPanelManagerTest {
      */
     @Test
     public void testBuildMainBodyRandomPage2() {
-        assertEquals(156, mainBod(2, 52, true));
+        assertEquals(201, mainBod(2, 97, true));
     }
 
     /**
@@ -333,6 +333,6 @@ public class WarpPanelManagerTest {
      */
     @Test
     public void testBuildMainBodyRandomPageMinus1() {
-        assertEquals(52, mainBod(-1, 52, true));
+        assertEquals(201, mainBod(-1, 201, true));
     }
 }
