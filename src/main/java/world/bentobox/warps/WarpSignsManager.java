@@ -38,7 +38,6 @@ import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.lists.Flags;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.event.WarpInitiateEvent;
-import world.bentobox.warps.event.WarpListEvent;
 import world.bentobox.warps.objects.WarpsData;
 
 /**
@@ -129,7 +128,7 @@ public class WarpSignsManager {
         return getWarpMap(location.getWorld()).entrySet().stream().filter(en -> en.getValue().equals(location))
                 .findFirst().map(en -> plugin.getPlayers().getName(en.getKey())).orElse("");
     }
-    
+
     /**
      * Get the optional UUID of the warp owner by location
      * @param location to search
@@ -165,11 +164,6 @@ public class WarpSignsManager {
         if (list.size() > MAX_WARPS) {
             list.subList(0, MAX_WARPS).clear();
         }
-        // Fire event
-        WarpListEvent event = new WarpListEvent(addon, list);
-        Bukkit.getPluginManager().callEvent(event);
-        // Get the result of any changes by listeners
-        list = event.getWarps();
         return list;
     }
 
@@ -262,7 +256,7 @@ public class WarpSignsManager {
         if (getWarpMap(world).containsKey(uuid)) {
             popSign(getWarpMap(world).get(uuid));
             getWarpMap(world).remove(uuid);
-            
+
         }
         // Remove sign from warp panel cache
         addon.getWarpPanelManager().removeWarp(world, uuid);
@@ -353,7 +347,7 @@ public class WarpSignsManager {
             user.getWorld().playSound(user.getLocation(), Sound.ENTITY_ARROW_HIT, 1F, 1F);
         } else {
             user.getWorld().playSound(user.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
-        }        
+        }
         if (!warpOwner.equals(user)) {
             warpOwner.sendMessage("warps.player-warped", "[name]", user.getName());
         }
