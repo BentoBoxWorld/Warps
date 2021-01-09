@@ -1,14 +1,15 @@
 package world.bentobox.warps;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.eclipse.jdt.annotation.NonNull;
 
+import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.database.Database;
 import world.bentobox.warps.objects.SignCache;
 
@@ -29,6 +30,7 @@ public class SignCacheManager {
         handler.loadObjects().forEach(w -> {
             World world = Bukkit.getWorld(w.getUniqueId());
             if (world != null) {
+                w.getSigns().values().removeIf(sci -> sci.getType().equals(Material.AIR));
                 cachedSigns.put(world, w.getSigns());
             }
         });
@@ -38,32 +40,30 @@ public class SignCacheManager {
         cachedSigns.forEach((w, m) -> handler.saveObjectAsync(new SignCache(w, m)));
     }
 
-    Material getSignIcon(World world, UUID warpOwner) {
-        // Add the worlds if we haven't seen this before
-        cachedSigns.putIfAbsent(world, new HashMap<>());
-        if (cachedSigns.get(world).containsKey(warpOwner)) {
-            return cachedSigns.get(world).get(warpOwner).getType();
-        }
-        // Not in cache
-        SignCacheItem sc = addon.getWarpSignsManager().getSignInfo(world, warpOwner);
-        cachedSigns.get(world).put(warpOwner, sc);
-        return sc.getType();
-    }
-
     /**
-     * Gets sign text and cache it
-     * @param playerUUID
-     * @return sign text in a list
+     * Get the sign item from cache or get it from the world if it is not in the cache
+     * @param world - world
+     * @param warpOwner - warp owner
+     * @return SignCacheItem
      */
-    List<String> getSign(World world, UUID playerUUID) {
+    @NonNull
+    SignCacheItem getSignItem(World world, UUID warpOwner) {
         // Add the worlds if we haven't seen this before
         cachedSigns.putIfAbsent(world, new HashMap<>());
-        if (cachedSigns.get(world).containsKey(playerUUID)) {
-            return cachedSigns.get(world).get(playerUUID).getSignText();
+        // Get from cache if available
+        if (cachedSigns.get(world).containsKey(warpOwner)) {
+            return cachedSigns.get(world).get(warpOwner);
         }
-        SignCacheItem result = addon.getWarpSignsManager().getSignInfo(world, playerUUID);
-        cachedSigns.get(world).put(playerUUID, result);
-        return result.getSignText();
+        // Generate and add to cache
+        SignCacheItem result = addon.getWarpSignsManager().getSignInfo(world, warpOwner);
+        if (result.isReal()) {
+            BentoBox.getInstance().logDebug("Warp is real - caching");
+            cachedSigns.get(world).put(warpOwner, result);
+        } else {
+            BentoBox.getInstance().logDebug("Warp is not real - removing");
+            addon.getWarpSignsManager().removeWarp(world, warpOwner);
+        }
+        return result;
     }
 
     /**

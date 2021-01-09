@@ -8,7 +8,9 @@ import java.util.concurrent.CompletableFuture;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
+import org.eclipse.jdt.annotation.NonNull;
 
+import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.panels.PanelItem;
 import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.panels.builders.PanelItemBuilder;
@@ -26,12 +28,13 @@ public class WarpPanelManager {
         signCacheManager = new SignCacheManager(addon);
     }
 
-    private PanelItem getPanelItem(World world, UUID warpOwner) {
+    private PanelItem getPanelItem(World world, UUID warpOwner, SignCacheItem sign) {
+
         PanelItemBuilder pib = new PanelItemBuilder()
                 .name(addon.getSettings().getNameFormat() + addon.getPlugin().getPlayers().getName(warpOwner))
-                .description(signCacheManager.getSign(world, warpOwner))
+                .description(sign.getSignText())
                 .clickHandler((panel, clicker, click, slot) -> hander(world, clicker, warpOwner));
-        Material icon = signCacheManager.getSignIcon(world, warpOwner);
+        Material icon = sign.getType();
         if (icon.equals(Material.PLAYER_HEAD)) {
             return pib.icon(addon.getPlayers().getName(warpOwner)).build();
         } else {
@@ -96,10 +99,18 @@ public class WarpPanelManager {
 
         int i = index * PANEL_MAX_SIZE;
         for (; i < (index * PANEL_MAX_SIZE + PANEL_MAX_SIZE) && i < warps.size(); i++) {
+            UUID warpOwner = warps.get(i);
             if (randomWarp && i == 0) {
-                panelBuilder.item(getRandomButton(world, user, warps.get(i)));
+                panelBuilder.item(getRandomButton(world, user, warpOwner));
             } else {
-                panelBuilder.item(getPanelItem(world, warps.get(i)));
+                @NonNull
+                SignCacheItem sign = signCacheManager.getSignItem(world, warpOwner);
+                if (sign.isReal()) {
+                    BentoBox.getInstance().logDebug("Sign is real - adding to panel");
+                    panelBuilder.item(getPanelItem(world, warpOwner, sign));
+                } else {
+                    BentoBox.getInstance().logDebug("Sign is not real - not adding to panel");
+                }
             }
         }
         return i;

@@ -12,6 +12,7 @@ import com.google.gson.annotations.Expose;
  *
  */
 public class SignCacheItem {
+
     @Expose
     private final List<String> signText;
     @Expose
@@ -24,6 +25,15 @@ public class SignCacheItem {
         this.signText = signText;
         this.type = type;
     }
+
+    /**
+     * This sign is not real
+     */
+    public SignCacheItem() {
+        this.signText = null;
+        this.type = null;
+    }
+
     /**
      * @return the signText
      */
@@ -36,5 +46,12 @@ public class SignCacheItem {
     public Material getType() {
         return type;
     }
+    /**
+     * @return the isReal
+     */
+    public boolean isReal() {
+        return getType() != null;
+    }
+
 
 }
