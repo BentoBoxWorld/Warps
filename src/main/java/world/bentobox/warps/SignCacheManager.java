@@ -61,6 +61,7 @@ public class SignCacheManager {
             cachedSigns.get(world).put(warpOwner, result);
         } else {
             BentoBox.getInstance().logDebug("Warp is not real - removing");
+            cachedSigns.get(world).remove(warpOwner);
             addon.getWarpSignsManager().removeWarp(world, warpOwner);
         }
         return result;

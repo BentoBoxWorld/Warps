@@ -98,7 +98,7 @@ public class WarpPanelManager {
         }
 
         int i = index * PANEL_MAX_SIZE;
-        for (; i < (index * PANEL_MAX_SIZE + PANEL_MAX_SIZE) && i < warps.size(); i++) {
+        for (; panelBuilder.getItems().size() < PANEL_MAX_SIZE && i < warps.size(); i++) {
             UUID warpOwner = warps.get(i);
             if (randomWarp && i == 0) {
                 panelBuilder.item(getRandomButton(world, user, warpOwner));
@@ -135,6 +135,7 @@ public class WarpPanelManager {
      * @param totalNum - total number of items in the list
      */
     void addNavigation(PanelBuilder panelBuilder, User user, World world, int numOfItems, int panelNum, int totalNum) {
+        BentoBox.getInstance().logDebug("numOfItlems = " + numOfItems  + " panel Num " + panelNum + " total Num " + totalNum);
         if (numOfItems < totalNum) {
             // Next
             panelBuilder.item(new PanelItemBuilder()
@@ -146,7 +147,7 @@ public class WarpPanelManager {
                         return true;
                     }).build());
         }
-        if (numOfItems > PANEL_MAX_SIZE) {
+        if (panelNum > 0 && numOfItems > PANEL_MAX_SIZE) {
             // Previous
             panelBuilder.item(new PanelItemBuilder()
                     .name(user.getTranslation("warps.previous"))
