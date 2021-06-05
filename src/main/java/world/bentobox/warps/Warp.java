@@ -210,10 +210,18 @@ public class Warp extends Addon {
      * Get the island level
      * @param world - world
      * @param uniqueId - player's UUID
-     * @return island level or null if there is no level plugin
+     * @return island level or null if there is no level plugin or Level is not operating in this world
      */
     public Long getLevel(World world, UUID uniqueId) {
-        return this.getPlugin().getAddonsManager().getAddonByName(LEVEL_ADDON_NAME).map(l -> ((Level) l).getIslandLevel(world, uniqueId)).orElse(null);
+        // Get name of the game mode
+        String name = this.getPlugin().getIWM().getAddon(world).map(g -> g.getDescription().getName()).orElse("");
+        return this.getPlugin().getAddonsManager().getAddonByName(LEVEL_ADDON_NAME)
+                .map(l -> {
+                    if (!name.isEmpty() && ((Level) l).getSettings().getGameModes().contains(name)) {
+                        return ((Level) l).getIslandLevel(world, uniqueId);
+                    }
+                    return null;
+                }).orElse(null);
     }
 
     /* (non-Javadoc)
