@@ -5,6 +5,8 @@ to disable use by gamemode.
 
 ## How to use
 
+### Note: Java 16 and Minecraft 17, or later are required.
+
 1. Place the jar in the addons folder of the BentoBox plugin
 2. Restart the server
 3. The addon will create a data folder and inside the folder will be a config.yml
