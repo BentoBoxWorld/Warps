@@ -358,7 +358,7 @@ public class WarpSignsManager {
             return;
         }
         if (pvp) {
-            user.sendMessage("protection.flags.PVP_OVERWORLD.active");
+            user.sendMessage("protection.flags.PVP_OVERWORLD.enabled");
             user.getWorld().playSound(user.getLocation(), Sound.ENTITY_ARROW_HIT, 1F, 1F);
         } else {
             user.getWorld().playSound(user.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
@@ -446,7 +446,7 @@ public class WarpSignsManager {
             final Location actualWarp = new Location(warpSpot.getWorld(), warpSpot.getBlockX() + 0.5D, warpSpot.getBlockY(),
                     warpSpot.getBlockZ() + 0.5D);
             if (pvp) {
-                user.sendMessage("protection.flags.PVP_OVERWORLD.active");
+                user.sendMessage("protection.flags.PVP_OVERWORLD.enabled");
                 user.getWorld().playSound(user.getLocation(), Sound.ENTITY_ARROW_HIT, 1F, 1F);
             } else {
                 user.getWorld().playSound(user.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
