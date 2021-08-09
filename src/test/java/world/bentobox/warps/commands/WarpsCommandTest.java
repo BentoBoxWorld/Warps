@@ -3,7 +3,6 @@ package world.bentobox.warps.commands;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -66,10 +65,9 @@ public class WarpsCommandTest {
     private WarpPanelManager wpm;
 
     /**
-     * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         // Set up plugin
         BentoBox plugin = mock(BentoBox.class);
         Whitebox.setInternalState(BentoBox.class, "instance", plugin);
@@ -99,7 +97,7 @@ public class WarpsCommandTest {
         set.add(UUID.randomUUID());
         set.add(UUID.randomUUID());
         set.add(UUID.randomUUID());
-        when(wsm.listWarps(eq(world))).thenReturn(set);
+        when(wsm.listWarps(world)).thenReturn(set);
 
         // Warp Panel Manager
         when(addon.getWarpPanelManager()).thenReturn(wpm);
@@ -144,11 +142,11 @@ public class WarpsCommandTest {
      */
     @Test
     public void testExecuteUserStringListOfStringNoWarpsYet() {
-        when(wsm.listWarps(eq(world))).thenReturn(Collections.emptySet());
+        when(wsm.listWarps(world)).thenReturn(Collections.emptySet());
         warpCommandWarpsCompositeCommand();
         assertFalse(wc.execute(user, "warps", Collections.emptyList()));
-        verify(user).sendMessage(eq("warps.error.no-warps-yet"));
-        verify(user).sendMessage(eq("warps.warpTip"), eq("[text]"), eq(WELCOME_LINE));
+        verify(user).sendMessage("warps.error.no-warps-yet");
+        verify(user).sendMessage("warps.warpTip", "[text]", WELCOME_LINE);
     }
 
     /**
@@ -156,11 +154,11 @@ public class WarpsCommandTest {
      */
     @Test
     public void testExecuteUserStringListOfStringNoWarpsYetNoAddon() {
-        when(wsm.listWarps(eq(world))).thenReturn(Collections.emptySet());
+        when(wsm.listWarps(world)).thenReturn(Collections.emptySet());
         warpCommandWarps();
         assertFalse(wc.execute(user, "warps", Collections.emptyList()));
-        verify(user).sendMessage(eq("warps.error.no-warps-yet"));
-        verify(user).sendMessage(eq("warps.warpTip"), eq("[text]"), eq(WELCOME_LINE));
+        verify(user).sendMessage("warps.error.no-warps-yet");
+        verify(user).sendMessage("warps.warpTip", "[text]", WELCOME_LINE);
     }
 
     /**

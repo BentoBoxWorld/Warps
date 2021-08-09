@@ -26,11 +26,11 @@ disabled-gamemodes: []
 #
 # Warp panel name formatting.
 # Example: &c will make names red, &f is white
-name-format: &f
+name-format: "&f"
 #
 # Warp panel default lore formatting.
 # Example: &c will make lore red. &f is white
-lore-format: &f
+lore-format: "&f"
 #
 # Allow random teleport - adds a button to the warp panel that goes to a random warp sign
 random-allowed: true

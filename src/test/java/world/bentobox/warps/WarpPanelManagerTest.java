@@ -5,6 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,22 +24,21 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFactory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.api.panels.builders.PanelBuilder;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.AbstractDatabaseHandler;
 import world.bentobox.bentobox.database.DatabaseSetup;
@@ -63,12 +65,17 @@ public class WarpPanelManagerTest {
     private World world;
     @Mock
     private Inventory top;
-    private UUID uuid;
     @Mock
     private Settings settings;
     @Mock
     private static AbstractDatabaseHandler<Object> handler;
-    
+    @Mock
+    private BukkitScheduler scheduler;
+    private List<UUID> list;
+
+    // Class under test
+    private WarpPanelManager wpm;
+
     @SuppressWarnings("unchecked")
     @BeforeClass
     public static void beforeClass() {
@@ -82,30 +89,24 @@ public class WarpPanelManagerTest {
     }
 
     /**
-     * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(addon.getWarpSignsManager()).thenReturn(wsm);
         // Fill with 200 fake warps (I'm banking on them all being different, but there could be a clash)
-        List<UUID> list = new ArrayList<>();
+        list = new ArrayList<>();
         for (int i = 0; i< 200; i++) {
             list.add(UUID.randomUUID());
         }
         // One final one
-        uuid = UUID.randomUUID();
+        UUID uuid = UUID.randomUUID();
         list.add(uuid);
 
-        when(wsm.getSortedWarps(any())).thenReturn(list);
+        when(wsm.getSortedWarps(any())).thenReturn(CompletableFuture.completedFuture(list));
 
         // User and player
         when(user.getPlayer()).thenReturn(player);
-        when(user.getTranslation(Mockito.any())).thenAnswer(new Answer<String>() {
-
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable {
-                return invocation.getArgument(0, String.class);
-            }});
+        when(user.getTranslation(any())).thenAnswer((Answer<String>) invocation -> invocation.getArgument(0, String.class));
 
 
         // BentoBox
@@ -116,125 +117,55 @@ public class WarpPanelManagerTest {
         when(addon.getPlugin()).thenReturn(plugin);
 
         // Bukkit
-        PowerMockito.mockStatic(Bukkit.class);
+        PowerMockito.mockStatic(Bukkit.class, Mockito.RETURNS_MOCKS);
         ItemFactory itemF = mock(ItemFactory.class);
         ItemMeta imeta = mock(ItemMeta.class);
         when(itemF.getItemMeta(any())).thenReturn(imeta);
         when(Bukkit.getItemFactory()).thenReturn(itemF);
+        when(Bukkit.getScheduler()).thenReturn(scheduler);
 
         // Inventory
         when(top.getSize()).thenReturn(9);
 
-        when(Bukkit.createInventory(any(), Mockito.anyInt(), any())).thenReturn(top);
+        when(Bukkit.createInventory(any(), anyInt(), any())).thenReturn(top);
 
         when(settings.getIcon()).thenReturn("SIGN");
         when(addon.getSettings()).thenReturn(settings);
 
         Location location = mock(Location.class);
         Block block = mock(Block.class);
-        Material sign_type;
+        Material signType;
         try {
-            sign_type = Material.valueOf("SIGN");
+            signType = Material.valueOf("SIGN");
         } catch (Exception e) {
-            sign_type = Material.valueOf("OAK_SIGN");
+            signType = Material.valueOf("OAK_SIGN");
         }
-        when(block.getType()).thenReturn(sign_type);
+        when(block.getType()).thenReturn(signType);
         when(location.getBlock()).thenReturn(block);
         // Sign block
         when(wsm.getWarp(any(), any())).thenReturn(location);
 
         // Sign cache
-        SignCacheItem sc = mock(SignCacheItem.class);
-        when(sc.getSignText()).thenReturn(Collections.singletonList("[welcome]"));
-        when(sc.getType()).thenReturn(sign_type);
+
+        SignCacheItem sc = new SignCacheItem(Collections.singletonList("[welcome]"), signType);
         when(wsm.getSignInfo(any(), any())).thenReturn(sc);
+
+        // Class under test
+        wpm = new WarpPanelManager(addon);
     }
 
     /**
-     * Test method for {@link WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
-     */
-    @Test
-    public void testShowWarpPanelFirst() {
-        ArgumentCaptor<ItemStack> argument = ArgumentCaptor.forClass(ItemStack.class);
-        WarpPanelManager wpm = new WarpPanelManager(addon);
-        wpm.showWarpPanel(world, user, 0);
-        verify(player).openInventory(Mockito.eq(top));
-        // Just next sign
-        verify(top, Mockito.times(53)).setItem(Mockito.anyInt(),argument.capture());
-        assertEquals(Material.STONE, argument.getAllValues().get(52).getType());
-    }
-    
-    /**
-     * Test method for {@link WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
-     */
-    @Test
-    public void testShowWarpPanelFirstRandom() {
-        when(settings.isRandomAllowed()).thenReturn(true);
-        ArgumentCaptor<ItemStack> argument = ArgumentCaptor.forClass(ItemStack.class);
-        WarpPanelManager wpm = new WarpPanelManager(addon);
-        wpm.showWarpPanel(world, user, 0);
-        verify(player).openInventory(Mockito.eq(top));
-        // Check crystal
-        verify(top, Mockito.atLeastOnce()).setItem(anyInt(), argument.capture());
-        assertEquals(Material.END_CRYSTAL, argument.getAllValues().get(0).getType());
-    }
-    
-    /**
-     * Test method for {@link WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
-     */
-    @Test
-    public void testShowWarpPanelNoRandom() {
-        when(settings.isRandomAllowed()).thenReturn(false);
-        ArgumentCaptor<ItemStack> argument = ArgumentCaptor.forClass(ItemStack.class);
-        WarpPanelManager wpm = new WarpPanelManager(addon);
-        wpm.showWarpPanel(world, user, 0);
-        verify(player).openInventory(Mockito.eq(top));
-        // Check crystal
-        verify(top, Mockito.atLeastOnce()).setItem(anyInt(), argument.capture());
-        assertFalse(argument.getAllValues().get(0).getType().equals(Material.END_CRYSTAL));
-    }
-
-    /**
-     * Test method for {@link WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
-     */
-    @Test
-    public void testShowWarpPanelMiddle() {
-        ArgumentCaptor<ItemStack> argument = ArgumentCaptor.forClass(ItemStack.class);
-        WarpPanelManager wpm = new WarpPanelManager(addon);
-        wpm.showWarpPanel(world, user, 1);
-        verify(player).openInventory(Mockito.eq(top));
-        // includes previous and next signs
-        verify(top, Mockito.times(54)).setItem(Mockito.anyInt(), argument.capture());
-        assertEquals(Material.STONE, argument.getAllValues().get(52).getType());
-        assertEquals(Material.COBBLESTONE, argument.getAllValues().get(53).getType());
-    }
-
-    /**
-     * Test method for {@link WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
-     */
-    @Test
-    public void testShowWarpPanelLast() {
-        ArgumentCaptor<ItemStack> argument = ArgumentCaptor.forClass(ItemStack.class);
-        WarpPanelManager wpm = new WarpPanelManager(addon);
-        wpm.showWarpPanel(world, user, 3);
-        verify(player).openInventory(Mockito.eq(top));
-        // Final amount, just previous sign
-        verify(top, Mockito.times(46)).setItem(Mockito.anyInt(), argument.capture());
-        assertEquals(Material.COBBLESTONE, argument.getAllValues().get(45).getType());
-    }
-
-    /**
-     * Test method for {@link WarpPanelManager#showWarpPanel(org.bukkit.World, world.bentobox.bbox.api.user.User, int)}.
+     * Test method for {@link WarpPanelManager#processSigns(CompletableFuture, PanelBuilder, User, int, World)}.
      */
     @Test
     public void testShowWarpPanelTestCache() {
-        WarpPanelManager wpm = new WarpPanelManager(addon);
-        // Do 45 initial lookups of sign text
-        wpm.showWarpPanel(world, user, 3);
+        PanelBuilder pb = mock(PanelBuilder.class);
+        // Do initial lookups of sign text
+        wpm.processSigns(new CompletableFuture<>(), pb, user, 3, world);
         // Get the panel again
-        wpm.showWarpPanel(world, user, 3);
-        // Should only check this 45 times because the sign text  is cached
-        verify(wsm, Mockito.times(45)).getSignInfo(any(), any());
+        wpm.processSigns(new CompletableFuture<>(), pb, user, 3, world);
+        // Should only check this 201 times in total because the sign text  is cached
+        verify(wsm, times(201)).getSignInfo(any(), any());
     }
 
 
@@ -243,14 +174,156 @@ public class WarpPanelManagerTest {
      */
     @Test
     public void testRemoveWarp() {
-        WarpPanelManager wpm = new WarpPanelManager(addon);
-        wpm.showWarpPanel(world, user, 3);
-        wpm.showWarpPanel(world, user, 3);
-        wpm.removeWarp(world, uuid);
-        wpm.showWarpPanel(world, user, 3);
-        // Removing the UUID should force a refresh and therefore 46 lookups
-        verify(wsm, Mockito.times(46)).getSignInfo(any(), any());
+        assertFalse(wpm.removeWarp(world, UUID.randomUUID()));
+    }
+
+    /**
+     * Test method for {@link WarpPanelManager#buildPanel(PanelBuilder, User, int, World)}
+     */
+    @Test
+    public void testBuildPanel() {
+        PanelBuilder pb = mock(PanelBuilder.class);
+        wpm.buildPanel(pb, user, 3, world);
+        // Removing the UUID should force a refresh and therefore 201 lookups
+        verify(wsm, times(201)).getSignInfo(any(), any());
 
     }
 
+    /**
+     * Test method for {@link WarpPanelManager#addNavigation(PanelBuilder, User, World, int, int, int)}
+     */
+    @Test
+    public void testAddNavigationNoNav() {
+        PanelBuilder pb = mock(PanelBuilder.class);
+        wpm.addNavigation(pb, user, world, 0, 0, 0);
+        verify(pb, never()).item(any());
+    }
+
+    /**
+     * Test method for {@link WarpPanelManager#addNavigation(PanelBuilder, User, World, int, int, int)}
+     */
+    @Test
+    public void testAddNavigationNoNavNext() {
+        PanelBuilder pb = mock(PanelBuilder.class);
+        wpm.addNavigation(pb, user, world, 0, 0, 100);
+        verify(pb).item(any());
+        verify(user).getTranslation("warps.next");
+    }
+
+    /**
+     * Test method for {@link WarpPanelManager#addNavigation(PanelBuilder, User, World, int, int, int)}
+     */
+    @Test
+    public void testAddNavigationNoNavPrev() {
+        PanelBuilder pb = mock(PanelBuilder.class);
+        wpm.addNavigation(pb, user, world, 60, 2, 20);
+        verify(pb).item(any());
+        verify(user).getTranslation("warps.previous");
+    }
+
+    /**
+     * Test method for {@link WarpPanelManager#addNavigation(PanelBuilder, User, World, int, int, int)}
+     */
+    @Test
+    public void testAddNavigationNoNavNextAndPrev() {
+        PanelBuilder pb = mock(PanelBuilder.class);
+        wpm.addNavigation(pb, user, world, 60, 2, 100);
+        verify(pb, times(2)).item(any());
+        verify(user).getTranslation("warps.previous");
+        verify(user).getTranslation("warps.next");
+    }
+
+
+    private int mainBod(int page, int j, boolean random) {
+        when(settings.isRandomAllowed()).thenReturn(random);
+        PanelBuilder pb = mock(PanelBuilder.class);
+        int r = wpm.buildMainBody(pb, user, page, world, list);
+        verify(pb, times(j)).item(any());
+        if (random && page <= 0) {
+            verify(user).getTranslation("warps.random");
+        } else {
+            verify(user, never()).getTranslation("warps.random");
+        }
+        return r;
+    }
+
+    /**
+     * Test method for {@link WarpPanelManager#buildMainBody(PanelBuilder, User, int, World, List, boolean)}
+     */
+    @Test
+    public void testBuildMainBodyNoRandomPage0() {
+        assertEquals(201, mainBod(0, 201, false));
+    }
+
+    /**
+     * Test method for {@link WarpPanelManager#buildMainBody(PanelBuilder, User, int, World, List, boolean)}
+     */
+    @Test
+    public void testBuildMainBodyNoRandomPage1() {
+        assertEquals(201, mainBod(1, 149, false));
+    }
+
+    /**
+     * Test method for {@link WarpPanelManager#buildMainBody(PanelBuilder, User, int, World, List, boolean)}
+     */
+    @Test
+    public void testBuildMainBodyNoRandomPage2() {
+        assertEquals(201, mainBod(2, 97, false));
+    }
+
+    /**
+     * Test method for {@link WarpPanelManager#buildMainBody(PanelBuilder, User, int, World, List, boolean)}
+     */
+    @Test
+    public void testBuildMainBodyNoRandomPage3() {
+        assertEquals(201, mainBod(3, 45, false));
+    }
+
+    /**
+     * Test method for {@link WarpPanelManager#buildMainBody(PanelBuilder, User, int, World, List, boolean)}
+     */
+    @Test
+    public void testBuildMainBodyNoRandomPageMinus1() {
+        assertEquals(201, mainBod(-1, 201, false));
+    }
+
+    /**
+     * Test method for {@link WarpPanelManager#buildMainBody(PanelBuilder, User, int, World, List, boolean)}
+     */
+    @Test
+    public void testBuildMainBodyRandomPage0() {
+        assertEquals(201, mainBod(0, 201, true));
+    }
+
+    /**
+     * Test method for {@link WarpPanelManager#buildMainBody(PanelBuilder, User, int, World, List, boolean)}
+     */
+    @Test
+    public void testBuildMainBodyRandomPage1() {
+        assertEquals(201, mainBod(1, 149, true));
+    }
+
+    /**
+     * Test method for {@link WarpPanelManager#buildMainBody(PanelBuilder, User, int, World, List, boolean)}
+     */
+    @Test
+    public void testBuildMainBodyRandomPage2() {
+        assertEquals(201, mainBod(2, 97, true));
+    }
+
+    /**
+     * Test method for {@link WarpPanelManager#buildMainBody(PanelBuilder, User, int, World, List, boolean)}
+     */
+    @Test
+    public void testBuildMainBodyRandomPage3() {
+        assertEquals(201, mainBod(3, 45, true));
+    }
+
+    /**
+     * Test method for {@link WarpPanelManager#buildMainBody(PanelBuilder, User, int, World, List, boolean)}
+     */
+    @Test
+    public void testBuildMainBodyRandomPageMinus1() {
+        assertEquals(201, mainBod(-1, 201, true));
+    }
 }

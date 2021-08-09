@@ -3,16 +3,17 @@ package world.bentobox.warps;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -37,7 +38,6 @@ import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.lists.Flags;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.event.WarpInitiateEvent;
-import world.bentobox.warps.event.WarpListEvent;
 import world.bentobox.warps.objects.WarpsData;
 
 /**
@@ -49,13 +49,13 @@ import world.bentobox.warps.objects.WarpsData;
 public class WarpSignsManager {
     private static final int MAX_WARPS = 600;
     private static final String WARPS = "warps";
-    private BentoBox plugin;
+    private final BentoBox plugin;
     // Map of all warps stored as player, warp sign Location
     private Map<World, Map<UUID, Location>> worldsWarpList;
     // Database handler for level data
-    private Database<WarpsData> handler;
+    private final Database<WarpsData> handler;
 
-    private Warp addon;
+    private final Warp addon;
     private WarpsData warpsData = new WarpsData();
 
     /**
@@ -75,6 +75,7 @@ public class WarpSignsManager {
     public WarpSignsManager(Warp addon, BentoBox plugin) {
         this.addon = addon;
         this.plugin = plugin;
+        this.worldsWarpList = new HashMap<>();
         // Set up the database handler
         // Note that these are saved by the BentoBox database
         handler = new Database<>(addon, WarpsData.class);
@@ -130,17 +131,31 @@ public class WarpSignsManager {
     }
 
     /**
+     * Get the optional UUID of the warp owner by location
+     * @param location to search
+     * @return Optional UUID of warp owner or empty if there is none
+     */
+    public Optional<UUID> getWarpOwnerUUID(Location location) {
+        return getWarpMap(location.getWorld()).entrySet().stream().filter(en -> en.getValue().equals(location))
+                .findFirst().map(Map.Entry::getKey);
+    }
+
+    /**
      * Get sorted list of warps with most recent players listed first
      * @return UUID list
      */
-    @NonNull
-    public List<UUID> getSortedWarps(@NonNull World world) {
+    public CompletableFuture<List<UUID>> getSortedWarps(@NonNull World world) {
+        CompletableFuture<List<UUID>> r = new CompletableFuture<>();
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> processWarpMap(r, world));
+        return r;
+    }
+
+    List<UUID> processWarpMap(CompletableFuture<List<UUID>> r, @NonNull World world) {
         // Remove any null locations - this can happen if an admin changes the name of the world and signs point to old locations
         getWarpMap(world).values().removeIf(Objects::isNull);
         // Bigger value of time means a more recent login
         TreeMap<Long, UUID> map = new TreeMap<>();
-        getWarpMap(world).entrySet().forEach(en -> {
-            UUID uuid = en.getKey();
+        getWarpMap(world).forEach((uuid, value) -> {
             // If never played, will be zero
             long lastPlayed = addon.getServer().getOfflinePlayer(uuid).getLastPlayed();
             // This aims to avoid the chance that players logged off at exactly the same time
@@ -154,11 +169,8 @@ public class WarpSignsManager {
         if (list.size() > MAX_WARPS) {
             list.subList(0, MAX_WARPS).clear();
         }
-        // Fire event
-        WarpListEvent event = new WarpListEvent(addon, list);
-        Bukkit.getPluginManager().callEvent(event);
-        // Get the result of any changes by listeners
-        list = event.getWarps();
+        // Return to main thread
+        Bukkit.getScheduler().runTask(plugin, () -> r.complete(list));
         return list;
     }
 
@@ -172,7 +184,7 @@ public class WarpSignsManager {
     public Set<UUID> listWarps(@NonNull World world) {
         // Remove any null locations
         getWarpMap(world).values().removeIf(Objects::isNull);
-        return getWarpMap(world).entrySet().stream().filter(e -> Util.sameWorld(world, e.getValue().getWorld())).map(Map.Entry::getKey).collect(Collectors.toSet());
+        return getWarpMap(world).entrySet().stream().filter(e -> Util.sameWorld(world, Objects.requireNonNull(e.getValue().getWorld()))).map(Map.Entry::getKey).collect(Collectors.toSet());
     }
 
     /**
@@ -204,7 +216,7 @@ public class WarpSignsManager {
 
     /**
      * Changes the sign to red if it exists
-     * @param loc
+     * @param loc location to pop
      */
     private void popSign(Location loc) {
         Block b = loc.getBlock();
@@ -220,7 +232,7 @@ public class WarpSignsManager {
     /**
      * Removes a warp at a location.
      *
-     * @param loc
+     * @param loc location to remove
      */
     public void removeWarp(Location loc) {
         popSign(loc);
@@ -245,17 +257,26 @@ public class WarpSignsManager {
     /**
      * Remove warp sign owned by UUID
      *
-     * @param uuid
+     * @param uuid UUID of owner to remove
      */
     public void removeWarp(World world, UUID uuid) {
         if (getWarpMap(world).containsKey(uuid)) {
             popSign(getWarpMap(world).get(uuid));
             getWarpMap(world).remove(uuid);
-            
+
         }
         // Remove sign from warp panel cache
         addon.getWarpPanelManager().removeWarp(world, uuid);
         saveWarpList();
+    }
+
+    /**
+     * Remove the warp from the warp map
+     * @param world - world
+     * @param uuid - uuid of owner
+     */
+    public void removeWarpFromMap(World world, UUID uuid) {
+        getWarpMap(world).remove(uuid);
     }
 
     /**
@@ -275,47 +296,44 @@ public class WarpSignsManager {
      */
     @NonNull
     public SignCacheItem getSignInfo(@NonNull World world, @NonNull UUID uuid) {
-        List<String> result = new ArrayList<>();
         //get the sign info
         Location signLocation = getWarp(world, uuid);
-        if (signLocation != null && signLocation.getBlock().getType().name().contains("SIGN")) {
-            Sign sign = (Sign)signLocation.getBlock().getState();
-            result.addAll(Arrays.asList(sign.getLines()));
-            // Clean up - remove the [WELCOME] line
-            result.remove(0);
-            // Remove any trailing blank lines
-            result.removeIf(String::isEmpty);
-            // Set the initial color per lore setting
-            for (int i = 0; i< result.size(); i++) {
-                result.set(i, ChatColor.translateAlternateColorCodes('&', addon.getSettings().getLoreFormat()) + result.get(i));
-            }
-            // Get the sign type
-
-            String prefix = plugin.getIWM().getAddon(world).map(Addon::getPermissionPrefix).orElse("");
-
-            Material icon;
-
-            if (!prefix.isEmpty())
-            {
-                icon = Material.matchMaterial(
-                        this.getPermissionValue(User.getInstance(uuid),
-                                prefix + "island.warp",
-                                this.addon.getSettings().getIcon()));
-            }
-            else
-            {
-                icon = Material.matchMaterial(this.addon.getSettings().getIcon());
-            }
-
-            if (icon == null || icon.name().contains("SIGN")) {
-                return new SignCacheItem(result, Material.valueOf(sign.getType().name().replace("WALL_", "")));
-            } else {
-                return new SignCacheItem(result, icon);
-            }
-        } else {
-            addon.getWarpSignsManager().removeWarp(world, uuid);
+        if (signLocation == null || !signLocation.getBlock().getType().name().contains("SIGN")) {
+            return new SignCacheItem();
         }
-        return new SignCacheItem(Collections.emptyList(), Material.AIR);
+        Sign sign = (Sign)signLocation.getBlock().getState();
+        List<String> result = new ArrayList<>(Arrays.asList(sign.getLines()));
+        // Clean up - remove the [WELCOME] line
+        result.remove(0);
+        // Remove any trailing blank lines
+        result.removeIf(String::isEmpty);
+        // Set the initial color per lore setting
+        for (int i = 0; i< result.size(); i++) {
+            result.set(i, ChatColor.translateAlternateColorCodes('&', addon.getSettings().getLoreFormat()) + result.get(i));
+        }
+        // Get the sign type
+
+        String prefix = plugin.getIWM().getAddon(world).map(Addon::getPermissionPrefix).orElse("");
+
+        Material icon;
+
+        if (!prefix.isEmpty())
+        {
+            icon = Material.matchMaterial(
+                    this.getPermissionValue(Objects.requireNonNull(User.getInstance(uuid)),
+                            prefix + "island.warp",
+                            this.addon.getSettings().getIcon()));
+        }
+        else
+        {
+            icon = Material.matchMaterial(this.addon.getSettings().getIcon());
+        }
+
+        if (icon == null || icon.name().contains("SIGN")) {
+            return new SignCacheItem(result, Material.valueOf(sign.getType().name().replace("WALL_", "")));
+        }
+        return new SignCacheItem(result, icon);
+
     }
 
     /**
@@ -332,17 +350,17 @@ public class WarpSignsManager {
         final Location actualWarp = new Location(inFront.getWorld(), inFront.getBlockX() + 0.5D, inFront.getBlockY(),
                 inFront.getBlockZ() + 0.5D, yaw, 30F);
         Util.teleportAsync(user.getPlayer(), actualWarp, TeleportCause.COMMAND);
-        User warpOwner = User.getInstance(signOwner);
+        User warpOwner = Objects.requireNonNull(User.getInstance(signOwner));
         // Hide invisible players
         if (warpOwner.isOnline() && !warpOwner.getPlayer().canSee(user.getPlayer())) {
             return;
         }
         if (pvp) {
-            user.sendMessage("protection.flags.PVP_OVERWORLD.active");
-            user.getWorld().playSound(user.getLocation(), Sound.ENTITY_ARROW_HIT, 1F, 1F);
+            user.sendMessage("protection.flags.PVP_OVERWORLD.enabled");
+            user.getWorld().playSound(Objects.requireNonNull(user.getLocation()), Sound.ENTITY_ARROW_HIT, 1F, 1F);
         } else {
-            user.getWorld().playSound(user.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
-        }        
+            user.getWorld().playSound(Objects.requireNonNull(user.getLocation()), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
+        }
         if (!warpOwner.equals(user)) {
             warpOwner.sendMessage("warps.player-warped", "[name]", user.getName());
         }
@@ -376,7 +394,7 @@ public class WarpSignsManager {
         boolean pvp = false;
         if (island != null) {
             // Check for PVP
-            switch (warpSpot.getWorld().getEnvironment()) {
+            switch (Objects.requireNonNull(warpSpot.getWorld()).getEnvironment()) {
             case NETHER:
                 pvp = island.isAllowed(Flags.PVP_NETHER);
                 break;
@@ -426,10 +444,10 @@ public class WarpSignsManager {
             final Location actualWarp = new Location(warpSpot.getWorld(), warpSpot.getBlockX() + 0.5D, warpSpot.getBlockY(),
                     warpSpot.getBlockZ() + 0.5D);
             if (pvp) {
-                user.sendMessage("protection.flags.PVP_OVERWORLD.active");
-                user.getWorld().playSound(user.getLocation(), Sound.ENTITY_ARROW_HIT, 1F, 1F);
+                user.sendMessage("protection.flags.PVP_OVERWORLD.enabled");
+                user.getWorld().playSound(Objects.requireNonNull(user.getLocation()), Sound.ENTITY_ARROW_HIT, 1F, 1F);
             } else {
-                user.getWorld().playSound(user.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
+                user.getWorld().playSound(Objects.requireNonNull(user.getLocation()), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
             }
             Util.teleportAsync(user.getPlayer(), actualWarp, TeleportCause.COMMAND);
         }
@@ -469,10 +487,10 @@ public class WarpSignsManager {
 
             String permPrefix = permissionPrefix + ".";
 
-            List<String> permissions = user.getEffectivePermissions().stream().
-                    map(PermissionAttachmentInfo::getPermission).
-                    filter(permission -> permission.startsWith(permPrefix)).
-                    collect(Collectors.toList());
+            List<String> permissions = user.getEffectivePermissions().stream()
+                    .map(PermissionAttachmentInfo::getPermission)
+                    .filter(permission -> permission.startsWith(permPrefix))
+                    .toList();
 
             for (String permission : permissions)
             {

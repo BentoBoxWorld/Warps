@@ -2,7 +2,7 @@ name: Warps
 main: world.bentobox.warps.Warp
 version: ${version}${build.number}
 icon: OAK_SIGN
-api-version: 1.15.4
+api-version: 1.17
 
 authors: tastybento
 

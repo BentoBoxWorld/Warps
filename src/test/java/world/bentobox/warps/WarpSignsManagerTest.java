@@ -13,14 +13,20 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.beans.IntrospectionException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -74,13 +80,13 @@ public class WarpSignsManagerTest {
     @Mock
     private static AbstractDatabaseHandler<Object> handler;
 
-    
+
     private WarpSignsManager wsm;
     @Mock
     private Logger logger;
     @Mock
     private WarpsData load;
-    private UUID uuid = UUID.randomUUID();
+    private final UUID uuid = UUID.randomUUID();
     @Mock
     private Location location;
     @Mock
@@ -106,7 +112,7 @@ public class WarpSignsManagerTest {
     @Mock
     private Island island;
 
-    
+
     @SuppressWarnings("unchecked")
     @BeforeClass
     public static void beforeClass() {
@@ -118,21 +124,21 @@ public class WarpSignsManagerTest {
         when(DatabaseSetup.getDatabase()).thenReturn(dbSetup);
         when(dbSetup.getHandler(any())).thenReturn(handler);
     }
-    
+
     /**
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception exception
      */
     @Before
     public void setUp() throws Exception {
         Whitebox.setInternalState(BentoBox.class, "instance", plugin);
         when(addon.getPlugin()).thenReturn(plugin);
         when(addon.getLogger()).thenReturn(logger);
-        
+
         // Player
         when(player.getUniqueId()).thenReturn(uuid);
         User.setPlugin(plugin);
         User.getInstance(player);
-        
+
         // Locales
         LocalesManager lm = mock(LocalesManager.class);
         when(lm.get(Mockito.any(), Mockito.any())).thenReturn(null);
@@ -142,22 +148,23 @@ public class WarpSignsManagerTest {
         when(phm.replacePlaceholders(any(), anyString())).thenAnswer((Answer<String>) invocation -> invocation.getArgument(1, String.class));
         when(plugin.getPlaceholdersManager()).thenReturn(phm);
 
-        
+
         // Server
         when(addon.getServer()).thenReturn(server);
         when(server.getPlayer(any(UUID.class))).thenReturn(player);
-        
+
         // Util
         PowerMockito.mockStatic(Util.class);
         when(Util.getWorld(any())).thenAnswer((Answer<World>) invocation -> invocation.getArgument(0, World.class));
         when(Util.sameWorld(any(), any())).thenReturn(true);
-        
+
         // Location
         when(location.getWorld()).thenReturn(world);
         when(location.getBlock()).thenReturn(block);
         when(location.getBlockX()).thenReturn(23);
         when(location.getBlockY()).thenReturn(24);
         when(location.getBlockZ()).thenReturn(25);
+        when(player.getLocation()).thenReturn(location);
         when(world.getEnvironment()).thenReturn(Environment.NORMAL);
         when(world.isChunkLoaded(anyInt(), anyInt())).thenReturn(true);
 
@@ -174,27 +181,27 @@ public class WarpSignsManagerTest {
         when(signBd.getRotation()).thenReturn(BlockFace.EAST);
         when(block.getBlockData()).thenReturn(signBd);
         when(block.getRelative(any())).thenReturn(block);
-        
+
         // Handler
-        when(handler.objectExists(eq("warps"))).thenReturn(true);
+        when(handler.objectExists("warps")).thenReturn(true);
         Map<Location, UUID> warpMap = Collections.singletonMap(location, uuid);
         when(load.getWarpSigns()).thenReturn(warpMap);
         when(handler.loadObject(anyString())).thenReturn(load);
-        
+
         // Settings
         when(addon.getSettings()).thenReturn(settings);
         when(settings.getWelcomeLine()).thenReturn("[Welcome]");
         when(settings.getLoreFormat()).thenReturn("&f");
         when(settings.getIcon()).thenReturn("SIGN");
-        
-     // Bukkit
-        PowerMockito.mockStatic(Bukkit.class);
+
+        // Bukkit
+        PowerMockito.mockStatic(Bukkit.class, Mockito.RETURNS_MOCKS);
         when(Bukkit.getPluginManager()).thenReturn(pim);
-        
+
         // Players Manager
         when(plugin.getPlayers()).thenReturn(pm);
-        when(pm.getName(eq(uuid))).thenReturn("tastybento");
-        
+        when(pm.getName(uuid)).thenReturn("tastybento");
+
         // Offline player
         when(server.getOfflinePlayer(any(UUID.class))).thenReturn(offlinePlayer);
         when(offlinePlayer.getLastPlayed()).thenReturn(System.currentTimeMillis());
@@ -202,23 +209,22 @@ public class WarpSignsManagerTest {
         // IWM
         when(plugin.getIWM()).thenReturn(iwm);
         when(iwm.getPermissionPrefix(any())).thenReturn("bskyblock.");
-        
+
         // Island Manager
         when(addon.getIslands()).thenReturn(im);
         when(im.getIsland(any(), any(UUID.class))).thenReturn(island);
         when(im.isSafeLocation(any())).thenReturn(true);
-        
+
         // WarpPanelManager
         when(addon.getWarpPanelManager()).thenReturn(wpm);
-                
+
         wsm = new WarpSignsManager(addon, plugin);
     }
 
     /**
-     * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         User.clearUsers();
     }
 
@@ -260,10 +266,10 @@ public class WarpSignsManagerTest {
         wsm = new WarpSignsManager(addon, plugin);
         assertTrue("Map is not empty", wsm.getWarpMap(world).isEmpty());
     }
-    
+
     /**
      * Test method for {@link world.bentobox.warps.WarpSignsManager#getWarpMap(org.bukkit.World)}.
-     * @throws Exception 
+     * @throws Exception exception
      */
     @Test
     public void testGetWarpMapNullDatabaseObject() throws Exception {
@@ -271,23 +277,22 @@ public class WarpSignsManagerTest {
         wsm = new WarpSignsManager(addon, plugin);
         assertTrue("Map is not empty", wsm.getWarpMap(world).isEmpty());
     }
-    
+
     /**
      * Test method for {@link world.bentobox.warps.WarpSignsManager#getWarpMap(org.bukkit.World)}.
      */
     @Test
     public void testGetWarpMapNothingInDatabase() {
-        when(handler.objectExists(eq("warps"))).thenReturn(false);
+        when(handler.objectExists("warps")).thenReturn(false);
         wsm = new WarpSignsManager(addon, plugin);
         assertTrue("Map is not empty", wsm.getWarpMap(world).isEmpty());
     }
-    
+
     /**
      * Test method for {@link world.bentobox.warps.WarpSignsManager#WarpSignsManager(world.bentobox.warps.Warp, world.bentobox.bentobox.BentoBox)}.
-     * @throws Exception 
      */
     @Test
-    public void testWarpSignsManager() throws Exception {
+    public void testWarpSignsManager() {
         verify(addon).log("Loading warps...");
         verify(load).getWarpSigns();
         verify(block).getType();
@@ -300,7 +305,7 @@ public class WarpSignsManagerTest {
     public void testAddWarpNullPlayer() {
         assertFalse(wsm.addWarp(null, null));
     }
-    
+
     /**
      * Test method for {@link world.bentobox.warps.WarpSignsManager#addWarp(java.util.UUID, org.bukkit.Location)}.
      */
@@ -308,7 +313,7 @@ public class WarpSignsManagerTest {
     public void testAddWarpNullLocation() {
         assertFalse(wsm.addWarp(uuid, null));
     }
-    
+
     /**
      * Test method for {@link world.bentobox.warps.WarpSignsManager#addWarp(java.util.UUID, org.bukkit.Location)}.
      */
@@ -317,7 +322,7 @@ public class WarpSignsManagerTest {
         assertTrue(wsm.addWarp(uuid, location));
         verify(player).sendMessage("warps.sign-removed");
     }
-    
+
     /**
      * Test method for {@link world.bentobox.warps.WarpSignsManager#addWarp(java.util.UUID, org.bukkit.Location)}.
      */
@@ -326,7 +331,7 @@ public class WarpSignsManagerTest {
         assertTrue(wsm.addWarp(UUID.randomUUID(), location));
         verify(player).sendMessage("warps.sign-removed");
     }
-    
+
     /**
      * Test method for {@link world.bentobox.warps.WarpSignsManager#addWarp(java.util.UUID, org.bukkit.Location)}.
      */
@@ -358,7 +363,7 @@ public class WarpSignsManagerTest {
      */
     @Test
     public void testGetWarpOwner() {
-       assertEquals("tastybento", wsm.getWarpOwner(location));
+        assertEquals("tastybento", wsm.getWarpOwner(location));
     }
 
     /**
@@ -366,7 +371,8 @@ public class WarpSignsManagerTest {
      */
     @Test
     public void testGetSortedWarps() {
-        assertEquals(1, wsm.getSortedWarps(world).size());
+        CompletableFuture<List<UUID>> r = new CompletableFuture<>();
+        assertEquals(1, wsm.processWarpMap(r, world).size());
     }
 
     /**
@@ -398,9 +404,7 @@ public class WarpSignsManagerTest {
 
     /**
      * Test method for {@link world.bentobox.warps.WarpSignsManager#saveWarpList()}.
-     * @throws IntrospectionException 
-     * @throws InvocationTargetException 
-     * @throws Exception 
+     * @throws Exception general exception
      */
     @Test
     public void testSaveWarpList() throws Exception {
@@ -426,6 +430,7 @@ public class WarpSignsManagerTest {
         when(p.getUniqueId()).thenReturn(UUID.randomUUID());
         when(p.getWorld()).thenReturn(world);
         when(p.getName()).thenReturn("tastybento");
+        when(p.getLocation()).thenReturn(location);
         @Nullable
         User u = User.getInstance(p);
         wsm.warpPlayer(world, u, uuid);
@@ -455,13 +460,13 @@ public class WarpSignsManagerTest {
         // Save
         wsm.saveWarpList();
         // Default load in constructor check
-        verify(addon, times(2)).log(eq("Loading warps..."));
+        verify(addon, times(2)).log("Loading warps...");
         assertTrue(wsm.getWarpMap(world).isEmpty());
     }
-    
+
     /**
      * Test method for {@link world.bentobox.warps.WarpSignsManager#loadWarpList()}.
-     * @throws Exception 
+     * @throws Exception exception
      */
     @Test
     public void testLoadWarpListEmptyWarpTable() throws Exception {
@@ -471,7 +476,7 @@ public class WarpSignsManagerTest {
         // Save
         wsm.saveWarpList();
         // Default load in constructor check
-        verify(addon, times(2)).log(eq("Loading warps..."));
+        verify(addon, times(2)).log("Loading warps...");
         assertTrue(wsm.getWarpMap(world).isEmpty());
     }
 }

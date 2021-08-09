@@ -5,8 +5,8 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import world.bentobox.warps.Warp;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * This event is fired when a Warp is removed (when a warp sign is broken)
@@ -18,32 +18,48 @@ import world.bentobox.warps.Warp;
 public class WarpRemoveEvent extends Event{
 	private static final HandlerList handlers = new HandlerList();
 	
-	private Location warpLoc;
-	private UUID remover;
+	private final Location warpLoc;
+	private final UUID remover;
+	private final UUID owner;
 	
 	/**
-	 * @param plugin - BSkyBlock plugin objects
-	 * @param warpLoc
-	 * @param remover
+	 * @param warpLoc - Warp location
+	 * @param remover - UUID of remover
+	 * @param owner - UUID of warp owner - rarely, may be null
 	 */
-	public WarpRemoveEvent(Warp plugin, Location warpLoc, UUID remover){
+	public WarpRemoveEvent(@NonNull Location warpLoc, UUID remover, @Nullable UUID owner){
 		this.warpLoc = warpLoc;
 		this.remover = remover;
+		this.owner = owner;
 	}
 	
 	/**
 	 * Get the location of the removed Warp
 	 * @return removed warp's location
 	 */
-	public Location getWarpLocation(){return this.warpLoc;}
+	@NonNull
+	public Location getWarpLocation(){
+	    return this.warpLoc;
+	    }
 	
 	/**
 	 * Get who has removed the warp
 	 * @return the warp's remover
 	 */
-	public UUID getRemover(){return this.remover;}
+	@NonNull
+	public UUID getRemover(){
+	    return this.remover;
+	    }
 	
-	@Override
+    /**
+     * @return the owner
+     */
+	@Nullable
+    protected UUID getOwner() {
+        return owner;
+    }
+
+    @Override
     public HandlerList getHandlers() {
         return handlers;
     }

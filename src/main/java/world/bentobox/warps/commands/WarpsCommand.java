@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.bukkit.World;
 
-import world.bentobox.warps.Warp;
 import world.bentobox.bentobox.api.commands.CompositeCommand;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.warps.Warp;
 
 /**
  * Handles the warps command
@@ -15,7 +15,7 @@ import world.bentobox.bentobox.api.user.User;
  */
 public class WarpsCommand extends CompositeCommand {
 
-    private Warp addon;
+    private final Warp addon;
 
     public WarpsCommand(Warp addon, CompositeCommand bsbIslandCmd) {
         super(bsbIslandCmd, addon.getSettings().getWarpsCommand());

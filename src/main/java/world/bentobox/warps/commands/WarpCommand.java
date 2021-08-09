@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.bukkit.World;
 
@@ -20,7 +19,7 @@ import world.bentobox.warps.Warp;
  */
 public class WarpCommand extends DelayedTeleportCommand {
 
-    private Warp addon;
+    private final Warp addon;
 
     public WarpCommand(Warp addon, CompositeCommand bsbIslandCmd) {
         super(bsbIslandCmd, addon.getSettings().getWarpCommand());
@@ -81,7 +80,7 @@ public class WarpCommand extends DelayedTeleportCommand {
     @Override
     public Optional<List<String>> tabComplete(User user, String alias, List<String> args) {
         World world = getWorld() == null ? user.getWorld() : getWorld();
-        return Optional.of(addon.getWarpSignsManager().listWarps(world).stream().map(getPlayers()::getName).collect(Collectors.toList()));
+        return Optional.of(addon.getWarpSignsManager().listWarps(world).stream().map(getPlayers()::getName).toList());
     }
 
 
