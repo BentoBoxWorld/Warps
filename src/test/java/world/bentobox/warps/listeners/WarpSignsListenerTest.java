@@ -209,7 +209,7 @@ public class WarpSignsListenerTest {
         when(s.getLine(Mockito.anyInt())).thenReturn(ChatColor.RED + "[WELCOME]");
         wsl.onSignBreak(e);
         assertFalse(e.isCancelled());
-        verify(s).getLine(Mockito.eq(0));
+        verify(s).getLine(0);
         verify(settings).getWelcomeLine();
 
     }

@@ -40,6 +40,8 @@ import world.bentobox.warps.event.WarpRemoveEvent;
  */
 public class WarpSignsListener implements Listener {
 
+    private static final String WARPS_DEACTIVATE = "warps.deactivate";
+
     private final BentoBox plugin;
 
     private final Warp addon;
@@ -85,14 +87,14 @@ public class WarpSignsListener implements Listener {
     public void onPlayerLeave(TeamLeaveEvent e) {
         // Remove any warp signs from this game mode
         addon.getWarpSignsManager().removeWarp(e.getIsland().getWorld(), e.getPlayerUUID());
-        Objects.requireNonNull(User.getInstance(e.getPlayerUUID())).sendMessage("warps.deactivate");
+        Objects.requireNonNull(User.getInstance(e.getPlayerUUID())).sendMessage(WARPS_DEACTIVATE);
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerLeave(TeamKickEvent e) {
         // Remove any warp signs from this game mode
         addon.getWarpSignsManager().removeWarp(e.getIsland().getWorld(), e.getPlayerUUID());
-        Objects.requireNonNull(User.getInstance(e.getPlayerUUID())).sendMessage("warps.deactivate");
+        Objects.requireNonNull(User.getInstance(e.getPlayerUUID())).sendMessage(WARPS_DEACTIVATE);
     }
 
     /**
@@ -176,7 +178,7 @@ public class WarpSignsListener implements Listener {
                     if (oldSign.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getSettings().getWelcomeLine())) {
                         oldSign.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
                         oldSign.update(true, false);
-                        user.sendMessage("warps.deactivate");
+                        user.sendMessage(WARPS_DEACTIVATE);
                         addon.getWarpSignsManager().removeWarp(oldSignBlock.getWorld(), user.getUniqueId());
                         @Nullable
                         UUID owner = addon.getWarpSignsManager().getWarpOwnerUUID(oldSignLoc).orElse(null);

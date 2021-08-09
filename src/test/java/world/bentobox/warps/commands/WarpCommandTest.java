@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -235,7 +234,7 @@ public class WarpCommandTest {
      */
     @Test
     public void testExecuteUserStringListOfStringNoWarpsYet() {
-        when(wsm.listWarps(eq(world))).thenReturn(Collections.emptySet());
+        when(wsm.listWarps(world)).thenReturn(Collections.emptySet());
         warpCommandWarpCompositeCommand();
         assertFalse(wc.execute(user, "warp", Collections.singletonList("LSPVicky")));
         verify(user).sendMessage("warps.error.no-warps-yet");

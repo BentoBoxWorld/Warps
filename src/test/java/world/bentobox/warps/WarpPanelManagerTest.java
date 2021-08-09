@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -208,7 +207,7 @@ public class WarpPanelManagerTest {
         PanelBuilder pb = mock(PanelBuilder.class);
         wpm.addNavigation(pb, user, world, 0, 0, 100);
         verify(pb).item(any());
-        verify(user).getTranslation(eq("warps.next"));
+        verify(user).getTranslation("warps.next");
     }
 
     /**
