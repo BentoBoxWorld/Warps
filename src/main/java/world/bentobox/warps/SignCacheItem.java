@@ -18,8 +18,8 @@ public class SignCacheItem {
     @Expose
     private final Material type;
     /**
-     * @param signText
-     * @param type
+     * @param signText sign text
+     * @param type material of sign
      */
     public SignCacheItem(List<String> signText, Material type) {
         this.signText = signText;

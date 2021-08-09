@@ -40,7 +40,7 @@ public class WarpInitiateEvent extends Event implements Cancellable {
 
     /**
      * Set a different location to where the player will go
-     * @param warpLoc
+     * @param warpLoc warp location
      */
     public void setWarpLoc(Location warpLoc) {
         this.warpLoc = warpLoc;

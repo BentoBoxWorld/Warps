@@ -15,7 +15,7 @@ import world.bentobox.warps.Warp;
  */
 public class WarpsCommand extends CompositeCommand {
 
-    private Warp addon;
+    private final Warp addon;
 
     public WarpsCommand(Warp addon, CompositeCommand bsbIslandCmd) {
         super(bsbIslandCmd, addon.getSettings().getWarpsCommand());

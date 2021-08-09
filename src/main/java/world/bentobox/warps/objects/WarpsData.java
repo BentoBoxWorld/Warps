@@ -46,7 +46,7 @@ public class WarpsData implements DataObject {
 
     /**
      * Puts all the data from the map into this objects ready for saving
-     * @param worldsWarpList
+     * @param worldsWarpList 2D map of warp locations by world vs UUID
      * @return this class filled with data
      */
     public WarpsData save(Map<World, Map<UUID, Location>> worldsWarpList) {

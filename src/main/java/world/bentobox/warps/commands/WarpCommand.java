@@ -20,7 +20,7 @@ import world.bentobox.warps.Warp;
  */
 public class WarpCommand extends DelayedTeleportCommand {
 
-    private Warp addon;
+    private final Warp addon;
 
     public WarpCommand(Warp addon, CompositeCommand bsbIslandCmd) {
         super(bsbIslandCmd, addon.getSettings().getWarpCommand());

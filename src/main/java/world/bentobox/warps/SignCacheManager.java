@@ -13,10 +13,10 @@ import world.bentobox.bentobox.database.Database;
 import world.bentobox.warps.objects.SignCache;
 
 public class SignCacheManager {
-    private Map<World, Map<UUID, SignCacheItem>> cachedSigns = new HashMap<>();
-    private Warp addon;
+    private final Map<World, Map<UUID, SignCacheItem>> cachedSigns = new HashMap<>();
+    private final Warp addon;
     // Database handler for level data
-    private Database<SignCache> handler;
+    private final Database<SignCache> handler;
 
     public SignCacheManager(Warp addon) {
         this.addon = addon;

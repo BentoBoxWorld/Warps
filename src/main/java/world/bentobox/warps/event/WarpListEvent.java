@@ -24,7 +24,7 @@ public class WarpListEvent extends Event {
 
     /**
      * @param plugin - BSkyBlock plugin objects
-     * @param warps
+     * @param warps list of warp UUIDs
      */
     public WarpListEvent(Warp plugin, List<UUID> warps) {
         this.warps = warps;

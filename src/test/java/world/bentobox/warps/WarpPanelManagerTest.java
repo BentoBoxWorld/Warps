@@ -33,7 +33,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -67,7 +66,6 @@ public class WarpPanelManagerTest {
     private World world;
     @Mock
     private Inventory top;
-    private UUID uuid;
     @Mock
     private Settings settings;
     @Mock
@@ -92,10 +90,9 @@ public class WarpPanelManagerTest {
     }
 
     /**
-     * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(addon.getWarpSignsManager()).thenReturn(wsm);
         // Fill with 200 fake warps (I'm banking on them all being different, but there could be a clash)
         list = new ArrayList<>();
@@ -103,19 +100,14 @@ public class WarpPanelManagerTest {
             list.add(UUID.randomUUID());
         }
         // One final one
-        uuid = UUID.randomUUID();
+        UUID uuid = UUID.randomUUID();
         list.add(uuid);
 
         when(wsm.getSortedWarps(any())).thenReturn(CompletableFuture.completedFuture(list));
 
         // User and player
         when(user.getPlayer()).thenReturn(player);
-        when(user.getTranslation(any())).thenAnswer(new Answer<String>() {
-
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable {
-                return invocation.getArgument(0, String.class);
-            }});
+        when(user.getTranslation(any())).thenAnswer((Answer<String>) invocation -> invocation.getArgument(0, String.class));
 
 
         // BentoBox

@@ -40,9 +40,9 @@ import world.bentobox.warps.event.WarpRemoveEvent;
  */
 public class WarpSignsListener implements Listener {
 
-    private BentoBox plugin;
+    private final BentoBox plugin;
 
-    private Warp addon;
+    private final Warp addon;
 
     /**
      * @param addon - addon
@@ -153,7 +153,7 @@ public class WarpSignsListener implements Listener {
         String title = e.getLine(0);
         User user = Objects.requireNonNull(User.getInstance(e.getPlayer()));
         // Check if someone is changing their own sign
-        if (title.equalsIgnoreCase(addon.getSettings().getWelcomeLine())) {
+        if (title != null && title.equalsIgnoreCase(addon.getSettings().getWelcomeLine())) {
             // Welcome sign detected - check permissions
             if (noPerms(user, b.getWorld(), inWorld)) {
                 return;
@@ -164,11 +164,7 @@ public class WarpSignsListener implements Listener {
             }
             // Check if the player already has a sign
             final Location oldSignLoc = addon.getWarpSignsManager().getWarp(b.getWorld(), user.getUniqueId());
-            if (oldSignLoc == null) {
-                // First time the sign has been placed or this is a new
-                // sign
-                addSign(e, user, b);
-            } else {
+            if (oldSignLoc != null) {
                 // A sign already exists. Check if it still there and if
                 // so,
                 // deactivate it
@@ -188,8 +184,8 @@ public class WarpSignsListener implements Listener {
                     }
                 }
                 // Set up the new warp sign
-                addSign(e, user, b);
             }
+            addSign(e, user, b);
         }
 
     }
@@ -235,7 +231,10 @@ public class WarpSignsListener implements Listener {
             user.sendMessage("warps.success");
             e.setLine(0, ChatColor.GREEN + addon.getSettings().getWelcomeLine());
             for (int i = 1; i<4; i++) {
-                e.setLine(i, ChatColor.translateAlternateColorCodes('&', e.getLine(i)));
+                String line = e.getLine(i);
+                if (line != null) {
+                    e.setLine(i, ChatColor.translateAlternateColorCodes('&', line));
+                }
             }
 
             Map<String, Object> keyValues = new HashMap<>();

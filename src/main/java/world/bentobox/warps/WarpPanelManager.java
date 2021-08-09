@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.command.Command;
 import org.bukkit.inventory.ItemStack;
 import org.eclipse.jdt.annotation.NonNull;
 
@@ -19,9 +20,9 @@ import world.bentobox.bentobox.api.user.User;
 public class WarpPanelManager {
 
     private static final int PANEL_MAX_SIZE = 52;
-    private Warp addon;
+    private final Warp addon;
     // This is a cache of signs
-    private SignCacheManager signCacheManager;
+    private final SignCacheManager signCacheManager;
 
     public WarpPanelManager(Warp addon) {
         this.addon = addon;
@@ -44,10 +45,9 @@ public class WarpPanelManager {
 
     private boolean hander(World world, User clicker, UUID warpOwner) {
         clicker.closeInventory();
-        String playerCommand = addon.getPlugin().getIWM().getAddon(world).map(gm -> gm.getPlayerCommand().map(c -> c.getLabel()).orElse("")).orElse("");
+        String playerCommand = addon.getPlugin().getIWM().getAddon(world).map(gm -> gm.getPlayerCommand().map(Command::getLabel).orElse("")).orElse("");
         String command = addon.getSettings().getWarpCommand() + " " + addon.getPlayers().getName(warpOwner);
         clicker.getPlayer().performCommand((playerCommand.isEmpty() ? "" : playerCommand + " ") + command);
-        //addon.getWarpSignsManager().warpPlayer(world, clicker, warpOwner);
         return true;
     }
 
@@ -70,7 +70,7 @@ public class WarpPanelManager {
                 .user(user)
                 .name(user.getTranslation("warps.title") + " " + (index + 1));
 
-        buildPanel(panelBuilder, user, index, world).thenRun(() -> panelBuilder.build());
+        buildPanel(panelBuilder, user, index, world).thenRun(panelBuilder::build);
     }
 
     CompletableFuture<Void> buildPanel(PanelBuilder panelBuilder, User user, int index, World world) {
@@ -102,13 +102,11 @@ public class WarpPanelManager {
         });
     }
 
-    private boolean getRandomWarp(List<UUID> warps) {
+    private void getRandomWarp(List<UUID> warps) {
         // Add random warp
         if (!warps.isEmpty() && addon.getSettings().isRandomAllowed()) {
             warps.add(0, warps.get(new Random().nextInt(warps.size())));
-            return true;
         }
-        return false;
     }
 
     int buildMainBody(PanelBuilder panelBuilder, User user, int index, World world, List<UUID> warps) {

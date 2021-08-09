@@ -248,20 +248,14 @@ public class Warp extends Addon {
                 return null;
             }
         }
-        switch(requestLabel) {
-        case "getSortedWarps":
-            return getWarpSignsManager().getSortedWarps(world);
-        case "getWarp":
-            return uuid == null ? null : getWarpSignsManager().getWarp(world, uuid);
-        case "getWarpMap":
-            return getWarpSignsManager().getWarpMap(world);
-        case "hasWarp":
-            return uuid == null ? null : getWarpSignsManager().hasWarp(world, uuid);
-        case "listWarps":
-            return getWarpSignsManager().listWarps(world);
-        default:
-            return null;
-        }
+        return switch (requestLabel) {
+            case "getSortedWarps" -> getWarpSignsManager().getSortedWarps(world);
+            case "getWarp" -> uuid == null ? null : getWarpSignsManager().getWarp(world, uuid);
+            case "getWarpMap" -> getWarpSignsManager().getWarpMap(world);
+            case "hasWarp" -> uuid == null ? null : getWarpSignsManager().hasWarp(world, uuid);
+            case "listWarps" -> getWarpSignsManager().listWarps(world);
+            default -> null;
+        };
 
     }
 

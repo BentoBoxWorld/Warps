@@ -53,7 +53,6 @@ public class WarpCommandTest {
     private static final String WELCOME_LINE = "[Welcome]";
     @Mock
     private CompositeCommand ic;
-    private UUID uuid;
     @Mock
     private User user;
     @Mock
@@ -78,10 +77,9 @@ public class WarpCommandTest {
     private BukkitScheduler sch;
 
     /**
-     * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         // Set up plugin
         BentoBox plugin = mock(BentoBox.class);
         Whitebox.setInternalState(BentoBox.class, "instance", plugin);
@@ -100,7 +98,7 @@ public class WarpCommandTest {
         when(plugin.getIWM()).thenReturn(iwm);
 
         // Player
-        uuid = UUID.randomUUID();
+        UUID uuid = UUID.randomUUID();
         when(user.getUniqueId()).thenReturn(uuid);
         when(user.getWorld()).thenReturn(world);
 

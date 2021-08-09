@@ -13,14 +13,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.beans.IntrospectionException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -89,7 +86,7 @@ public class WarpSignsManagerTest {
     private Logger logger;
     @Mock
     private WarpsData load;
-    private UUID uuid = UUID.randomUUID();
+    private final UUID uuid = UUID.randomUUID();
     @Mock
     private Location location;
     @Mock
@@ -129,7 +126,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * @throws java.lang.Exception
+     * @throws java.lang.Exception exception
      */
     @Before
     public void setUp() throws Exception {
@@ -167,6 +164,7 @@ public class WarpSignsManagerTest {
         when(location.getBlockX()).thenReturn(23);
         when(location.getBlockY()).thenReturn(24);
         when(location.getBlockZ()).thenReturn(25);
+        when(player.getLocation()).thenReturn(location);
         when(world.getEnvironment()).thenReturn(Environment.NORMAL);
         when(world.isChunkLoaded(anyInt(), anyInt())).thenReturn(true);
 
@@ -224,10 +222,9 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         User.clearUsers();
     }
 
@@ -272,7 +269,7 @@ public class WarpSignsManagerTest {
 
     /**
      * Test method for {@link world.bentobox.warps.WarpSignsManager#getWarpMap(org.bukkit.World)}.
-     * @throws Exception
+     * @throws Exception exception
      */
     @Test
     public void testGetWarpMapNullDatabaseObject() throws Exception {
@@ -293,10 +290,9 @@ public class WarpSignsManagerTest {
 
     /**
      * Test method for {@link world.bentobox.warps.WarpSignsManager#WarpSignsManager(world.bentobox.warps.Warp, world.bentobox.bentobox.BentoBox)}.
-     * @throws Exception
      */
     @Test
-    public void testWarpSignsManager() throws Exception {
+    public void testWarpSignsManager() {
         verify(addon).log("Loading warps...");
         verify(load).getWarpSigns();
         verify(block).getType();
@@ -372,11 +368,9 @@ public class WarpSignsManagerTest {
 
     /**
      * Test method for {@link world.bentobox.warps.WarpSignsManager#getSortedWarps(org.bukkit.World)}.
-     * @throws ExecutionException
-     * @throws InterruptedException
      */
     @Test
-    public void testGetSortedWarps() throws InterruptedException, ExecutionException {
+    public void testGetSortedWarps() {
         CompletableFuture<List<UUID>> r = new CompletableFuture<>();
         assertEquals(1, wsm.processWarpMap(r, world).size());
     }
@@ -410,9 +404,7 @@ public class WarpSignsManagerTest {
 
     /**
      * Test method for {@link world.bentobox.warps.WarpSignsManager#saveWarpList()}.
-     * @throws IntrospectionException
-     * @throws InvocationTargetException
-     * @throws Exception
+     * @throws Exception general exception
      */
     @Test
     public void testSaveWarpList() throws Exception {
@@ -438,6 +430,7 @@ public class WarpSignsManagerTest {
         when(p.getUniqueId()).thenReturn(UUID.randomUUID());
         when(p.getWorld()).thenReturn(world);
         when(p.getName()).thenReturn("tastybento");
+        when(p.getLocation()).thenReturn(location);
         @Nullable
         User u = User.getInstance(p);
         wsm.warpPlayer(world, u, uuid);
@@ -473,7 +466,7 @@ public class WarpSignsManagerTest {
 
     /**
      * Test method for {@link world.bentobox.warps.WarpSignsManager#loadWarpList()}.
-     * @throws Exception
+     * @throws Exception exception
      */
     @Test
     public void testLoadWarpListEmptyWarpTable() throws Exception {

@@ -73,7 +73,6 @@ public class WarpSignsListenerTest {
     @Mock
     private WarpSignsManager wsm;
     private PluginManager pm;
-    private UUID uuid;
     private String[] lines;
     @Mock
     private FileConfiguration config;
@@ -85,7 +84,7 @@ public class WarpSignsListenerTest {
     private IslandWorldManager iwm;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         // Bukkit
         PowerMockito.mockStatic(Bukkit.class);
         pm = mock(PluginManager.class);
@@ -114,7 +113,7 @@ public class WarpSignsListenerTest {
         when(block.getWorld()).thenReturn(world);
         // Player
         when(player.hasPermission(anyString())).thenReturn(false);
-        uuid = UUID.randomUUID();
+        UUID uuid = UUID.randomUUID();
         when(player.getUniqueId()).thenReturn(uuid);
         s = mock(Sign.class);
         when(s.getLine(Mockito.anyInt())).thenReturn(ChatColor.GREEN + "[WELCOME]");

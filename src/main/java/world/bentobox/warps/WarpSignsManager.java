@@ -49,13 +49,13 @@ import world.bentobox.warps.objects.WarpsData;
 public class WarpSignsManager {
     private static final int MAX_WARPS = 600;
     private static final String WARPS = "warps";
-    private BentoBox plugin;
+    private final BentoBox plugin;
     // Map of all warps stored as player, warp sign Location
     private Map<World, Map<UUID, Location>> worldsWarpList;
     // Database handler for level data
-    private Database<WarpsData> handler;
+    private final Database<WarpsData> handler;
 
-    private Warp addon;
+    private final Warp addon;
     private WarpsData warpsData = new WarpsData();
 
     /**
@@ -155,8 +155,7 @@ public class WarpSignsManager {
         getWarpMap(world).values().removeIf(Objects::isNull);
         // Bigger value of time means a more recent login
         TreeMap<Long, UUID> map = new TreeMap<>();
-        getWarpMap(world).entrySet().forEach(en -> {
-            UUID uuid = en.getKey();
+        getWarpMap(world).forEach((uuid, value) -> {
             // If never played, will be zero
             long lastPlayed = addon.getServer().getOfflinePlayer(uuid).getLastPlayed();
             // This aims to avoid the chance that players logged off at exactly the same time
@@ -185,7 +184,7 @@ public class WarpSignsManager {
     public Set<UUID> listWarps(@NonNull World world) {
         // Remove any null locations
         getWarpMap(world).values().removeIf(Objects::isNull);
-        return getWarpMap(world).entrySet().stream().filter(e -> Util.sameWorld(world, e.getValue().getWorld())).map(Map.Entry::getKey).collect(Collectors.toSet());
+        return getWarpMap(world).entrySet().stream().filter(e -> Util.sameWorld(world, Objects.requireNonNull(e.getValue().getWorld()))).map(Map.Entry::getKey).collect(Collectors.toSet());
     }
 
     /**
@@ -217,7 +216,7 @@ public class WarpSignsManager {
 
     /**
      * Changes the sign to red if it exists
-     * @param loc
+     * @param loc location to pop
      */
     private void popSign(Location loc) {
         Block b = loc.getBlock();
@@ -233,7 +232,7 @@ public class WarpSignsManager {
     /**
      * Removes a warp at a location.
      *
-     * @param loc
+     * @param loc location to remove
      */
     public void removeWarp(Location loc) {
         popSign(loc);
@@ -258,7 +257,7 @@ public class WarpSignsManager {
     /**
      * Remove warp sign owned by UUID
      *
-     * @param uuid
+     * @param uuid UUID of owner to remove
      */
     public void removeWarp(World world, UUID uuid) {
         if (getWarpMap(world).containsKey(uuid)) {
@@ -297,14 +296,13 @@ public class WarpSignsManager {
      */
     @NonNull
     public SignCacheItem getSignInfo(@NonNull World world, @NonNull UUID uuid) {
-        List<String> result = new ArrayList<>();
         //get the sign info
         Location signLocation = getWarp(world, uuid);
         if (signLocation == null || !signLocation.getBlock().getType().name().contains("SIGN")) {
             return new SignCacheItem();
         }
         Sign sign = (Sign)signLocation.getBlock().getState();
-        result.addAll(Arrays.asList(sign.getLines()));
+        List<String> result = new ArrayList<>(Arrays.asList(sign.getLines()));
         // Clean up - remove the [WELCOME] line
         result.remove(0);
         // Remove any trailing blank lines
@@ -359,9 +357,9 @@ public class WarpSignsManager {
         }
         if (pvp) {
             user.sendMessage("protection.flags.PVP_OVERWORLD.enabled");
-            user.getWorld().playSound(user.getLocation(), Sound.ENTITY_ARROW_HIT, 1F, 1F);
+            user.getWorld().playSound(Objects.requireNonNull(user.getLocation()), Sound.ENTITY_ARROW_HIT, 1F, 1F);
         } else {
-            user.getWorld().playSound(user.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
+            user.getWorld().playSound(Objects.requireNonNull(user.getLocation()), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
         }
         if (!warpOwner.equals(user)) {
             warpOwner.sendMessage("warps.player-warped", "[name]", user.getName());
@@ -396,7 +394,7 @@ public class WarpSignsManager {
         boolean pvp = false;
         if (island != null) {
             // Check for PVP
-            switch (warpSpot.getWorld().getEnvironment()) {
+            switch (Objects.requireNonNull(warpSpot.getWorld()).getEnvironment()) {
             case NETHER:
                 pvp = island.isAllowed(Flags.PVP_NETHER);
                 break;
@@ -447,9 +445,9 @@ public class WarpSignsManager {
                     warpSpot.getBlockZ() + 0.5D);
             if (pvp) {
                 user.sendMessage("protection.flags.PVP_OVERWORLD.enabled");
-                user.getWorld().playSound(user.getLocation(), Sound.ENTITY_ARROW_HIT, 1F, 1F);
+                user.getWorld().playSound(Objects.requireNonNull(user.getLocation()), Sound.ENTITY_ARROW_HIT, 1F, 1F);
             } else {
-                user.getWorld().playSound(user.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
+                user.getWorld().playSound(Objects.requireNonNull(user.getLocation()), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
             }
             Util.teleportAsync(user.getPlayer(), actualWarp, TeleportCause.COMMAND);
         }
@@ -489,10 +487,10 @@ public class WarpSignsManager {
 
             String permPrefix = permissionPrefix + ".";
 
-            List<String> permissions = user.getEffectivePermissions().stream().
-                    map(PermissionAttachmentInfo::getPermission).
-                    filter(permission -> permission.startsWith(permPrefix)).
-                    collect(Collectors.toList());
+            List<String> permissions = user.getEffectivePermissions().stream()
+                    .map(PermissionAttachmentInfo::getPermission)
+                    .filter(permission -> permission.startsWith(permPrefix))
+                    .toList();
 
             for (String permission : permissions)
             {

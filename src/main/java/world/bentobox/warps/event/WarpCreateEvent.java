@@ -18,13 +18,13 @@ import world.bentobox.warps.Warp;
 public class WarpCreateEvent extends Event{
     private static final HandlerList handlers = new HandlerList();
 
-    private Location warpLoc;
-    private UUID creator;
+    private final Location warpLoc;
+    private final UUID creator;
 
     /**
      * @param plugin - BSkyBlock plugin objects
-     * @param warpLoc
-     * @param creator
+     * @param warpLoc warp location
+     * @param creator UUID of creator
      */
     public WarpCreateEvent(Warp plugin, Location warpLoc, UUID creator){
         this.warpLoc = warpLoc;
