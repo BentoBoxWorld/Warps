@@ -98,7 +98,7 @@ public class WarpsCommandTest {
         set.add(UUID.randomUUID());
         set.add(UUID.randomUUID());
         set.add(UUID.randomUUID());
-        when(wsm.listWarps(eq(world))).thenReturn(set);
+        when(wsm.listWarps(world)).thenReturn(set);
 
         // Warp Panel Manager
         when(addon.getWarpPanelManager()).thenReturn(wpm);
@@ -146,8 +146,8 @@ public class WarpsCommandTest {
         when(wsm.listWarps(eq(world))).thenReturn(Collections.emptySet());
         warpCommandWarpsCompositeCommand();
         assertFalse(wc.execute(user, "warps", Collections.emptyList()));
-        verify(user).sendMessage(eq("warps.error.no-warps-yet"));
-        verify(user).sendMessage(eq("warps.warpTip"), eq("[text]"), eq(WELCOME_LINE));
+        verify(user).sendMessage("warps.error.no-warps-yet");
+        verify(user).sendMessage("warps.warpTip", "[text]", WELCOME_LINE);
     }
 
     /**
@@ -158,8 +158,8 @@ public class WarpsCommandTest {
         when(wsm.listWarps(eq(world))).thenReturn(Collections.emptySet());
         warpCommandWarps();
         assertFalse(wc.execute(user, "warps", Collections.emptyList()));
-        verify(user).sendMessage(eq("warps.error.no-warps-yet"));
-        verify(user).sendMessage(eq("warps.warpTip"), eq("[text]"), eq(WELCOME_LINE));
+        verify(user).sendMessage("warps.error.no-warps-yet");
+        verify(user).sendMessage("warps.warpTip", "[text]", WELCOME_LINE);
     }
 
     /**

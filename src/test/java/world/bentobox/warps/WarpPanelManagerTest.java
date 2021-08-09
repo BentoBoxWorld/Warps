@@ -219,7 +219,7 @@ public class WarpPanelManagerTest {
         PanelBuilder pb = mock(PanelBuilder.class);
         wpm.addNavigation(pb, user, world, 60, 2, 20);
         verify(pb).item(any());
-        verify(user).getTranslation(eq("warps.previous"));
+        verify(user).getTranslation("warps.previous");
     }
 
     /**
@@ -230,8 +230,8 @@ public class WarpPanelManagerTest {
         PanelBuilder pb = mock(PanelBuilder.class);
         wpm.addNavigation(pb, user, world, 60, 2, 100);
         verify(pb, times(2)).item(any());
-        verify(user).getTranslation(eq("warps.previous"));
-        verify(user).getTranslation(eq("warps.next"));
+        verify(user).getTranslation("warps.previous");
+        verify(user).getTranslation("warps.next");
     }
 
 
@@ -241,9 +241,9 @@ public class WarpPanelManagerTest {
         int r = wpm.buildMainBody(pb, user, page, world, list);
         verify(pb, times(j)).item(any());
         if (random && page <= 0) {
-            verify(user).getTranslation(eq("warps.random"));
+            verify(user).getTranslation("warps.random");
         } else {
-            verify(user, never()).getTranslation(eq("warps.random"));
+            verify(user, never()).getTranslation("warps.random");
         }
         return r;
     }

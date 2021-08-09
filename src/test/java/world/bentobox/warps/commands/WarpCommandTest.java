@@ -114,7 +114,7 @@ public class WarpCommandTest {
         set.add(UUID.randomUUID());
         set.add(UUID.randomUUID());
         set.add(UUID.randomUUID());
-        when(wsm.listWarps(eq(world))).thenReturn(set);
+        when(wsm.listWarps(world)).thenReturn(set);
 
         // Players Manager
         when(plugin.getPlayers()).thenReturn(pm);
@@ -179,7 +179,7 @@ public class WarpCommandTest {
     public void testExecuteUserStringListOfStringNoArgs() {
         warpCommandWarpCompositeCommand();
         wc.execute(user, "warp", Collections.emptyList());
-        verify(user).sendMessage(eq("commands.help.header"), eq(TextVariables.LABEL), eq("BSkyBlock"));
+        verify(user).sendMessage("commands.help.header", TextVariables.LABEL, "BSkyBlock");
     }
 
     /**
@@ -189,7 +189,6 @@ public class WarpCommandTest {
     public void testExecuteUserStringListOfStringKnownPlayer() {
         warpCommandWarpCompositeCommand();
         assertTrue(wc.execute(user, "warp", Collections.singletonList("tastybento")));
-        //verify(wsm).warpPlayer(eq(world), eq(user), any());
     }
 
     /**
@@ -199,7 +198,6 @@ public class WarpCommandTest {
     public void testExecuteUserStringListOfStringKnownPlayerWarp() {
         warpCommandWarp();
         assertTrue(wc.execute(user, "warp", Collections.singletonList("tastybento")));
-        //verify(wsm).warpPlayer(eq(world), eq(user), any());
     }
 
     /**
@@ -209,7 +207,6 @@ public class WarpCommandTest {
     public void testExecuteUserStringListOfStringKnownPlayerMixedCase() {
         warpCommandWarpCompositeCommand();
         assertTrue(wc.execute(user, "warp", Collections.singletonList("tAsTyBEnTo")));
-        //verify(wsm).warpPlayer(eq(world), eq(user), any());
     }
 
     /**
@@ -220,7 +217,6 @@ public class WarpCommandTest {
         when(pm.getName(any())).thenReturn("tastybento");
         warpCommandWarpCompositeCommand();
         assertTrue(wc.execute(user, "warp", Collections.singletonList("tAsTy")));
-        //verify(wsm).warpPlayer(eq(world), eq(user), any());
     }
 
 
@@ -231,7 +227,7 @@ public class WarpCommandTest {
     public void testExecuteUserStringListOfStringUnknownPlayer() {
         warpCommandWarpCompositeCommand();
         assertFalse(wc.execute(user, "warp", Collections.singletonList("LSPVicky")));
-        verify(user).sendMessage(eq("warps.error.does-not-exist"));
+        verify(user).sendMessage("warps.error.does-not-exist");
     }
 
     /**
@@ -242,8 +238,8 @@ public class WarpCommandTest {
         when(wsm.listWarps(eq(world))).thenReturn(Collections.emptySet());
         warpCommandWarpCompositeCommand();
         assertFalse(wc.execute(user, "warp", Collections.singletonList("LSPVicky")));
-        verify(user).sendMessage(eq("warps.error.no-warps-yet"));
-        verify(user).sendMessage(eq("warps.warpTip"), eq("[text]"), eq(WELCOME_LINE));
+        verify(user).sendMessage("warps.error.no-warps-yet");
+        verify(user).sendMessage("warps.warpTip", "[text]", WELCOME_LINE);
     }
 
     /**

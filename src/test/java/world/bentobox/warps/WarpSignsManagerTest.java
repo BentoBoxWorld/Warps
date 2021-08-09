@@ -183,7 +183,7 @@ public class WarpSignsManagerTest {
         when(block.getRelative(any())).thenReturn(block);
 
         // Handler
-        when(handler.objectExists(eq("warps"))).thenReturn(true);
+        when(handler.objectExists("warps")).thenReturn(true);
         Map<Location, UUID> warpMap = Collections.singletonMap(location, uuid);
         when(load.getWarpSigns()).thenReturn(warpMap);
         when(handler.loadObject(anyString())).thenReturn(load);
@@ -200,7 +200,7 @@ public class WarpSignsManagerTest {
 
         // Players Manager
         when(plugin.getPlayers()).thenReturn(pm);
-        when(pm.getName(eq(uuid))).thenReturn("tastybento");
+        when(pm.getName(uuid)).thenReturn("tastybento");
 
         // Offline player
         when(server.getOfflinePlayer(any(UUID.class))).thenReturn(offlinePlayer);
@@ -283,7 +283,7 @@ public class WarpSignsManagerTest {
      */
     @Test
     public void testGetWarpMapNothingInDatabase() {
-        when(handler.objectExists(eq("warps"))).thenReturn(false);
+        when(handler.objectExists("warps")).thenReturn(false);
         wsm = new WarpSignsManager(addon, plugin);
         assertTrue("Map is not empty", wsm.getWarpMap(world).isEmpty());
     }
@@ -460,7 +460,7 @@ public class WarpSignsManagerTest {
         // Save
         wsm.saveWarpList();
         // Default load in constructor check
-        verify(addon, times(2)).log(eq("Loading warps..."));
+        verify(addon, times(2)).log("Loading warps...");
         assertTrue(wsm.getWarpMap(world).isEmpty());
     }
 
@@ -476,7 +476,7 @@ public class WarpSignsManagerTest {
         // Save
         wsm.saveWarpList();
         // Default load in constructor check
-        verify(addon, times(2)).log(eq("Loading warps..."));
+        verify(addon, times(2)).log("Loading warps...");
         assertTrue(wsm.getWarpMap(world).isEmpty());
     }
 }
