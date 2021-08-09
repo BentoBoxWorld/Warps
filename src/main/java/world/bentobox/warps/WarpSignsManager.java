@@ -322,7 +322,7 @@ public class WarpSignsManager {
         if (!prefix.isEmpty())
         {
             icon = Material.matchMaterial(
-                    this.getPermissionValue(User.getInstance(uuid),
+                    this.getPermissionValue(Objects.requireNonNull(User.getInstance(uuid)),
                             prefix + "island.warp",
                             this.addon.getSettings().getIcon()));
         }
@@ -352,7 +352,7 @@ public class WarpSignsManager {
         final Location actualWarp = new Location(inFront.getWorld(), inFront.getBlockX() + 0.5D, inFront.getBlockY(),
                 inFront.getBlockZ() + 0.5D, yaw, 30F);
         Util.teleportAsync(user.getPlayer(), actualWarp, TeleportCause.COMMAND);
-        User warpOwner = User.getInstance(signOwner);
+        User warpOwner = Objects.requireNonNull(User.getInstance(signOwner));
         // Hide invisible players
         if (warpOwner.isOnline() && !warpOwner.getPlayer().canSee(user.getPlayer())) {
             return;

@@ -3,6 +3,7 @@ package world.bentobox.warps.listeners;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -84,14 +85,14 @@ public class WarpSignsListener implements Listener {
     public void onPlayerLeave(TeamLeaveEvent e) {
         // Remove any warp signs from this game mode
         addon.getWarpSignsManager().removeWarp(e.getIsland().getWorld(), e.getPlayerUUID());
-        User.getInstance(e.getPlayerUUID()).sendMessage("warps.deactivate");
+        Objects.requireNonNull(User.getInstance(e.getPlayerUUID())).sendMessage("warps.deactivate");
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerLeave(TeamKickEvent e) {
         // Remove any warp signs from this game mode
         addon.getWarpSignsManager().removeWarp(e.getIsland().getWorld(), e.getPlayerUUID());
-        User.getInstance(e.getPlayerUUID()).sendMessage("warps.deactivate");
+        Objects.requireNonNull(User.getInstance(e.getPlayerUUID())).sendMessage("warps.deactivate");
     }
 
     /**
@@ -111,6 +112,7 @@ public class WarpSignsListener implements Listener {
             return;
         }
         User user = User.getInstance(e.getPlayer());
+        if (user == null) return;
         UUID owner = addon.getWarpSignsManager().getWarpOwnerUUID(b.getLocation()).orElse(null);
         if (isPlayersSign(e.getPlayer(), b, inWorld)) {
             addon.getWarpSignsManager().removeWarp(b.getLocation());
@@ -149,7 +151,7 @@ public class WarpSignsListener implements Listener {
             return;
         }
         String title = e.getLine(0);
-        User user = User.getInstance(e.getPlayer());
+        User user = Objects.requireNonNull(User.getInstance(e.getPlayer()));
         // Check if someone is changing their own sign
         if (title.equalsIgnoreCase(addon.getSettings().getWelcomeLine())) {
             // Welcome sign detected - check permissions
