@@ -6,25 +6,26 @@
 warp: 
   help: 
     description: "Teletransportarte hacia el warp del jugador"
-    parameters: <name>
+    parameters: <player name>
 warps: 
-  deactivate: "&cViejo cartel a sido desactivado!"
+  deactivate: "&c¡El cartel viejo ha sido desactivado!"
   error: 
-    does-not-exist: "&cOh snap! Ese warp ya no existe!"
-    no-permission: "&CNo tienes permiso para hacer eso!"
-    no-remove: "&CNo puedes quitar ese cartel!"
-    no-warps-yet: "&CNo hay warps disponibles aun"
-    not-enough-level: "&CTu nivel de isla no es lo suficientemente alto!"
-    not-on-island: "&CDebes estar en tu isla para hacer eso!"
-    not-safe: "&cEse warp no es seguro!"
+    does-not-exist: "&c¡Oh vaya! !Ese warp ya no existe!"
+    no-permission: "&c¡No tienes permiso para hacer eso!"
+    no-remove: "&c¡No puedes quitar ese cartel!"
+    no-warps-yet: "&cNo hay warps disponibles aún"
+    not-enough-level: "&c¡Tu nivel de isla no es lo suficientemente alto!"
+    not-on-island: "&c¡Debes estar en tu isla para hacer eso!"
+    not-safe: "&c¡Ese warp no es seguro!"
     your-level-is: "&cTu nivel de isla es solo [level] y debe ser mayor que [required]"
   help: 
     description: "Abre el panel de warps"
   next: "&6Siguiente página"
-  player-warped: "&2[name] teletransportarte a tu warp!"
-  previous: "&6Pagina anterior"
-  sign-removed: "&CCartel removido!"
-  success: "&AExito!"
-  title: "Carteles de Warps"
-  warpTip: "&6Coloca un cartel con este texto [text] arriba"
+  player-warped: "&2[name] ¡se ha teletransportado a tu warp!"
+  previous: "&6Página anterior" 
+  random: "&4Teletransporte aleatorio"
+  sign-removed: "&c¡Cartel removido!"
+  success: "&a¡Éxito!"
+  title: "Carteles de Warps" 
+  warpTip: "&6Coloca un cartel que contenga el texto [text] arriba"
   warpToPlayersSign: "&6Teletransportandote al warp de [player]"
