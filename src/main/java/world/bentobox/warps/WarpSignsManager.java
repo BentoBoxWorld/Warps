@@ -25,6 +25,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.eclipse.jdt.annotation.NonNull;
@@ -241,11 +242,9 @@ public class WarpSignsManager {
             Entry<UUID, Location> en = it.next();
             if (en.getValue().equals(loc)) {
                 // Inform player
-                User user = User.getInstance(addon.getServer().getPlayer(en.getKey()));
-                if (user != null) {
-                    // Inform the player
-                    user.sendMessage("warps.sign-removed");
-                }
+                Optional.ofNullable(addon.getServer().getPlayer(en.getKey()))
+                        .map(User::getInstance)
+                        .ifPresent(user -> user.sendMessage("warps.sign-removed"));
                 // Remove sign from warp panel cache
                 addon.getWarpPanelManager().removeWarp(loc.getWorld(), en.getKey());
                 it.remove();

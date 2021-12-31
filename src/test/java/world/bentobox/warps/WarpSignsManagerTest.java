@@ -157,6 +157,7 @@ public class WarpSignsManagerTest {
         PowerMockito.mockStatic(Util.class);
         when(Util.getWorld(any())).thenAnswer((Answer<World>) invocation -> invocation.getArgument(0, World.class));
         when(Util.sameWorld(any(), any())).thenReturn(true);
+        when(Util.translateColorCodes(any())).thenAnswer((Answer<String>) invocation -> invocation.getArgument(0, String.class));
 
         // Location
         when(location.getWorld()).thenReturn(world);

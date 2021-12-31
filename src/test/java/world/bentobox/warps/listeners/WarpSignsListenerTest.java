@@ -166,6 +166,7 @@ public class WarpSignsListenerTest {
         PowerMockito.mockStatic(Util.class);
         when(Util.getWorld(any())).thenReturn(world);
         when(Util.stripSpaceAfterColorCodes(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class));
+        when(Util.translateColorCodes(any())).thenAnswer((Answer<String>) invocation -> invocation.getArgument(0, String.class));
 
         // Locales
         when(lm.get(any(User.class), anyString())).thenAnswer(answer);
