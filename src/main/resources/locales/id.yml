@@ -4,13 +4,23 @@ warp:
     description: warp ke tanda warp pemain
     parameters: "<player name>"
 warps:
+  deactivate: "&c Tanda warp lama dinonaktifkan!"
   error:
     does-not-exist: "&c Oh! Warp itu tidak ada lagi!"
+    no-permission: "&c Anda tidak memiliki izin untuk melakukan itu!"
+    no-remove: "&c Anda tidak dapat menghapus tanda itu!"
+    no-warps-yet: "&c Belum ada warps yang tersedia"
+    not-enough-level: "&c Level pulaumu tidak cukup tinggi!"
+    not-on-island: "&c Anda harus berada di pulau Anda untuk melakukan itu!"
+    not-safe: "&c Lengkungan itu tidak aman!"
     your-level-is: "&c Level pulau Anda hanya [level] dan harus lebih tinggi dari
       [required]. Jalankan perintah level."
   help:
     description: buka panel warps
+  next: "&6 Halaman berikutnya"
   player-warped: "&2 [name] mengunjungi tanda warp Anda!"
+  previous: "&6 Halaman sebelumnya"
+  random: "&4 Warp Acak"
   sign-removed: "&c Tanda warp dihilangkan!"
   success: "&a Sukses!"
   title: Tanda Warp
