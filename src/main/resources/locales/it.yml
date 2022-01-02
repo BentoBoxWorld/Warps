@@ -1,0 +1,29 @@
+---
+warp:
+  help:
+    description: teletrasporto al cartello Warp del giocatore
+    parameters: "<nome giocatore>"
+warps:
+  deactivate: "&c Vecchio cartello Warp disattivato!"
+  error:
+    does-not-exist: "&c Quel cartello Warp non esiste più!"
+    no-permission: "&c Non hai i permessi per farlo!"
+    no-remove: "&c Non puoi rimuovere quel cartello!"
+    no-warps-yet: "&c Non ci sono ancora Warp disponibili"
+    not-enough-level: "&c Il tuo livello dell'isola non è abbastanza alto!"
+    not-on-island: "&c Devi essere nella tua isola per farlo!"
+    not-safe: "&c Il Warp non è sicuro!"
+    your-level-is: "&c Il tuo livello dell''isola è solo di [level] e deve essere
+      maggiore di [required]. Esegui il comando del calcolo dei livelli per aggiornare
+      il livello."
+  help:
+    description: apri il pannello dei Warp
+  next: "&6 Pagina Successiva"
+  player-warped: "&2 [name] teletrasportato al tuo cartello Warp!"
+  previous: "&6 Pagina Precedente"
+  random: "&4 Warp Random"
+  sign-removed: "&c Cartello Warp rimosso!"
+  success: "&a Successo!"
+  title: Cartelli Warp
+  warpTip: "&6 Piazza un cartello Warp con [text] scritto nella prima riga"
+  warpToPlayersSign: "&6 Teletrasporto al cartello Warp di [player]"
