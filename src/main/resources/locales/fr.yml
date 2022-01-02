@@ -18,9 +18,11 @@ warps:
   help:
     description: Ouvre le menu des Warps
   next: "&6Page suivante"
+  player-warped: "& 2 [pseudo] s'est téléporté à votre panneau Warp !"
   previous: "&6Page précédente"
   random: "&4 Warp aléatoire "
   sign-removed: "&cPanneau de Warp supprimé !"
   success: "&aSuccès !"
   title: Panneau Warp
   warpTip: "&6Placez un panneau et écrivez [text] sur la première ligne."
+  warpToPlayersSign: "&6 Téléportation vers le panneau de [pseudo]"
