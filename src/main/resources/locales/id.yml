@@ -1,0 +1,18 @@
+---
+warp:
+  help:
+    description: warp ke tanda warp pemain
+    parameters: "<player name>"
+warps:
+  error:
+    does-not-exist: "&c Oh! Warp itu tidak ada lagi!"
+    your-level-is: "&c Level pulau Anda hanya [level] dan harus lebih tinggi dari
+      [required]. Jalankan perintah level."
+  help:
+    description: buka panel warps
+  player-warped: "&2 [name] mengunjungi tanda warp Anda!"
+  sign-removed: "&c Tanda warp dihilangkan!"
+  success: "&a Sukses!"
+  title: Tanda Warp
+  warpTip: "&6 Tempatkan tanda warp dengan [text] di atas\n"
+  warpToPlayersSign: "&6 Pergi ke tanda [player]'s"
