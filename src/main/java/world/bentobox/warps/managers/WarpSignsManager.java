@@ -1,4 +1,4 @@
-package world.bentobox.warps;
+package world.bentobox.warps.managers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +25,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.eclipse.jdt.annotation.NonNull;
@@ -38,8 +37,11 @@ import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.lists.Flags;
 import world.bentobox.bentobox.util.Util;
+import world.bentobox.warps.Warp;
 import world.bentobox.warps.event.WarpInitiateEvent;
 import world.bentobox.warps.objects.WarpsData;
+import world.bentobox.warps.panels.Utils;
+
 
 /**
  * Handles warping. Players can add one sign
@@ -151,7 +153,7 @@ public class WarpSignsManager {
         return r;
     }
 
-    List<UUID> processWarpMap(CompletableFuture<List<UUID>> r, @NonNull World world) {
+    public List<UUID> processWarpMap(CompletableFuture<List<UUID>> r, @NonNull World world) {
         // Remove any null locations - this can happen if an admin changes the name of the world and signs point to old locations
         getWarpMap(world).values().removeIf(Objects::isNull);
         // Bigger value of time means a more recent login
@@ -191,7 +193,7 @@ public class WarpSignsManager {
     /**
      * Load the warps and check if they still exist
      */
-    void loadWarpList() {
+    public void loadWarpList() {
         addon.log("Loading warps...");
         worldsWarpList = new HashMap<>();
         if (handler.objectExists(WARPS)) {
@@ -246,7 +248,7 @@ public class WarpSignsManager {
                         .map(User::getInstance)
                         .ifPresent(user -> user.sendMessage("warps.sign-removed"));
                 // Remove sign from warp panel cache
-                addon.getWarpPanelManager().removeWarp(loc.getWorld(), en.getKey());
+                addon.getSignCacheManager().removeWarp(loc.getWorld(), en.getKey());
                 it.remove();
             }
         }
@@ -265,7 +267,7 @@ public class WarpSignsManager {
 
         }
         // Remove sign from warp panel cache
-        addon.getWarpPanelManager().removeWarp(world, uuid);
+        addon.getSignCacheManager().removeWarp(world, uuid);
         saveWarpList();
     }
 
@@ -283,7 +285,7 @@ public class WarpSignsManager {
      */
     public void saveWarpList() {
         handler.saveObjectAsync(warpsData.save(worldsWarpList));
-        addon.getWarpPanelManager().saveCache();
+        addon.getSignCacheManager().saveCache();
     }
 
     /**
@@ -311,7 +313,6 @@ public class WarpSignsManager {
             result.set(i, ChatColor.translateAlternateColorCodes('&', addon.getSettings().getLoreFormat()) + result.get(i));
         }
         // Get the sign type
-
         String prefix = plugin.getIWM().getAddon(world).map(Addon::getPermissionPrefix).orElse("");
 
         Material icon;
@@ -319,20 +320,21 @@ public class WarpSignsManager {
         if (!prefix.isEmpty())
         {
             icon = Material.matchMaterial(
-                    this.getPermissionValue(Objects.requireNonNull(User.getInstance(uuid)),
-                            prefix + "island.warp",
-                            this.addon.getSettings().getIcon()));
+                Utils.getPermissionValue(User.getInstance(uuid), prefix + "island.warp",
+                    Material.OAK_SIGN.name()));
         }
         else
         {
-            icon = Material.matchMaterial(this.addon.getSettings().getIcon());
+            icon = null;
         }
 
-        if (icon == null || icon.name().contains("SIGN")) {
+        if (icon != null && icon.name().contains("SIGN")) {
             return new SignCacheItem(result, Material.valueOf(sign.getType().name().replace("WALL_", "")));
         }
-        return new SignCacheItem(result, icon);
-
+        else
+        {
+            return new SignCacheItem(result, icon);
+        }
     }
 
     /**
@@ -459,55 +461,5 @@ public class WarpSignsManager {
      */
     public boolean hasWarp(@NonNull World world, @NonNull UUID playerUUID) {
         return getWarpMap(world).containsKey(playerUUID);
-    }
-
-
-    // ---------------------------------------------------------------------
-    // Section: Other methods
-    // ---------------------------------------------------------------------
-
-
-    /**
-     * This method gets string value of given permission prefix. If user does not have
-     * given permission or it have all (*), then return default value.
-     * @param user User who's permission should be checked.
-     * @param permissionPrefix Prefix that need to be found.
-     * @param defaultValue Default value that will be returned if permission not found.
-     * @return String value that follows permissionPrefix.
-     */
-    private String getPermissionValue(@NonNull User user, @NonNull String permissionPrefix, @NonNull String defaultValue)
-    {
-        if (user.isPlayer())
-        {
-            if (permissionPrefix.endsWith("."))
-            {
-                permissionPrefix = permissionPrefix.substring(0, permissionPrefix.length() - 1);
-            }
-
-            String permPrefix = permissionPrefix + ".";
-
-            List<String> permissions = user.getEffectivePermissions().stream()
-                    .map(PermissionAttachmentInfo::getPermission)
-                    .filter(permission -> permission.startsWith(permPrefix))
-                    .toList();
-
-            for (String permission : permissions)
-            {
-                if (permission.contains(permPrefix + "*"))
-                {
-                    // * means all. So continue to search more specific.
-                    continue;
-                }
-
-                String[] parts = permission.split(permPrefix);
-
-                if (parts.length > 1)
-                {
-                    return parts[1];
-                }
-            }
-        }
-
-        return defaultValue;
     }
 }

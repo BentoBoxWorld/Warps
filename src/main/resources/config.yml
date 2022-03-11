@@ -12,28 +12,15 @@ warplevelrestriction: 10
 # Not case sensitive!
 welcomeLine: '[Welcome]'
 #
-# Icon that will be displayed in Warps list. SIGN counts for any kind of sign and the type of
-# wood used will be reflected in the panel if the server supports it.
-# It uses native Minecraft material strings, but using string 'PLAYER_HEAD', it is possible to
-# use player heads instead. Beware that Mojang API rate limiting may prevent heads from loading.
-icon: 'SIGN'
-#
 # This list stores GameModes in which Level addon should not work.
 # To disable addon it is necessary to write its name in new line that starts with -. Example:
 # disabled-gamemodes:
 #  - BSkyBlock
 disabled-gamemodes: []
 #
-# Warp panel name formatting.
-# Example: &c will make names red, &f is white
-name-format: "&f"
-#
 # Warp panel default lore formatting.
 # Example: &c will make lore red. &f is white
 lore-format: "&f"
-#
-# Allow random teleport - adds a button to the warp panel that goes to a random warp sign
-random-allowed: true
 #
 # Allow use in other worlds. Players must have the welcomewarpsigns.warp permission.
 allow-in-other-worlds: false

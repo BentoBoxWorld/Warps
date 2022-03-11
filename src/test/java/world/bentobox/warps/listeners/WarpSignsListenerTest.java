@@ -51,7 +51,7 @@ import world.bentobox.bentobox.managers.LocalesManager;
 import world.bentobox.bentobox.managers.PlaceholdersManager;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.Warp;
-import world.bentobox.warps.WarpSignsManager;
+import world.bentobox.warps.managers.WarpSignsManager;
 import world.bentobox.warps.config.Settings;
 
 /**

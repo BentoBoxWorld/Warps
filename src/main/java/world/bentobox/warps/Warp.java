@@ -17,6 +17,9 @@ import world.bentobox.warps.commands.WarpCommand;
 import world.bentobox.warps.commands.WarpsCommand;
 import world.bentobox.warps.config.Settings;
 import world.bentobox.warps.listeners.WarpSignsListener;
+import world.bentobox.warps.managers.SignCacheManager;
+import world.bentobox.warps.managers.WarpSignsManager;
+
 
 /**
  * Addin to BentoBox that enables welcome warp signs
@@ -39,14 +42,14 @@ public class Warp extends Addon {
     public static final String WELCOME_WARP_SIGNS = "welcomewarpsigns";
 
     /**
-     * Warp panel Manager
-     */
-    private WarpPanelManager warpPanelManager;
-
-    /**
      * Worlds Sign manager.
      */
     private WarpSignsManager warpSignsManager;
+
+    /**
+     * Sign Cache Manager
+     */
+    private SignCacheManager signCacheManager;
 
     /**
      * This variable stores in which worlds this addon is working.
@@ -136,7 +139,7 @@ public class Warp extends Addon {
         {
             // Start warp signs
             warpSignsManager = new WarpSignsManager(this, this.getPlugin());
-            warpPanelManager = new WarpPanelManager(this);
+            signCacheManager = new SignCacheManager(this);
             // Load the listener
             this.registerListener(new WarpSignsListener(this));
         } else {
@@ -169,17 +172,21 @@ public class Warp extends Addon {
             this.setState(State.DISABLED);
             return false;
         }
+
+        // Save existing panels.
+        this.saveResource("panels/warps_panel.yml", false);
+
         settingsConfig.saveConfigObject(settings);
         return true;
     }
 
 
     /**
-     * Get warp panel manager
-     * @return Warp Panel Manager
+     * Get sign cache manager
+     * @return Sign Cache Manager
      */
-    public WarpPanelManager getWarpPanelManager() {
-        return warpPanelManager;
+    public SignCacheManager getSignCacheManager() {
+        return signCacheManager;
     }
 
     public WarpSignsManager getWarpSignsManager() {
