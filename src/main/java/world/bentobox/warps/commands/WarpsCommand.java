@@ -7,6 +7,8 @@ import org.bukkit.World;
 import world.bentobox.bentobox.api.commands.CompositeCommand;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.warps.Warp;
+import world.bentobox.warps.panels.WarpsPanel;
+
 
 /**
  * Handles the warps command
@@ -51,7 +53,9 @@ public class WarpsCommand extends CompositeCommand {
             user.sendMessage("warps.warpTip", "[text]", addon.getSettings().getWelcomeLine());
             return false;
         }
-        addon.getWarpPanelManager().showWarpPanel(world, user, 0);
+
+        WarpsPanel.openPanel(this.addon, world, user);
+
         return true;
     }
 

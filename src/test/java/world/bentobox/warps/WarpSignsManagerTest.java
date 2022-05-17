@@ -61,7 +61,11 @@ import world.bentobox.bentobox.managers.PlayersManager;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.config.Settings;
 import world.bentobox.warps.event.WarpInitiateEvent;
+import world.bentobox.warps.managers.SignCacheItem;
+import world.bentobox.warps.managers.SignCacheManager;
+import world.bentobox.warps.managers.WarpSignsManager;
 import world.bentobox.warps.objects.WarpsData;
+
 
 /**
  * @author tastybento
@@ -98,7 +102,7 @@ public class WarpSignsManagerTest {
     @Mock
     private Player player;
     @Mock
-    private WarpPanelManager wpm;
+    private SignCacheManager wpm;
     @Mock
     private PlayersManager pm;
     @Mock
@@ -193,7 +197,6 @@ public class WarpSignsManagerTest {
         when(addon.getSettings()).thenReturn(settings);
         when(settings.getWelcomeLine()).thenReturn("[Welcome]");
         when(settings.getLoreFormat()).thenReturn("&f");
-        when(settings.getIcon()).thenReturn("SIGN");
 
         // Bukkit
         PowerMockito.mockStatic(Bukkit.class, Mockito.RETURNS_MOCKS);
@@ -217,7 +220,7 @@ public class WarpSignsManagerTest {
         when(im.isSafeLocation(any())).thenReturn(true);
 
         // WarpPanelManager
-        when(addon.getWarpPanelManager()).thenReturn(wpm);
+        when(addon.getSignCacheManager()).thenReturn(wpm);
 
         wsm = new WarpSignsManager(addon, plugin);
     }
@@ -230,7 +233,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#getWarpMap(org.bukkit.World)}.
+     * Test method for {@link WarpSignsManager#getWarpMap(org.bukkit.World)}.
      */
     @Test
     public void testGetWarpMap() {
@@ -238,7 +241,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#getWarpMap(org.bukkit.World)}.
+     * Test method for {@link WarpSignsManager#getWarpMap(org.bukkit.World)}.
      */
     @Test
     public void testGetWarpMapNullWorld() {
@@ -248,7 +251,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#getWarpMap(org.bukkit.World)}.
+     * Test method for {@link WarpSignsManager#getWarpMap(org.bukkit.World)}.
      */
     @Test
     public void testGetWarpMapWrongBlockType() {
@@ -258,7 +261,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#getWarpMap(org.bukkit.World)}.
+     * Test method for {@link WarpSignsManager#getWarpMap(org.bukkit.World)}.
      */
     @Test
     public void testGetWarpMapNullLocation() {
@@ -269,7 +272,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#getWarpMap(org.bukkit.World)}.
+     * Test method for {@link WarpSignsManager#getWarpMap(org.bukkit.World)}.
      * @throws Exception exception
      */
     @Test
@@ -280,7 +283,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#getWarpMap(org.bukkit.World)}.
+     * Test method for {@link WarpSignsManager#getWarpMap(org.bukkit.World)}.
      */
     @Test
     public void testGetWarpMapNothingInDatabase() {
@@ -290,7 +293,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#WarpSignsManager(world.bentobox.warps.Warp, world.bentobox.bentobox.BentoBox)}.
+     * Test method for {@link WarpSignsManager#WarpSignsManager(world.bentobox.warps.Warp, world.bentobox.bentobox.BentoBox)}.
      */
     @Test
     public void testWarpSignsManager() {
@@ -300,7 +303,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#addWarp(java.util.UUID, org.bukkit.Location)}.
+     * Test method for {@link WarpSignsManager#addWarp(java.util.UUID, org.bukkit.Location)}.
      */
     @Test
     public void testAddWarpNullPlayer() {
@@ -308,7 +311,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#addWarp(java.util.UUID, org.bukkit.Location)}.
+     * Test method for {@link WarpSignsManager#addWarp(java.util.UUID, org.bukkit.Location)}.
      */
     @Test
     public void testAddWarpNullLocation() {
@@ -316,7 +319,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#addWarp(java.util.UUID, org.bukkit.Location)}.
+     * Test method for {@link WarpSignsManager#addWarp(java.util.UUID, org.bukkit.Location)}.
      */
     @Test
     public void testAddWarpReplaceOldSign() {
@@ -325,7 +328,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#addWarp(java.util.UUID, org.bukkit.Location)}.
+     * Test method for {@link WarpSignsManager#addWarp(java.util.UUID, org.bukkit.Location)}.
      */
     @Test
     public void testAddWarpReplaceOldSignDifferentPlayer() {
@@ -334,7 +337,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#addWarp(java.util.UUID, org.bukkit.Location)}.
+     * Test method for {@link WarpSignsManager#addWarp(java.util.UUID, org.bukkit.Location)}.
      */
     @Test
     public void testAddWarp() {
@@ -344,7 +347,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#getWarp(org.bukkit.World, java.util.UUID)}.
+     * Test method for {@link WarpSignsManager#getWarp(org.bukkit.World, java.util.UUID)}.
      */
     @Test
     public void testGetWarpWorldWorld() {
@@ -352,7 +355,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#getWarp(org.bukkit.World, java.util.UUID)}.
+     * Test method for {@link WarpSignsManager#getWarp(org.bukkit.World, java.util.UUID)}.
      */
     @Test
     public void testGetWarp() {
@@ -360,7 +363,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#getWarpOwner(org.bukkit.Location)}.
+     * Test method for {@link WarpSignsManager#getWarpOwner(org.bukkit.Location)}.
      */
     @Test
     public void testGetWarpOwner() {
@@ -368,7 +371,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#getSortedWarps(org.bukkit.World)}.
+     * Test method for {@link WarpSignsManager#getSortedWarps(org.bukkit.World)}.
      */
     @Test
     public void testGetSortedWarps() {
@@ -377,7 +380,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#listWarps(org.bukkit.World)}.
+     * Test method for {@link WarpSignsManager#listWarps(org.bukkit.World)}.
      */
     @Test
     public void testListWarps() {
@@ -386,7 +389,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#removeWarp(org.bukkit.Location)}.
+     * Test method for {@link WarpSignsManager#removeWarp(org.bukkit.Location)}.
      */
     @Test
     public void testRemoveWarpLocation() {
@@ -395,7 +398,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#removeWarp(org.bukkit.World, java.util.UUID)}.
+     * Test method for {@link WarpSignsManager#removeWarp(org.bukkit.World, java.util.UUID)}.
      */
     @Test
     public void testRemoveWarpWorldUUID() {
@@ -404,7 +407,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#saveWarpList()}.
+     * Test method for {@link WarpSignsManager#saveWarpList()}.
      * @throws Exception general exception
      */
     @Test
@@ -414,16 +417,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#getSignInfo(org.bukkit.World, java.util.UUID)}.
-     */
-    @Test
-    public void testGetSignInfo() {
-        SignCacheItem sc = wsm.getSignInfo(world, uuid);
-        assertEquals(Material.ACACIA_SIGN, sc.getType());
-    }
-
-    /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#warpPlayer(org.bukkit.World, world.bentobox.bentobox.api.user.User, java.util.UUID)}.
+     * Test method for {@link WarpSignsManager#warpPlayer(org.bukkit.World, world.bentobox.bentobox.api.user.User, java.util.UUID)}.
      */
     @Test
     public void testWarpPlayer() {
@@ -441,7 +435,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#hasWarp(org.bukkit.World, java.util.UUID)}.
+     * Test method for {@link WarpSignsManager#hasWarp(org.bukkit.World, java.util.UUID)}.
      */
     @Test
     public void testHasWarp() {
@@ -451,7 +445,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#loadWarpList()}.
+     * Test method for {@link WarpSignsManager#loadWarpList()}.
      */
     @Test
     public void testLoadWarpListNoWarpTable() {
@@ -466,7 +460,7 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link world.bentobox.warps.WarpSignsManager#loadWarpList()}.
+     * Test method for {@link WarpSignsManager#loadWarpList()}.
      * @throws Exception exception
      */
     @Test

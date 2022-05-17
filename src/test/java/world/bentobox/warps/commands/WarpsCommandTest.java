@@ -7,10 +7,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -29,9 +27,9 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.managers.CommandsManager;
 import world.bentobox.bentobox.managers.IslandWorldManager;
 import world.bentobox.bentobox.managers.PlayersManager;
+import world.bentobox.warps.managers.SignCacheManager;
 import world.bentobox.warps.Warp;
-import world.bentobox.warps.WarpPanelManager;
-import world.bentobox.warps.WarpSignsManager;
+import world.bentobox.warps.managers.WarpSignsManager;
 import world.bentobox.warps.config.Settings;
 
 /**
@@ -62,7 +60,7 @@ public class WarpsCommandTest {
     @Mock
     private PlayersManager pm;
     @Mock
-    private WarpPanelManager wpm;
+    private SignCacheManager wpm;
 
     /**
      */
@@ -99,8 +97,13 @@ public class WarpsCommandTest {
         set.add(UUID.randomUUID());
         when(wsm.listWarps(world)).thenReturn(set);
 
+        CompletableFuture<List<UUID>> warps = new CompletableFuture<>();
+        warps.complete(set.stream().toList());
+
+        when(wsm.getSortedWarps(world)).thenReturn(warps);
+
         // Warp Panel Manager
-        when(addon.getWarpPanelManager()).thenReturn(wpm);
+        when(addon.getSignCacheManager()).thenReturn(wpm);
 
     }
 
@@ -168,7 +171,6 @@ public class WarpsCommandTest {
     public void testExecuteUserStringListOfString() {
         warpCommandWarpsCompositeCommand();
         assertTrue(wc.execute(user, "warps", Collections.emptyList()));
-        verify(wpm).showWarpPanel(world, user, 0);
     }
 
     /**
@@ -178,7 +180,6 @@ public class WarpsCommandTest {
     public void testExecuteUserStringListOfStringNoAddon() {
         warpCommandWarps();
         assertTrue(wc.execute(user, "warps", Collections.emptyList()));
-        verify(wpm).showWarpPanel(world, user, 0);
     }
 
 }

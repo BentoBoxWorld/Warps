@@ -72,7 +72,7 @@ public class WarpSignsListener implements Listener {
                             && !Tag.SIGNS.isTagged(location.getBlock().getType())) {
                         iterator.remove();
                         // Remove sign from warp panel cache
-                        addon.getWarpPanelManager().removeWarp(event.getWorld(), uuid);
+                        addon.getSignCacheManager().removeWarp(event.getWorld(), uuid);
                         changed = true;
                     }
                 }

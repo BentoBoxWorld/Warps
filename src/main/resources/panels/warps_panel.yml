@@ -1,0 +1,79 @@
+warps_panel:
+  title: warps.gui.titles.warp-title
+  type: INVENTORY
+  background:
+    icon: BLACK_STAINED_GLASS_PANE
+    title: "&b&r" # Empty text
+  border:
+    icon: BLACK_STAINED_GLASS_PANE
+    title: "&b&r"  # Empty text
+  force-shown: []
+  content:
+    2:
+      2: warp_button
+      3: warp_button
+      4: warp_button
+      5: warp_button
+      6: warp_button
+      7: warp_button
+      8: warp_button
+    3:
+      1:
+        icon: TIPPED_ARROW:INSTANT_HEAL::::1
+        title: warps.gui.buttons.previous.name
+        description: warps.gui.buttons.previous.description
+        data:
+          type: PREVIOUS
+          indexing: true
+        actions:
+          left:
+            type: PREVIOUS
+            tooltip: warps.gui.tips.click-to-previous
+      2: warp_button
+      3: warp_button
+      4: warp_button
+      5: warp_button
+      6: warp_button
+      7: warp_button
+      8: warp_button
+      9:
+        icon: TIPPED_ARROW:JUMP::::1
+        title: warps.gui.buttons.next.name
+        description: warps.gui.buttons.next.description
+        data:
+          type: NEXT
+          indexing: true
+        actions:
+          left:
+            type: NEXT
+            tooltip: warps.gui.tips.click-to-next
+    4:
+      2: warp_button
+      3: warp_button
+      4: warp_button
+      5: warp_button
+      6: warp_button
+      7: warp_button
+      8: warp_button
+    6:
+      5:
+        icon: DROPPER
+        title: warps.gui.buttons.random.name
+        description: warps.gui.buttons.random.description
+        data:
+          type: RANDOM
+        actions:
+          warp:
+            click-type: left
+            tooltip: warps.gui.tips.click-to-warp
+  reusable:
+    warp_button:
+      icon: PLAYER_HEAD
+      title: warps.gui.buttons.warp.name
+      description: warps.gui.buttons.warp.description
+      data:
+        type: WARP
+      actions:
+        warp:
+          click-type: left
+          tooltip: warps.gui.tips.click-to-warp

@@ -1,4 +1,4 @@
-package world.bentobox.warps;
+package world.bentobox.warps.managers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +10,7 @@ import org.bukkit.World;
 import org.eclipse.jdt.annotation.NonNull;
 
 import world.bentobox.bentobox.database.Database;
+import world.bentobox.warps.Warp;
 import world.bentobox.warps.objects.SignCache;
 
 public class SignCacheManager {
@@ -36,7 +37,7 @@ public class SignCacheManager {
         });
     }
 
-    void saveCache() {
+    public void saveCache() {
         cachedSigns.forEach((w, m) -> handler.saveObjectAsync(new SignCache(w, m)));
     }
 
@@ -47,7 +48,7 @@ public class SignCacheManager {
      * @return SignCacheItem
      */
     @NonNull
-    SignCacheItem getSignItem(World world, UUID warpOwner) {
+    public SignCacheItem getSignItem(World world, UUID warpOwner) {
         // Add the worlds if we haven't seen this before
         cachedSigns.putIfAbsent(world, new HashMap<>());
         // Get from cache if available
@@ -70,7 +71,7 @@ public class SignCacheManager {
      * @param key - uuid of owner
      * @return true if item is removed from cache
      */
-    boolean removeWarp(World world, UUID key) {
+    public boolean removeWarp(World world, UUID key) {
         if (cachedSigns.containsKey(world)) {
             return cachedSigns.get(world).remove(key) != null;
         }
