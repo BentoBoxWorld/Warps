@@ -27,14 +27,20 @@ warps:
       warp-title: "&0&l Lista dostępnych wysp"
     buttons:
       previous:
+        name: "&f&l Poprzednia strona"
         description: "&7 Przełącz na stronę [number]"
       next:
+        name: "&f&l następna strona"
         description: "&7 Przełącz na stronę [number]"
       warp:
         name: "&f&l [name]"
         description: "[sing_text]"
       random:
         name: "&f&l Losowa wyspa"
+        description: "&7 Hmm, gdzie się pojawię?"
     tips:
+      click-to-previous: "&e Kliknij &7, aby wyświetlić poprzednią stronę."
+      click-to-next: "&e Kliknij &7, aby wyświetlić następną stronę."
       click-to-warp: "&e Kliknij &7, aby przenieść."
-  conversations: {}
+  conversations:
+    prefix: "&l&6 [BentoBox]: &r"
