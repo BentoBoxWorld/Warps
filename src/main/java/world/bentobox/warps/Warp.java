@@ -224,8 +224,11 @@ public class Warp extends Addon {
         String name = this.getPlugin().getIWM().getAddon(world).map(g -> g.getDescription().getName()).orElse("");
         return this.getPlugin().getAddonsManager().getAddonByName(LEVEL_ADDON_NAME)
                 .map(l -> {
-                    if (!name.isEmpty() && ((Level) l).getSettings().getGameModes().contains(name)) {
-                        return ((Level) l).getIslandLevel(world, uniqueId);
+                    final Level addon = (Level) l;
+                    //getGameModes is a list of gamemodes that Level is DISABLED in,
+                    //so we need the opposite of the contains.
+                    if (!name.isEmpty() && !addon.getSettings().getGameModes().contains(name)) {
+                        return addon.getIslandLevel(world, uniqueId);
                     }
                     return null;
                 }).orElse(null);
