@@ -363,7 +363,12 @@ public class WarpSignsManager {
             user.getWorld().playSound(Objects.requireNonNull(user.getLocation()), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
         }
         if (!warpOwner.equals(user)) {
-            warpOwner.sendMessage("warps.player-warped", "[name]", user.getName());
+            final String gameMode = BentoBox
+                    .getInstance()
+                    .getIWM()
+                    .getFriendlyName(actualWarp.getWorld());
+
+            warpOwner.sendMessage("warps.player-warped", "[name]", user.getName(), "[gamemode]", gameMode);
         }
     }
 

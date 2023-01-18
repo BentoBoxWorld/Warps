@@ -20,7 +20,7 @@ warps:
     your-level-is: "&c Your island level is only [level] and must be higher than [required]. Run the level command."
   help: 
     description: "open the warps panel"
-  player-warped: "&2 [name] warped to your warp sign!"
+  player-warped: "&2 [name] warped to your [gamemode] warp sign!"
   sign-removed: "&c Warp sign removed!"
   success: "&a Success!"
   warpTip: "&6 Place a warp sign with [text] on the top"
