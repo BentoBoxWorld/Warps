@@ -62,6 +62,6 @@ warps:
 
 protection:
   flags:
-    SET-WARP:
-      name: Set warp
-      description: Allow setting up warp signs
+    PLACE_WARP:
+      name: Place Warp
+      description: Allow placing warp sign
