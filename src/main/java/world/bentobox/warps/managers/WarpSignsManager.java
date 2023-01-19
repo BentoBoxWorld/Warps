@@ -354,7 +354,7 @@ public class WarpSignsManager {
         //By checking if the teleport succeeded before sending the messages,
         //we prevent issues where no one teleported, but people still
         //get messages about it.
-        Util.teleportAsync(user.getPlayer(), actualWarp, TeleportCause.COMMAND).whenComplete((tpResult, ignored) -> {
+        Util.teleportAsync(user.getPlayer(), actualWarp, TeleportCause.COMMAND).thenAccept(tpResult -> {
             if(!tpResult) return;
 
             User warpOwner = Objects.requireNonNull(User.getInstance(signOwner));
