@@ -7,6 +7,11 @@
 # Warp Restriction - needed levels to be able to create a warp
 # 0 or negative values will disable this restriction 10 is default
 warplevelrestriction: 10
+#
+# Should warps be removed when the island protection settings
+# change, and the owner of the warp does no longer have
+# the correct rank
+removeExistingWarpsWhenFlagChanges: true
 # 
 # Text that player must put on sign to make it a warp sign
 # Not case sensitive!
