@@ -161,8 +161,8 @@ public class Warp extends Addon {
                 .defaultRank(RanksManager.MEMBER_RANK)
                 .clickHandler(new CycleClick("PLACE_WARP",
                     RanksManager.MEMBER_RANK,
-                    RanksManager.OWNER_RANK)).
-                .defaultSetting(false).
+                    RanksManager.OWNER_RANK))
+                .defaultSetting(false)
                 .mode(Flag.Mode.EXPERT)
                 .build();
 
