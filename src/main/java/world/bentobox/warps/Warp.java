@@ -155,9 +155,13 @@ public class Warp extends Addon {
             this.setState(State.DISABLED);
         }
 
-        this.createWarpFlag = new Flag.Builder("SET-WARP", Material.OAK_SIGN)
+        this.createWarpFlag = new Flag.Builder("PLACE_WARP", Material.OAK_SIGN)
                 .addon(this)
                 .defaultRank(RanksManager.MEMBER_RANK)
+                .clickHandler(new CycleClick("PLACE_WARP",
+                    RanksManager.MEMBER_RANK,
+                    RanksManager.OWNER_RANK)).
+                .defaultSetting(false).
                 .mode(Flag.Mode.EXPERT)
                 .build();
 
