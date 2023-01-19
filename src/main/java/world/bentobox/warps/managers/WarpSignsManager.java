@@ -26,7 +26,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
@@ -350,26 +349,34 @@ public class WarpSignsManager {
         float yaw = Util.blockFaceToFloat(directionFacing);
         final Location actualWarp = new Location(inFront.getWorld(), inFront.getBlockX() + 0.5D, inFront.getBlockY(),
                 inFront.getBlockZ() + 0.5D, yaw, 30F);
-        Util.teleportAsync(user.getPlayer(), actualWarp, TeleportCause.COMMAND);
-        User warpOwner = Objects.requireNonNull(User.getInstance(signOwner));
-        // Hide invisible players
-        if (warpOwner.isOnline() && !warpOwner.getPlayer().canSee(user.getPlayer())) {
-            return;
-        }
-        if (pvp) {
-            user.sendMessage("protection.flags.PVP_OVERWORLD.enabled");
-            user.getWorld().playSound(Objects.requireNonNull(user.getLocation()), Sound.ENTITY_ARROW_HIT, 1F, 1F);
-        } else {
-            user.getWorld().playSound(Objects.requireNonNull(user.getLocation()), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
-        }
-        if (!warpOwner.equals(user)) {
-            final String gameMode = BentoBox
-                    .getInstance()
-                    .getIWM()
-                    .getFriendlyName(actualWarp.getWorld());
+        //BentoBox prevents people from teleporting to an island when
+        //the user is banned from the island for example.
+        //By checking if the teleport succeeded before sending the messages,
+        //we prevent issues where no one teleported, but people still
+        //get messages about it.
+        Util.teleportAsync(user.getPlayer(), actualWarp, TeleportCause.COMMAND).thenAccept(tpResult -> {
+            if(!tpResult) return;
 
-            warpOwner.sendMessage("warps.player-warped", "[name]", user.getName(), "[gamemode]", gameMode);
-        }
+            User warpOwner = Objects.requireNonNull(User.getInstance(signOwner));
+            // Hide invisible players
+            if (warpOwner.isOnline() && !warpOwner.getPlayer().canSee(user.getPlayer())) {
+                return;
+            }
+            if (pvp) {
+                user.sendMessage("protection.flags.PVP_OVERWORLD.enabled");
+                user.getWorld().playSound(Objects.requireNonNull(user.getLocation()), Sound.ENTITY_ARROW_HIT, 1F, 1F);
+            } else {
+                user.getWorld().playSound(Objects.requireNonNull(user.getLocation()), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
+            }
+            if (!warpOwner.equals(user)) {
+                final String gameMode = BentoBox
+                        .getInstance()
+                        .getIWM()
+                        .getFriendlyName(actualWarp.getWorld());
+
+                warpOwner.sendMessage("warps.player-warped", "[name]", user.getName(), "[gamemode]", gameMode);
+            }
+        });
     }
 
     /**

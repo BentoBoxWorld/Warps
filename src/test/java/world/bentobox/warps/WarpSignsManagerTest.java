@@ -428,6 +428,7 @@ public class WarpSignsManagerTest {
         when(p.getLocation()).thenReturn(location);
         @Nullable
         User u = User.getInstance(p);
+        PowerMockito.when(Util.teleportAsync(any(), any(), any())).thenReturn(CompletableFuture.completedFuture(true));
         wsm.warpPlayer(world, u, uuid);
         PowerMockito.verifyStatic(Util.class);
         Util.teleportAsync(eq(p), any(), eq(TeleportCause.COMMAND));
