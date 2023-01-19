@@ -1,10 +1,7 @@
 package world.bentobox.warps.listeners;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -25,9 +22,11 @@ import org.eclipse.jdt.annotation.Nullable;
 
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.events.addon.AddonEvent;
+import world.bentobox.bentobox.api.events.flags.FlagProtectionChangeEvent;
 import world.bentobox.bentobox.api.events.team.TeamKickEvent;
 import world.bentobox.bentobox.api.events.team.TeamLeaveEvent;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.Warp;
 import world.bentobox.warps.event.WarpRemoveEvent;
@@ -164,6 +163,13 @@ public class WarpSignsListener implements Listener {
                 e.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
                 return;
             }
+
+            if(!hasCorrectIslandRank(b, user)) {
+                e.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
+                user.sendMessage("warps.error.not-correct-rank");
+                return;
+            }
+
             // Check if the player already has a sign
             final Location oldSignLoc = addon.getWarpSignsManager().getWarp(b.getWorld(), user.getUniqueId());
             if (oldSignLoc != null) {
@@ -190,6 +196,46 @@ public class WarpSignsListener implements Listener {
             addSign(e, user, b);
         }
 
+    }
+
+    private boolean hasCorrectIslandRank(Block b, User user) {
+        final Optional<Island> islandOpt = plugin.getIslands().getIslandAt(b.getLocation());
+
+        if(islandOpt.isEmpty()) return false;
+
+        final Island island = islandOpt.get();
+
+        final int userRank = island.getRank(user);
+
+        return userRank >= island.getFlag(addon.getCreateWarpFlag());
+    }
+
+    @EventHandler
+    public void onFlagChange(FlagProtectionChangeEvent e) {
+        if(!e.getEditedFlag().equals(addon.getCreateWarpFlag())) return;
+        if(!addon.getSettings().getRemoveExistingWarpsWhenFlagChanges()) return;
+
+        final Island island = e.getIsland();
+
+        final Map<UUID, Location> islandWarps = addon
+                .getWarpSignsManager()
+                .getWarpMap(island.getWorld())
+                .entrySet()
+                .stream()
+                .filter(x -> island.inIslandSpace(x.getValue()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        for(Map.Entry<UUID, Location> entry : islandWarps.entrySet()) {
+            if(island.getRank(entry.getKey()) >= e.getSetTo()) continue;
+
+            //The user has a lower rank than the new set value.
+            //We need to remove the warp.
+            addon.getWarpSignsManager().removeWarp(island.getWorld(), entry.getKey());
+
+            if(Bukkit.getPlayer(entry.getKey()) != null) {
+                Objects.requireNonNull(User.getInstance(entry.getKey())).sendMessage(WARPS_DEACTIVATE);
+            }
+        }
     }
 
     private boolean noLevelOrIsland(User user, World world) {

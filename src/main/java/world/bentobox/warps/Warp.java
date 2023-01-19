@@ -7,10 +7,13 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 
 import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.configuration.Config;
+import world.bentobox.bentobox.api.flags.Flag;
+import world.bentobox.bentobox.managers.RanksManager;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.level.Level;
 import world.bentobox.warps.commands.WarpCommand;
@@ -70,6 +73,11 @@ public class Warp extends Addon {
      * Settings config object
      */
     private Config<Settings> settingsConfig;
+
+    /**
+     * Create Warp Flag
+     */
+    private Flag createWarpFlag;
 
     // ---------------------------------------------------------------------
     // Section: Methods
@@ -146,6 +154,14 @@ public class Warp extends Addon {
             logWarning("Addon did not hook into anything and is not running stand-alone");
             this.setState(State.DISABLED);
         }
+
+        this.createWarpFlag = new Flag.Builder("SET-WARP", Material.OAK_SIGN)
+                .addon(this)
+                .defaultRank(RanksManager.MEMBER_RANK)
+                .mode(Flag.Mode.EXPERT)
+                .build();
+
+        getPlugin().getFlagsManager().registerFlag(this, this.createWarpFlag);
     }
 
 
@@ -211,6 +227,13 @@ public class Warp extends Addon {
      */
     public Settings getSettings() {
         return settings;
+    }
+
+    /**
+     * @return the createWarpFlag
+     */
+    public Flag getCreateWarpFlag() {
+        return createWarpFlag;
     }
 
     /**

@@ -18,7 +18,8 @@ warps:
     not-on-island: "&c You must be on your island to do that!"
     not-safe: "&c That warp is not safe!"
     your-level-is: "&c Your island level is only [level] and must be higher than [required]. Run the level command."
-  help: 
+    not-correct-rank: "&c You do not have the correct rank to set a warp!"
+  help:
     description: "open the warps panel"
   player-warped: "&2 [name] warped to your [gamemode] warp sign!"
   sign-removed: "&c Warp sign removed!"
@@ -59,4 +60,8 @@ warps:
     # Prefix for messages that are send from server.
     prefix: "&l&6 [BentoBox]: &r"
 
-    
+protection:
+  flags:
+    SET-WARP:
+      name: Set warp
+      description: Allow setting up warp signs

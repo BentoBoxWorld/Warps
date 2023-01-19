@@ -24,6 +24,13 @@ public class Settings implements ConfigObject
     private int warpLevelRestriction = 10;
 
     @ConfigComment("")
+    @ConfigComment("Should warps be removed when the island protection settings")
+    @ConfigComment("change, and the owner of the warp does no longer have")
+    @ConfigComment("the correct rank")
+    @ConfigEntry(path = "removeExistingWarpsWhenFlagChanges")
+    private boolean removeExistingWarpsWhenFlagChanges = false;
+
+    @ConfigComment("")
     @ConfigComment("Text that player must put on sign to make it a warp sign")
     @ConfigComment("Not case sensitive!")
     @ConfigEntry(path = "welcomeLine")
@@ -54,7 +61,6 @@ public class Settings implements ConfigObject
     String warpCommand = "warp";
     @ConfigEntry(path = "warps-command")
     String warpsCommand = "warps";
-
 
     // ---------------------------------------------------------------------
     // Section: Constructor
@@ -197,5 +203,19 @@ public class Settings implements ConfigObject
      */
     public void setWarpsCommand(String warpsCommand) {
         this.warpsCommand = warpsCommand;
+    }
+
+    /**
+     * @return the removeExistingWarpsWhenFlagChanges
+     */
+    public boolean getRemoveExistingWarpsWhenFlagChanges() {
+        return removeExistingWarpsWhenFlagChanges;
+    }
+
+    /**
+     * @param removeExistingWarpsWhenFlagChanges the removeExistingWarpsWhenFlagChanges to set
+     */
+    public void setRemoveExistingWarpsWhenFlagChanges(boolean removeExistingWarpsWhenFlagChanges) {
+        this.removeExistingWarpsWhenFlagChanges = removeExistingWarpsWhenFlagChanges;
     }
 }
