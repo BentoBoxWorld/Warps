@@ -1,0 +1,52 @@
+---
+warp:
+  help:
+    description: teleporteer naar een speler zijn warp bord
+    parameters: "<speler>"
+warps:
+  deactivate: "&c Oude warp bord is gedeactiveerd!"
+  error:
+    does-not-exist: "&c Oh nee! Deze warp bestaat niet meer!"
+    no-permission: "&c Je hebt geen permissies om dit te doen!"
+    no-remove: "&c Je kan dit bord niet weghalen!"
+    no-warps-yet: "&c Er bestaan nog geen warps op dit moment"
+    not-enough-level: "&c Je eiland level is nog niet hoog genoeg!"
+    not-on-island: "&c Je moet een eiland hebben om dit te doen!"
+    not-safe: "&c Deze warp is niet veilig!"
+    your-level-is: "&c Je eiland level is [level], maar het moet op zijn minst [required]
+      zijn. Gebruik het level commando."
+    not-correct-rank: "&c Je hebt niet de correcte rank om een warp te maken!"
+  help:
+    description: open het warp paneel
+  player-warped: "&2 [name] teleporteerde naar jou [gamemode] warp!"
+  sign-removed: "&c Warp bord verwijderd!"
+  success: "&a Geslaagd!"
+  warpTip: "&6 Plaats een warp bord met [text] op de eerste regel"
+  warpToPlayersSign: "&6 Teleporteren naar [player]'s warp"
+  gui:
+    titles:
+      warp-title: "&0&l Warp Borden"
+    buttons:
+      previous:
+        name: "&f&l Vorige pagina"
+        description: "&7 Ga naar pagina [number]"
+      next:
+        name: "&f&l Volgende pagina"
+        description: "&7 Ga naar pagina [number]"
+      warp:
+        name: "&f&l [name]"
+        description: "[sign_text]"
+      random:
+        name: "&f&l Willekeurige Warp"
+        description: "&7 Hmm, waar ga ik heen?"
+    tips:
+      click-to-previous: "&e Klik &7 om naar de vorige pagina te gaan."
+      click-to-next: "&e Klik &7 om naar de volgende pagina te gaan."
+      click-to-warp: "&e Klik &7 om te teleporteren."
+  conversations:
+    prefix: "&l&6 [BentoBox]: &r"
+protection:
+  flags:
+    PLACE_WARP:
+      name: Plaats warp
+      description: Staat het toe om een warp bord te plaatsen
