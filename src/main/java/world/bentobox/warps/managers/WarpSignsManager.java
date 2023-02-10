@@ -244,8 +244,8 @@ public class WarpSignsManager {
             if (en.getValue().equals(loc)) {
                 // Inform player
                 Optional.ofNullable(addon.getServer().getPlayer(en.getKey()))
-                        .map(User::getInstance)
-                        .ifPresent(user -> user.sendMessage("warps.sign-removed"));
+                .map(User::getInstance)
+                .ifPresent(user -> user.sendMessage("warps.sign-removed"));
                 // Remove sign from warp panel cache
                 addon.getSignCacheManager().removeWarp(loc.getWorld(), en.getKey());
                 it.remove();
@@ -319,8 +319,8 @@ public class WarpSignsManager {
         if (!prefix.isEmpty())
         {
             icon = Material.matchMaterial(
-                Utils.getPermissionValue(User.getInstance(uuid), prefix + "island.warp",
-                    Material.OAK_SIGN.name()));
+                    Utils.getPermissionValue(User.getInstance(uuid), prefix + "island.warp",
+                            Material.OAK_SIGN.name()));
         }
         else
         {
@@ -355,7 +355,7 @@ public class WarpSignsManager {
         //we prevent issues where no one teleported, but people still
         //get messages about it.
         Util.teleportAsync(user.getPlayer(), actualWarp, TeleportCause.COMMAND).thenAccept(tpResult -> {
-            if(!tpResult) return;
+            if(Boolean.FALSE.equals(tpResult)) return;
 
             User warpOwner = Objects.requireNonNull(User.getInstance(signOwner));
             // Hide invisible players

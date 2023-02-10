@@ -113,7 +113,6 @@ public class WarpSignsListener implements Listener {
             return;
         }
         User user = User.getInstance(e.getPlayer());
-        if (user == null) return;
         UUID owner = addon.getWarpSignsManager().getWarpOwnerUUID(b.getLocation()).orElse(null);
         if (isPlayersSign(e.getPlayer(), b, inWorld)) {
             addon.getWarpSignsManager().removeWarp(b.getLocation());
