@@ -61,7 +61,6 @@ import world.bentobox.bentobox.managers.PlayersManager;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.config.Settings;
 import world.bentobox.warps.event.WarpInitiateEvent;
-import world.bentobox.warps.managers.SignCacheItem;
 import world.bentobox.warps.managers.SignCacheManager;
 import world.bentobox.warps.managers.WarpSignsManager;
 import world.bentobox.warps.objects.WarpsData;
