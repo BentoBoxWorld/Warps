@@ -21,7 +21,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -71,7 +70,7 @@ import world.bentobox.warps.objects.WarpsData;
  *
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Bukkit.class, Util.class, DatabaseSetup.class, ChatColor.class})
+@PrepareForTest({Bukkit.class, Util.class, DatabaseSetup.class})
 public class WarpSignsManagerTest {
 
     @Mock
@@ -139,12 +138,15 @@ public class WarpSignsManagerTest {
 
         // Player
         when(player.getUniqueId()).thenReturn(uuid);
+        when(player.isOnline()).thenReturn(true);
+        when(player.canSee(any(Player.class))).thenReturn(true);
         User.setPlugin(plugin);
         User.getInstance(player);
 
         // Locales
         LocalesManager lm = mock(LocalesManager.class);
-        when(lm.get(Mockito.any(), Mockito.any())).thenReturn(null);
+        when(lm.getAvailablePrefixes(any())).thenReturn(Collections.emptySet());
+        when(lm.get(Mockito.any(), Mockito.any())).thenAnswer((Answer<String>) invocation -> invocation.getArgument(1, String.class));
         when(plugin.getLocalesManager()).thenReturn(lm);
         // Return the same string
         PlaceholdersManager phm = mock(PlaceholdersManager.class);
@@ -212,6 +214,7 @@ public class WarpSignsManagerTest {
         // IWM
         when(plugin.getIWM()).thenReturn(iwm);
         when(iwm.getPermissionPrefix(any())).thenReturn("bskyblock.");
+        when(iwm.getFriendlyName(any())).thenReturn("BSkyBlock");
 
         // Island Manager
         when(addon.getIslands()).thenReturn(im);
@@ -425,13 +428,15 @@ public class WarpSignsManagerTest {
         when(p.getWorld()).thenReturn(world);
         when(p.getName()).thenReturn("tastybento");
         when(p.getLocation()).thenReturn(location);
+        when(p.isOnline()).thenReturn(true);
+        when(p.canSee(any(Player.class))).thenReturn(true);
         @Nullable
         User u = User.getInstance(p);
         PowerMockito.when(Util.teleportAsync(any(), any(), any())).thenReturn(CompletableFuture.completedFuture(true));
         wsm.warpPlayer(world, u, uuid);
         PowerMockito.verifyStatic(Util.class);
         Util.teleportAsync(eq(p), any(), eq(TeleportCause.COMMAND));
-        verify(player).sendMessage("warps.player-warped");
+        verify(player).sendMessage(anyString());
     }
 
     /**

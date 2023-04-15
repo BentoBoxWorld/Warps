@@ -373,7 +373,6 @@ public class WarpSignsManager {
                         .getInstance()
                         .getIWM()
                         .getFriendlyName(actualWarp.getWorld());
-
                 warpOwner.sendMessage("warps.player-warped", "[name]", user.getName(), "[gamemode]", gameMode);
             }
         });
