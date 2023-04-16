@@ -1,27 +1,46 @@
+---
 warp:
   help:
     description: teleportuje cię do tabliczki innego gracza
-    parameters: <gracz>
+    parameters: "<gracz>"
 warps:
-  deactivate: '&c Stary teleport zdezaktywowany!'
+  deactivate: "&c Stary teleport zdezaktywowany!"
   error:
-    does-not-exist: '&c Ten teleport nie istnieje.'
-    no-permission: '&c Brak uprawnień!'
-    no-remove: '&c Nie możesz usunąć tej tabliczki!'
-    no-warps-yet: '&c Nie ma jeszcze teleportów.'
-    not-enough-level: '&c Twój poziom wyspy nie jest wystarczająco wysoki!'
-    not-on-island: '&c Musisz być na wyspie, by to zrobić.'
-    not-safe: '&c Ten teleport nie jest bezpieczny!'
-    your-level-is: '&c Twój poziom wyspy to [level], a musi wynosić co namniej [required].
-      Użyj komendy /is level.'
+    does-not-exist: "&c Ten teleport nie istnieje."
+    no-permission: "&c Brak uprawnień!"
+    no-remove: "&c Nie możesz usunąć tej tabliczki!"
+    no-warps-yet: "&c Nie ma jeszcze teleportów."
+    not-enough-level: "&c Twój poziom wyspy nie jest wystarczająco wysoki!"
+    not-on-island: "&c Musisz być na wyspie, by to zrobić."
+    not-safe: "&c Ten teleport nie jest bezpieczny!"
+    your-level-is: "&c Twój poziom wyspy to [level], a musi wynosić co namniej [required].
+      Użyj komendy /is level."
   help:
     description: otwiera panel warpów
-  next: '&6 Następna strona'
-  player-warped: '&2 [name] teleportował się do twojej tabliczki!'
-  previous: '&6 Poprzednia strona'
-  random: '&4 Losowy teleport'
-  sign-removed: '&c Usunięto tabliczkę!'
-  success: '&a Sukces!'
-  title: Tabliczki teleportacyjne
-  warpTip: '&6 Postaw tabliczkę z napisem [text]'
-  warpToPlayersSign: '&6 Teleportowanie do tabliczki gracza [player]'
+  player-warped: "&2 [name] teleportował się do twojej tabliczki!"
+  sign-removed: "&c Usunięto tabliczkę!"
+  success: "&a Sukces!"
+  warpTip: "&6 Postaw tabliczkę z napisem [text]"
+  warpToPlayersSign: "&6 Teleportowanie do tabliczki gracza [player]"
+  gui:
+    titles:
+      warp-title: "&0&l Lista dostępnych wysp"
+    buttons:
+      previous:
+        name: "&f&l Poprzednia strona"
+        description: "&7 Przełącz na stronę [number]"
+      next:
+        name: "&f&l następna strona"
+        description: "&7 Przełącz na stronę [number]"
+      warp:
+        name: "&f&l [name]"
+        description: "[sing_text]"
+      random:
+        name: "&f&l Losowa wyspa"
+        description: "&7 Hmm, gdzie się pojawię?"
+    tips:
+      click-to-previous: "&e Kliknij &7, aby wyświetlić poprzednią stronę."
+      click-to-next: "&e Kliknij &7, aby wyświetlić następną stronę."
+      click-to-warp: "&e Kliknij &7, aby przenieść."
+  conversations:
+    prefix: "&l&6 [BentoBox]: &r"

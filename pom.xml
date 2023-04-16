@@ -54,19 +54,19 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>16</java.version>
+        <java.version>17</java.version>
         <!-- Non-minecraft related dependencies -->
         <powermock.version>2.0.9</powermock.version>
         <!-- More visible way how to change dependency versions -->
-        <spigot.version>1.17-R0.1-SNAPSHOT</spigot.version>
-        <bentobox.version>1.18.0-SNAPSHOT</bentobox.version>
+        <spigot.version>1.19.4-R0.1-SNAPSHOT</spigot.version>
+        <bentobox.version>1.23.0</bentobox.version>
         <level.version>2.7.0-SNAPSHOT</level.version>
         <!-- Revision variable removes warning about dynamic version -->
         <revision>${build.version}-SNAPSHOT</revision>
         <!-- Do not change unless you want different name for local builds. -->
         <build.number>-LOCAL</build.number>
         <!-- This allows to change between versions. -->
-        <build.version>1.12.0</build.version>
+        <build.version>1.13.0</build.version>
         <!-- Sonar Cloud -->
         <sonar.projectKey>BentoBoxWorld_Warps</sonar.projectKey>
         <sonar.organization>bentobox-world</sonar.organization>
@@ -137,11 +137,6 @@
             <artifactId>spigot-api</artifactId>
             <version>${spigot.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>plugin-annotations</artifactId>
-            <version>1.2.3-SNAPSHOT</version>
         </dependency>
         <!-- Mockito (Unit testing) -->
         <dependency>
@@ -234,6 +229,7 @@
                 <version>3.0.0-M5</version>
                 <configuration>
                     <argLine>
+                        ${argLine}
                         --add-opens java.base/java.lang=ALL-UNNAMED
                         --add-opens java.base/java.math=ALL-UNNAMED
                         --add-opens java.base/java.io=ALL-UNNAMED
@@ -316,7 +312,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.3</version>
+                <version>0.8.7</version>
                 <configuration>
                     <append>true</append>
                     <excludes>
@@ -327,16 +323,21 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>pre-unit-test</id>
+                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>post-unit-test</id>
+                        <id>report</id>
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <formats>
+                                <format>XML</format>
+                            </formats>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

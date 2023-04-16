@@ -8,10 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +41,10 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import world.bentobox.bentobox.BentoBox;
+import world.bentobox.bentobox.api.events.flags.FlagProtectionChangeEvent;
+import world.bentobox.bentobox.api.flags.Flag;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.managers.IslandWorldManager;
 import world.bentobox.bentobox.managers.IslandsManager;
 import world.bentobox.bentobox.managers.LocalesManager;
@@ -83,6 +83,8 @@ public class WarpSignsListenerTest {
     private IslandsManager im;
     @Mock
     private IslandWorldManager iwm;
+    @Mock
+    private Island island;
 
     @Before
     public void setUp() {
@@ -147,6 +149,9 @@ public class WarpSignsListenerTest {
         when(settings.getWarpLevelRestriction()).thenReturn(10);
         when(settings.getWelcomeLine()).thenReturn("[WELCOME]");
         when(addon.getSettings()).thenReturn(settings);
+
+        island = mock(Island.class);
+        when(im.getIslandAt(any())).thenReturn(Optional.of(island));
 
         // On island
         when(plugin.getIslands()).thenReturn(im);
@@ -297,6 +302,54 @@ public class WarpSignsListenerTest {
         wsl.onSignWarpCreate(e);
         verify(player).sendMessage("warps.success");
         assertEquals(ChatColor.GREEN + "[WELCOME]", e.getLine(0));
+    }
+
+    @Test
+    public void testOnCreateWithoutCorrectRankNotAllowed() {
+        WarpSignsListener wsl = new WarpSignsListener(addon);
+        SignChangeEvent e = new SignChangeEvent(block, player, lines);
+        when(player.hasPermission(anyString())).thenReturn(true);
+        when(addon.inRegisteredWorld(any())).thenReturn(true);
+        when(island.getRank(player.getUniqueId())).thenReturn(0);
+        when(island.getFlag(any())).thenReturn(1000);
+        wsl.onSignWarpCreate(e);
+        verify(player).sendMessage("warps.error.not-correct-rank");
+    }
+
+    @Test
+    public void testOnFlagChangeWhenSettingIsOffNothingHappens() {
+        Flag flag = mock(Flag.class);
+
+        when(addon.getCreateWarpFlag()).thenReturn(flag);
+        when(settings.getRemoveExistingWarpsWhenFlagChanges()).thenReturn(false);
+        WarpSignsListener wsl = new WarpSignsListener(addon);
+
+        FlagProtectionChangeEvent e = new FlagProtectionChangeEvent(island, player.getUniqueId(), flag, 1000);
+
+        wsl.onFlagChange(e);
+
+        verifyNoInteractions(island);
+    }
+
+    @Test
+    public void testOnFlagChangeWhenSettingIsOnWarpGetsRemoved() {
+        Flag flag = mock(Flag.class);
+
+        when(addon.getCreateWarpFlag()).thenReturn(flag);
+        when(settings.getRemoveExistingWarpsWhenFlagChanges()).thenReturn(true);
+        WarpSignsListener wsl = new WarpSignsListener(addon);
+
+        Map<UUID, Location> warps = Map.of(
+                player.getUniqueId(), block.getLocation()
+        );
+
+        when(wsm.getWarpMap(any())).thenReturn(warps);
+        when(island.inIslandSpace(any(Location.class))).thenReturn(true);
+
+        FlagProtectionChangeEvent e = new FlagProtectionChangeEvent(island, player.getUniqueId(), flag, 1000);
+
+        wsl.onFlagChange(e);
+        verify(addon.getWarpSignsManager()).removeWarp(any(), any());
     }
 
     @Test

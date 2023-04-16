@@ -7,10 +7,14 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 
 import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.configuration.Config;
+import world.bentobox.bentobox.api.flags.Flag;
+import world.bentobox.bentobox.api.flags.clicklisteners.CycleClick;
+import world.bentobox.bentobox.managers.RanksManager;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.level.Level;
 import world.bentobox.warps.commands.WarpCommand;
@@ -70,6 +74,11 @@ public class Warp extends Addon {
      * Settings config object
      */
     private Config<Settings> settingsConfig;
+
+    /**
+     * Create Warp Flag
+     */
+    private Flag createWarpFlag;
 
     // ---------------------------------------------------------------------
     // Section: Methods
@@ -146,6 +155,18 @@ public class Warp extends Addon {
             logWarning("Addon did not hook into anything and is not running stand-alone");
             this.setState(State.DISABLED);
         }
+
+        this.createWarpFlag = new Flag.Builder("PLACE_WARP", Material.OAK_SIGN)
+                .addon(this)
+                .defaultRank(RanksManager.MEMBER_RANK)
+                .clickHandler(new CycleClick("PLACE_WARP",
+                    RanksManager.MEMBER_RANK,
+                    RanksManager.OWNER_RANK))
+                .defaultSetting(false)
+                .mode(Flag.Mode.EXPERT)
+                .build();
+
+        getPlugin().getFlagsManager().registerFlag(this, this.createWarpFlag);
     }
 
 
@@ -214,6 +235,13 @@ public class Warp extends Addon {
     }
 
     /**
+     * @return the createWarpFlag
+     */
+    public Flag getCreateWarpFlag() {
+        return createWarpFlag;
+    }
+
+    /**
      * Get the island level
      * @param world - world
      * @param uniqueId - player's UUID
@@ -224,8 +252,11 @@ public class Warp extends Addon {
         String name = this.getPlugin().getIWM().getAddon(world).map(g -> g.getDescription().getName()).orElse("");
         return this.getPlugin().getAddonsManager().getAddonByName(LEVEL_ADDON_NAME)
                 .map(l -> {
-                    if (!name.isEmpty() && ((Level) l).getSettings().getGameModes().contains(name)) {
-                        return ((Level) l).getIslandLevel(world, uniqueId);
+                    final Level addon = (Level) l;
+                    //getGameModes is a list of gamemodes that Level is DISABLED in,
+                    //so we need the opposite of the contains.
+                    if (!name.isEmpty() && !addon.getSettings().getGameModes().contains(name)) {
+                        return addon.getIslandLevel(world, uniqueId);
                     }
                     return null;
                 }).orElse(null);
