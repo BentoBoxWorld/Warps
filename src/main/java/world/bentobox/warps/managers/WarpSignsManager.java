@@ -199,15 +199,15 @@ public class WarpSignsManager {
             warpsData = handler.loadObject(WARPS);
             // Load into map
             if (warpsData != null) {
-                warpsData.getWarpSigns().forEach((k,v) -> {
-                    if (k != null && k.getWorld() != null) {
-                        if (k.getWorld().isChunkLoaded(k.getBlockX() >> 4, k.getBlockZ() >> 4)
-                                && !k.getBlock().getType().name().contains("SIGN")) {
+                warpsData.getWarpSigns().forEach((location,uuid) -> {
+                    if (location != null && location.getWorld() != null) {
+                        if (location.getWorld().isChunkLoaded(location.getBlockX() >> 4, location.getBlockZ() >> 4)
+                                && !location.getBlock().getType().name().contains("SIGN")) {
                             return;
                         }
 
                         // Add to map
-                        getWarpMap(k.getWorld()).put(v, k);
+                        getWarpMap(location.getWorld()).put(uuid, location);
                     }
                 });
             } else {
