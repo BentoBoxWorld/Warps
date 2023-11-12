@@ -34,7 +34,7 @@ public class WarpsCommand extends CompositeCommand {
      */
     @Override
     public void setup() {
-        this.setPermission(this.getParent() == null ? Warp.WELCOME_WARP_SIGNS + ".warp" : "island.warp");
+        this.setPermission(this.getParent() == null ? Warp.WELCOME_WARP_SIGNS + ".warps" : "island.warps");
         this.setOnlyPlayer(true);
         this.setDescription("warps.help.description");
     }

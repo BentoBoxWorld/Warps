@@ -123,7 +123,7 @@ public class WarpsCommandTest {
     @Test
     public void testSetupWarpCompositeCommand() {
         warpCommandWarpsCompositeCommand();
-        assertEquals("bskyblock.island.warp", wc.getPermission());
+        assertEquals("bskyblock.island.warps", wc.getPermission());
         assertTrue(wc.isOnlyPlayer());
         assertEquals("warps.help.description", wc.getDescription());
     }
@@ -134,7 +134,7 @@ public class WarpsCommandTest {
     @Test
     public void testSetupWarp() {
         warpCommandWarps();
-        assertEquals(Warp.WELCOME_WARP_SIGNS + ".warp", wc.getPermission());
+        assertEquals(Warp.WELCOME_WARP_SIGNS + ".warps", wc.getPermission());
         assertTrue(wc.isOnlyPlayer());
         assertEquals("warps.help.description", wc.getDescription());
     }

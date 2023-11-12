@@ -4,16 +4,16 @@ warp:
     description: teleportuje cię do tabliczki innego gracza
     parameters: "<gracz>"
 warps:
-  deactivate: "&c Stary teleport zdezaktywowany!"
+  deactivate: "&c Stary teleport został zdezaktywowany!"
   error:
     does-not-exist: "&c Ten teleport nie istnieje."
     no-permission: "&c Brak uprawnień!"
     no-remove: "&c Nie możesz usunąć tej tabliczki!"
-    no-warps-yet: "&c Nie ma jeszcze teleportów."
+    no-warps-yet: "&c Nie ma jeszcze stworzonych teleportów."
     not-enough-level: "&c Twój poziom wyspy nie jest wystarczająco wysoki!"
     not-on-island: "&c Musisz być na wyspie, by to zrobić."
     not-safe: "&c Ten teleport nie jest bezpieczny!"
-    your-level-is: "&c Twój poziom wyspy to [level], a musi wynosić co namniej [required].
+    your-level-is: "&c Twój poziom wyspy to [level], a musi wynosić co najmniej [required].
       Użyj komendy /is level."
   help:
     description: otwiera panel warpów
@@ -34,7 +34,7 @@ warps:
         description: "&7 Przełącz na stronę [number]"
       warp:
         name: "&f&l [name]"
-        description: "[sing_text]"
+        description: "[sign_text]"
       random:
         name: "&f&l Losowa wyspa"
         description: "&7 Hmm, gdzie się pojawię?"
