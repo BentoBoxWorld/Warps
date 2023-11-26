@@ -1,0 +1,52 @@
+---
+warp:
+  help:
+    description: телепортація на знак варпа гравця
+    parameters: "<player name>"
+warps:
+  deactivate: "&c Старий знак варпу деактивовано!"
+  error:
+    does-not-exist: "&c О, чорт! Того викривлення більше не існує!"
+    no-permission: "&c Ви не маєте на це дозволу!"
+    no-remove: "&c Ви не можете видалити цей знак!"
+    no-warps-yet: "&c Ще немає доступних варпів"
+    not-enough-level: "&c Рівень вашого острова недостатньо високий!"
+    not-on-island: "&c Для цього ви повинні бути на своєму острові!"
+    not-safe: "&c Ця варп небезпечна!"
+    your-level-is: "&c Рівень вашого острова становить лише [level] і має бути вищим
+      за [required]. Виконайте команду рівня."
+    not-correct-rank: "&c Ви не маєте належного рангу, щоб встановити варп!"
+  help:
+    description: відкрити панель варпів
+  player-warped: "&2 [name] телепортовано до вашого знака варпу [gamemode]!"
+  sign-removed: "&c Знак варпу видалено!"
+  success: "&a Успіх!"
+  warpTip: "&6 Розмістіть знак варпу з [text] угорі"
+  warpToPlayersSign: "&6 Телепортація на знак [player]."
+  gui:
+    titles:
+      warp-title: "&0&l Знаки варпів"
+    buttons:
+      previous:
+        name: "&f&l Попередня сторінка"
+        description: "&7 Перейти на сторінку [number]."
+      next:
+        name: "&f&l Наступна сторінка"
+        description: "&7 Перейти на сторінку [number]."
+      warp:
+        name: "&f&l [name]"
+        description: "[sign_text]"
+      random:
+        name: "&f&l Випадковий варп"
+        description: "&7 Хм, а де я з'явлюся?"
+    tips:
+      click-to-previous: "&e Натисніть &7, щоб переглянути попередню сторінку."
+      click-to-next: "&e Натисніть &7, щоб переглянути наступну сторінку."
+      click-to-warp: "&e Натисніть &7, щоб деформувати."
+  conversations:
+    prefix: "&l&6 [BentoBox]: &r"
+protection:
+  flags:
+    PLACE_WARP:
+      name: Розмістіть варп
+      description: Дозволити розміщення варпів
