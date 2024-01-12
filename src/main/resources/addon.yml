@@ -10,7 +10,10 @@ softdepend: AcidIsland, BSkyBlock, CaveBlock, SkyGrid, AOneBlock
 
 permissions:
   '[gamemode].island.warp':
-    description: Player can use warp or warps commands
+    description: Player can use warp command
+    default: true
+  '[gamemode].island.warps':
+    description: Player can use the warps command
     default: true
   '[gamemode].island.addwarp':
     description: Player can create a welcome warp sign
