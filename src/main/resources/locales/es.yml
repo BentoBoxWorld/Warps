@@ -1,31 +1,53 @@
-###########################################################################################################
-# Este es un archivo YML. Tenga cuidado al editar. Revisa tus ediciones en un verificador de YAML como    #
-# el de http://yaml-online-parser.appspot.com                                                             #
-###########################################################################################################
-
-warp: 
-  help: 
-    description: "Teletransportarte hacia el warp del jugador"
-    parameters: <player name>
-warps: 
-  deactivate: "&c¡El cartel viejo ha sido desactivado!"
-  error: 
-    does-not-exist: "&c¡Oh vaya! !Ese warp ya no existe!"
-    no-permission: "&c¡No tienes permiso para hacer eso!"
-    no-remove: "&c¡No puedes quitar ese cartel!"
-    no-warps-yet: "&cNo hay warps disponibles aún"
-    not-enough-level: "&c¡Tu nivel de isla no es lo suficientemente alto!"
-    not-on-island: "&c¡Debes estar en tu isla para hacer eso!"
-    not-safe: "&c¡Ese warp no es seguro!"
-    your-level-is: "&cTu nivel de isla es solo [level] y debe ser mayor que [required]"
-  help: 
-    description: "Abre el panel de warps"
-  next: "&6Siguiente página"
-  player-warped: "&2[name] ¡se ha teletransportado a tu warp!"
-  previous: "&6Página anterior" 
-  random: "&4Teletransporte aleatorio"
-  sign-removed: "&c¡Cartel removido!"
-  success: "&a¡Éxito!"
-  title: "Carteles de Warps" 
-  warpTip: "&6Coloca un cartel que contenga el texto [text] arriba"
-  warpToPlayersSign: "&6Teletransportandote al warp de [player]"
+---
+warp:
+  help:
+    description: Teletransportarte hacia el warp del jugador
+    parameters: "<player name>"
+warps:
+  deactivate: "&c ¡Antiguo cartel de teletransportación desactivado!"
+  error:
+    does-not-exist: "&c ¡Oh, chasquido! ¡Ese teletransporte ya no existe!"
+    no-permission: "&c ¡No tienes permisos para hacer eso!"
+    no-remove: "&c ¡No puedes quitar ese cartel!"
+    no-warps-yet: "&c No hay teletransportes disponibles todavía"
+    not-enough-level: "&c ¡Tu nivel de isla no es lo suficientemente alto!"
+    not-on-island: "&c ¡Debes estar en tu isla para hacer eso!"
+    not-safe: "&c ¡Ese teletransporte no es seguro!"
+    your-level-is: "&c Tu nivel de isla es solo [level] y debe ser mayor que [required].
+      Ejecuta el comando de nivel."
+    not-correct-rank: "&c ¡No tienes el rango correcto para crear un teletransporte!"
+  help:
+    description: Abre el panel de warps
+  player-warped: "&2 [name] se ha teletransportado a tu cartel de teletransportación
+    de [gamemode]!"
+  sign-removed: "&c Cartel de teletransportación eliminado!"
+  success: "&a Éxito!"
+  warpTip: "&6 Coloca un cartel con [text] en la parte superior"
+  warpToPlayersSign: "&6 Teletransportandote al cartel del jugador [player]"
+  gui:
+    titles:
+      warp-title: "&0&l Carteles de Teletransporte"
+    buttons:
+      previous:
+        name: "&f&l Página Anterior"
+        description: "&7 Ir a la página [number]"
+      next:
+        name: "&f&l Siguiente Página"
+        description: "&7 Ir a la página [number]"
+      warp:
+        name: "&f&l [name]"
+        description: "[sign_text]"
+      random:
+        name: "&f&l Teletransporte aleatorio"
+        description: "&7 Hmm, ¿Dónde apareceré?"
+    tips:
+      click-to-previous: "&e Clic &7 para ver la página anterior."
+      click-to-next: "&e Clic &7 para ver la página siguiente."
+      click-to-warp: "&e Clic &7 para teletransportarse."
+  conversations:
+    prefix: "&l&6 [BentoBox]: &r"
+protection:
+  flags:
+    PLACE_WARP:
+      name: Colocar Teletransporte
+      description: Permitir colocar un cartel de teletransporte

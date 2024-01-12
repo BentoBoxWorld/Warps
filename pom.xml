@@ -59,14 +59,14 @@
         <powermock.version>2.0.9</powermock.version>
         <!-- More visible way how to change dependency versions -->
         <spigot.version>1.19.4-R0.1-SNAPSHOT</spigot.version>
-        <bentobox.version>1.23.0</bentobox.version>
+        <bentobox.version>2.0.0-SNAPSHOT</bentobox.version>
         <level.version>2.7.0-SNAPSHOT</level.version>
         <!-- Revision variable removes warning about dynamic version -->
         <revision>${build.version}-SNAPSHOT</revision>
         <!-- Do not change unless you want different name for local builds. -->
         <build.number>-LOCAL</build.number>
         <!-- This allows to change between versions. -->
-        <build.version>1.13.0</build.version>
+        <build.version>1.14.0</build.version>
         <!-- Sonar Cloud -->
         <sonar.projectKey>BentoBoxWorld_Warps</sonar.projectKey>
         <sonar.organization>bentobox-world</sonar.organization>
@@ -312,7 +312,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
+                <version>0.8.10</version>
                 <configuration>
                     <append>true</append>
                     <excludes>

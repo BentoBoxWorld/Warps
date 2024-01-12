@@ -21,6 +21,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -200,15 +201,15 @@ public class WarpSignsManager {
             warpsData = handler.loadObject(WARPS);
             // Load into map
             if (warpsData != null) {
-                warpsData.getWarpSigns().forEach((k,v) -> {
-                    if (k != null && k.getWorld() != null) {
-                        if (k.getWorld().isChunkLoaded(k.getBlockX() >> 4, k.getBlockZ() >> 4)
-                                && !k.getBlock().getType().name().contains("SIGN")) {
+                warpsData.getWarpSigns().forEach((location,uuid) -> {
+                    if (location != null && location.getWorld() != null) {
+                        if (location.getWorld().isChunkLoaded(location.getBlockX() >> 4, location.getBlockZ() >> 4)
+                                && !location.getBlock().getType().name().contains("SIGN")) {
                             return;
                         }
 
                         // Add to map
-                        getWarpMap(k.getWorld()).put(v, k);
+                        getWarpMap(location.getWorld()).put(uuid, location);
                     }
                 });
             } else {
@@ -424,7 +425,7 @@ public class WarpSignsManager {
         }
         // Find out which direction the warp is facing
         Block b = warpSpot.getBlock();
-        if (b.getType().name().contains("WALL_SIGN")) {
+        if (Tag.WALL_SIGNS.isTagged(b.getType())) {
             org.bukkit.block.data.type.WallSign s = (org.bukkit.block.data.type.WallSign) b.getBlockData();
             BlockFace directionFacing = s.getFacing();
             Location inFront = b.getRelative(directionFacing).getLocation();
@@ -437,7 +438,13 @@ public class WarpSignsManager {
                 warpPlayer(user, oneDown, owner, directionFacing, pvp);
                 return;
             }
-        } else if (b.getType().name().contains("SIGN")) {
+        } else if (Tag.ALL_HANGING_SIGNS.isTagged(b.getType())) {
+            Location below = b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getLocation();
+            if ((addon.getIslands().isSafeLocation(below))) {
+                warpPlayer(user, below, owner, BlockFace.DOWN, pvp);
+                return;
+            }
+        } else if (Tag.STANDING_SIGNS.isTagged(b.getType())) {
             org.bukkit.block.data.type.Sign s = (org.bukkit.block.data.type.Sign) b.getBlockData();
             BlockFace directionFacing = s.getRotation();
             Location inFront = b.getRelative(directionFacing).getLocation();

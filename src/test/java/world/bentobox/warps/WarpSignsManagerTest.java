@@ -25,6 +25,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
@@ -202,6 +203,9 @@ public class WarpSignsManagerTest {
         // Bukkit
         PowerMockito.mockStatic(Bukkit.class, Mockito.RETURNS_MOCKS);
         when(Bukkit.getPluginManager()).thenReturn(pim);
+
+        // Tags
+        when(Tag.STANDING_SIGNS.isTagged(Material.ACACIA_SIGN)).thenReturn(true);
 
         // Players Manager
         when(plugin.getPlayers()).thenReturn(pm);
