@@ -19,7 +19,7 @@ warps_panel:
       8: warp_button
     3:
       1:
-        icon: TIPPED_ARROW:INSTANT_HEAL::::1
+        icon: tipped_arrow{CustomPotionColor:11546150}
         title: warps.gui.buttons.previous.name
         description: warps.gui.buttons.previous.description
         data:
@@ -37,7 +37,7 @@ warps_panel:
       7: warp_button
       8: warp_button
       9:
-        icon: TIPPED_ARROW:JUMP::::1
+        icon: tipped_arrow{CustomPotionColor:8439583}
         title: warps.gui.buttons.next.name
         description: warps.gui.buttons.next.description
         data:
