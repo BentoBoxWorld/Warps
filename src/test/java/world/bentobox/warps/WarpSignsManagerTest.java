@@ -8,7 +8,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,6 +42,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
@@ -60,6 +63,7 @@ import world.bentobox.bentobox.managers.PlaceholdersManager;
 import world.bentobox.bentobox.managers.PlayersManager;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.config.Settings;
+import world.bentobox.warps.event.WarpCreateEvent;
 import world.bentobox.warps.event.WarpInitiateEvent;
 import world.bentobox.warps.managers.SignCacheManager;
 import world.bentobox.warps.managers.WarpSignsManager;
@@ -349,7 +353,7 @@ public class WarpSignsManagerTest {
     public void testAddWarp() {
         Location loc = mock(Location.class);
         assertTrue(wsm.addWarp(uuid, loc));
-        verify(pim).callEvent(any(WarpInitiateEvent.class));
+        verify(pim).callEvent(any(WarpCreateEvent.class));
     }
 
     /**
@@ -441,6 +445,38 @@ public class WarpSignsManagerTest {
         PowerMockito.verifyStatic(Util.class);
         Util.teleportAsync(eq(p), any(), eq(TeleportCause.COMMAND));
         verify(player).sendMessage(anyString());
+        verify(pim).callEvent(any(WarpInitiateEvent.class));
+    }
+    
+    /**
+     * Test method for {@link WarpSignsManager#warpPlayer(org.bukkit.World, world.bentobox.bentobox.api.user.User, java.util.UUID)}.
+     */
+    @Test
+    public void testWarpPlayerEventCancelled() {
+     // Capture the event passed to callEvent
+        ArgumentCaptor<WarpInitiateEvent> eventCaptor = ArgumentCaptor.forClass(WarpInitiateEvent.class);
+
+        // Simulate the event being called and cancelled
+        doAnswer(invocation -> {
+            WarpInitiateEvent event = (WarpInitiateEvent) invocation.getArgument(0);
+            event.setCancelled(true);
+            return null;
+        }).when(pim).callEvent(eventCaptor.capture());
+        
+        Player p = mock(Player.class);
+        when(p.getUniqueId()).thenReturn(UUID.randomUUID());
+        when(p.getWorld()).thenReturn(world);
+        when(p.getName()).thenReturn("tastybento");
+        when(p.getLocation()).thenReturn(location);
+        when(p.isOnline()).thenReturn(true);
+        when(p.canSee(any(Player.class))).thenReturn(true);
+        @Nullable
+        User u = User.getInstance(p);
+        PowerMockito.when(Util.teleportAsync(any(), any(), any())).thenReturn(CompletableFuture.completedFuture(true));
+        wsm.warpPlayer(world, u, uuid);
+        PowerMockito.verifyStatic(Util.class, never());
+        Util.teleportAsync(eq(p), any(), eq(TeleportCause.COMMAND));
+        verify(player, never()).sendMessage(anyString());
     }
 
     /**
