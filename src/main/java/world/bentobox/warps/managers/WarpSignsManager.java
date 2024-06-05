@@ -38,6 +38,7 @@ import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.lists.Flags;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.Warp;
+import world.bentobox.warps.event.WarpCreateEvent;
 import world.bentobox.warps.event.WarpInitiateEvent;
 import world.bentobox.warps.objects.WarpsData;
 import world.bentobox.warps.panels.Utils;
@@ -105,7 +106,7 @@ public class WarpSignsManager {
         }
         getWarpMap(loc.getWorld()).put(playerUUID, loc);
         saveWarpList();
-        Bukkit.getPluginManager().callEvent(new WarpInitiateEvent(addon, loc, playerUUID));
+        Bukkit.getPluginManager().callEvent(new WarpCreateEvent(addon, loc, playerUUID));
         return true;
     }
 
@@ -350,6 +351,11 @@ public class WarpSignsManager {
         float yaw = Util.blockFaceToFloat(directionFacing);
         final Location actualWarp = new Location(inFront.getWorld(), inFront.getBlockX() + 0.5D, inFront.getBlockY(),
                 inFront.getBlockZ() + 0.5D, yaw, 30F);
+        WarpInitiateEvent e = new WarpInitiateEvent(addon, actualWarp, user.getUniqueId());
+        Bukkit.getPluginManager().callEvent(e);
+        if (e.isCancelled()) {
+            return;
+        }
         //BentoBox prevents people from teleporting to an island when
         //the user is banned from the island for example.
         //By checking if the teleport succeeded before sending the messages,
