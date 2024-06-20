@@ -288,7 +288,7 @@ public class Warp extends Addon {
         }
         return switch (requestLabel) {
             case "getSortedWarps" -> getWarpSignsManager().getSortedWarps(world);
-            case "getWarp" -> uuid == null ? null : getWarpSignsManager().getWarp(world, uuid);
+            case "getWarp" -> uuid == null ? null : getWarpSignsManager().getWarpLocation(world, uuid);
             case "getWarpMap" -> getWarpSignsManager().getWarpMap(world);
             case "hasWarp" -> uuid == null ? null : getWarpSignsManager().hasWarp(world, uuid);
             case "listWarps" -> getWarpSignsManager().listWarps(world);

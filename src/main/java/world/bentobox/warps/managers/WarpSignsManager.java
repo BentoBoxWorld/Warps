@@ -122,9 +122,14 @@ public class WarpSignsManager {
      * @return Location of warp or null
      */
     @Nullable
-    public Location getWarp(World world, UUID playerUUID) {
+    public Location getWarpLocation(World world, UUID playerUUID) {
         PlayerWarp playerWarp = getWarpMap(world).get(playerUUID);
         return playerWarp != null ? playerWarp.getLocation() : null;
+    }
+
+    @Nullable
+    public PlayerWarp getPlayerWarp(World world, UUID playerUUID) {
+        return getWarpMap(world).get(playerUUID);
     }
 
     /**
@@ -304,7 +309,7 @@ public class WarpSignsManager {
     @NonNull
     public SignCacheItem getSignInfo(@NonNull World world, @NonNull UUID uuid) {
         //get the sign info
-        Location signLocation = getWarp(world, uuid);
+        Location signLocation = getWarpLocation(world, uuid);
         if (signLocation == null || !signLocation.getBlock().getType().name().contains("SIGN")) {
             return new SignCacheItem();
         }
@@ -398,7 +403,7 @@ public class WarpSignsManager {
      * @param owner - owner of the warp
      */
     public void warpPlayer(@NonNull World world, @NonNull User user, @NonNull UUID owner) {
-        final Location warpSpot = getWarp(world, owner);
+        final Location warpSpot = getWarpLocation(world, owner);
         // Check if the warp spot is safe
         if (warpSpot == null) {
             user.sendMessage("warps.error.does-not-exist");

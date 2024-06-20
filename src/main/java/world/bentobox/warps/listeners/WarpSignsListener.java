@@ -171,7 +171,7 @@ public class WarpSignsListener implements Listener {
             }
 
             // Check if the player already has a sign
-            final Location oldSignLoc = addon.getWarpSignsManager().getWarp(b.getWorld(), user.getUniqueId());
+            final Location oldSignLoc = addon.getWarpSignsManager().getWarpLocation(b.getWorld(), user.getUniqueId());
             if (oldSignLoc != null) {
                 // A sign already exists. Check if it still there and if
                 // so,

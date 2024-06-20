@@ -133,7 +133,7 @@ public class WarpSignsListenerTest {
         // Player is in world
         when(wsm.getWarpMap(world)).thenReturn(list);
         //Player has a warp sign already here
-        when(wsm.getWarp(any(), any())).thenReturn(location);
+        when(wsm.getWarpLocation(any(), any())).thenReturn(location);
         // Unique spot
         when(wsm.addWarp(any(), any())).thenReturn(true);
         // Bentobox
@@ -421,7 +421,7 @@ public class WarpSignsListenerTest {
 
     @Test
     public void testCreateNoSignAlreadyUniqueSpot() {
-        when(wsm.getWarp(any(), any())).thenReturn(null);
+        when(wsm.getWarpLocation(any(), any())).thenReturn(null);
         when(player.hasPermission(anyString())).thenReturn(true);
         WarpSignsListener wsl = new WarpSignsListener(addon);
         SignChangeEvent e = new SignChangeEvent(block, player, lines);

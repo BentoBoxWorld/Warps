@@ -359,19 +359,19 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link WarpSignsManager#getWarp(org.bukkit.World, java.util.UUID)}.
+     * Test method for {@link WarpSignsManager#getWarpLocation(org.bukkit.World, java.util.UUID)}.
      */
     @Test
     public void testGetWarpWorldWorld() {
-        assertNull(wsm.getWarp(mock(World.class), uuid));
+        assertNull(wsm.getWarpLocation(mock(World.class), uuid));
     }
 
     /**
-     * Test method for {@link WarpSignsManager#getWarp(org.bukkit.World, java.util.UUID)}.
+     * Test method for {@link WarpSignsManager#getWarpLocation(org.bukkit.World, java.util.UUID)}.
      */
     @Test
     public void testGetWarp() {
-        assertEquals(location, wsm.getWarp(world, uuid));
+        assertEquals(location, wsm.getWarpLocation(world, uuid));
     }
 
     /**
