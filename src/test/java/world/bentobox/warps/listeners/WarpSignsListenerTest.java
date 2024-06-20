@@ -50,6 +50,7 @@ import world.bentobox.bentobox.managers.IslandsManager;
 import world.bentobox.bentobox.managers.LocalesManager;
 import world.bentobox.bentobox.managers.PlaceholdersManager;
 import world.bentobox.bentobox.util.Util;
+import world.bentobox.warps.objects.PlayerWarp;
 import world.bentobox.warps.Warp;
 import world.bentobox.warps.managers.WarpSignsManager;
 import world.bentobox.warps.config.Settings;
@@ -123,12 +124,12 @@ public class WarpSignsListenerTest {
         when(block.getState()).thenReturn(s);
         // warp signs manager
         when(addon.getWarpSignsManager()).thenReturn(wsm);
-        Map<UUID, Location> list = new HashMap<>();
+        Map<UUID, PlayerWarp> list = new HashMap<>();
         Location location = mock(Location.class);
         when(location.getBlock()).thenReturn(block);
         when(s.getLocation()).thenReturn(location);
         when(block.getLocation()).thenReturn(location);
-        list.put(uuid, location);
+        list.put(uuid, new PlayerWarp(location, true));
         // Player is in world
         when(wsm.getWarpMap(world)).thenReturn(list);
         //Player has a warp sign already here
@@ -339,8 +340,8 @@ public class WarpSignsListenerTest {
         when(settings.getRemoveExistingWarpsWhenFlagChanges()).thenReturn(true);
         WarpSignsListener wsl = new WarpSignsListener(addon);
 
-        Map<UUID, Location> warps = Map.of(
-                player.getUniqueId(), block.getLocation()
+        Map<UUID, PlayerWarp> warps = Map.of(
+                player.getUniqueId(), new PlayerWarp(block.getLocation(), true)
         );
 
         when(wsm.getWarpMap(any())).thenReturn(warps);
