@@ -1,9 +1,11 @@
 package world.bentobox.warps.commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import world.bentobox.bentobox.api.commands.CompositeCommand;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.warps.Warp;
+import world.bentobox.warps.event.WarpToggleEvent;
 import world.bentobox.warps.objects.PlayerWarp;
 
 import java.util.List;
@@ -48,6 +50,7 @@ public class ToggleWarpCommand extends CompositeCommand {
                 return false;
             }
             warp.toggle();
+            Bukkit.getPluginManager().callEvent(new WarpToggleEvent(userUUID, warp));
             String message = warp.isEnabled() ? "togglewarp.enabled" : "togglewarp.disabled";
             user.sendMessage(message);
         } else {
