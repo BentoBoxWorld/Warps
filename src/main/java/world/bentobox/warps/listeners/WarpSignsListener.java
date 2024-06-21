@@ -163,7 +163,7 @@ public class WarpSignsListener implements Listener {
                 return;
             }
 
-            if(!hasCorrectIslandRank(b, user)) {
+            if (inWorld && !hasCorrectIslandRank(b, user)) {
                 e.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
                 user.sendMessage("warps.error.not-correct-rank");
                 return;
