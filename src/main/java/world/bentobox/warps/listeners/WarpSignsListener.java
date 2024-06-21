@@ -158,12 +158,17 @@ public class WarpSignsListener implements Listener {
             if (noPerms(user, b.getWorld(), inWorld)) {
                 return;
             }
+            // TODO: These checks are useless if the sign is placed outside a BSB world.
+            //  This will mean level and rank requirements are nil in the case of allow-in-other-worlds: true.
+            //  I'm not sure if there is a better way around this without adding new API checking for primary
+            //  or last island accessed with relevant permissions.
+            // ignored.
             if (inWorld && noLevelOrIsland(user, b.getWorld())) {
                 e.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
                 return;
             }
 
-            if(!hasCorrectIslandRank(b, user)) {
+            if (inWorld && !hasCorrectIslandRank(b, user)) {
                 e.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
                 user.sendMessage("warps.error.not-correct-rank");
                 return;
