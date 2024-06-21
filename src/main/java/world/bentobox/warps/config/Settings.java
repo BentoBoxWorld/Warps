@@ -61,6 +61,8 @@ public class Settings implements ConfigObject
     String warpCommand = "warp";
     @ConfigEntry(path = "warps-command")
     String warpsCommand = "warps";
+    @ConfigEntry(path = "togglewarp-command")
+    String toggleWarpCommand = "togglewarp";
 
     // ---------------------------------------------------------------------
     // Section: Constructor
@@ -203,6 +205,21 @@ public class Settings implements ConfigObject
      */
     public void setWarpsCommand(String warpsCommand) {
         this.warpsCommand = warpsCommand;
+    }
+
+
+    /**
+     * @return the toggleWarpCommand
+     */
+    public String getToggleWarpCommand() {
+        return "togglewarp";
+    }
+
+    /**
+     * @param toggleWarpCommand the toggleWarpCommand to set
+     */
+    public void setToggleWarpCommand(String toggleWarpCommand) {
+        this.toggleWarpCommand = toggleWarpCommand;
     }
 
     /**

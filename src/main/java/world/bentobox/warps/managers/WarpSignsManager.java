@@ -169,6 +169,10 @@ public class WarpSignsManager {
         // Bigger value of time means a more recent login
         TreeMap<Long, UUID> map = new TreeMap<>();
         getWarpMap(world).forEach((uuid, value) -> {
+            // If the warp is not enabled, skip this iteration
+            if (!value.isEnabled()) {
+                return;
+            }
             // If never played, will be zero
             long lastPlayed = addon.getServer().getOfflinePlayer(uuid).getLastPlayed();
             // This aims to avoid the chance that players logged off at exactly the same time
@@ -197,7 +201,11 @@ public class WarpSignsManager {
     public Set<UUID> listWarps(@NonNull World world) {
         // Remove any null locations
         getWarpMap(world).values().removeIf(Objects::isNull);
-        return getWarpMap(world).entrySet().stream().filter(e -> Util.sameWorld(world, Objects.requireNonNull(e.getValue().getLocation().getWorld()))).map(Map.Entry::getKey).collect(Collectors.toSet());
+        // Remove any warps that have not been toggled on
+        Map<UUID, PlayerWarp> enabledWarps = getWarpMap(world).entrySet().stream()
+                .filter(entry -> entry.getValue().isEnabled())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return enabledWarps.keySet();
     }
 
     /**
