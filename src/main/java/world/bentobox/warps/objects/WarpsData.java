@@ -57,7 +57,7 @@ public class WarpsData implements DataObject {
             PlayerWarp playerWarp = new PlayerWarp(entry.getKey(), true);
             newWarpSigns.put(playerWarp, entry.getValue());
         }
-        warpSigns.clear();
+        warpSigns = null;
     }
 
     public void setWarpSigns(Map<PlayerWarp, UUID> warpSigns) {

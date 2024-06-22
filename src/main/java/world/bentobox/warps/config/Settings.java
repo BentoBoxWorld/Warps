@@ -212,7 +212,7 @@ public class Settings implements ConfigObject
      * @return the toggleWarpCommand
      */
     public String getToggleWarpCommand() {
-        return "togglewarp";
+        return toggleWarpCommand;
     }
 
     /**
