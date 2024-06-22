@@ -67,6 +67,7 @@ import world.bentobox.warps.event.WarpCreateEvent;
 import world.bentobox.warps.event.WarpInitiateEvent;
 import world.bentobox.warps.managers.SignCacheManager;
 import world.bentobox.warps.managers.WarpSignsManager;
+import world.bentobox.warps.objects.PlayerWarp;
 import world.bentobox.warps.objects.WarpsData;
 
 
@@ -195,7 +196,7 @@ public class WarpSignsManagerTest {
 
         // Handler
         when(handler.objectExists("warps")).thenReturn(true);
-        Map<Location, UUID> warpMap = Collections.singletonMap(location, uuid);
+        Map<PlayerWarp, UUID> warpMap = Collections.singletonMap(new PlayerWarp(location, true), uuid);
         when(load.getWarpSigns()).thenReturn(warpMap);
         when(handler.loadObject(anyString())).thenReturn(load);
 
@@ -275,7 +276,8 @@ public class WarpSignsManagerTest {
      */
     @Test
     public void testGetWarpMapNullLocation() {
-        Map<Location, UUID> warpMap = Collections.singletonMap(null, uuid);
+        PlayerWarp playerWarp = new PlayerWarp(null, true);
+        Map<PlayerWarp, UUID> warpMap = Collections.singletonMap(playerWarp, uuid);
         when(load.getWarpSigns()).thenReturn(warpMap);
         wsm = new WarpSignsManager(addon, plugin);
         assertTrue("Map is not empty", wsm.getWarpMap(world).isEmpty());
@@ -357,19 +359,19 @@ public class WarpSignsManagerTest {
     }
 
     /**
-     * Test method for {@link WarpSignsManager#getWarp(org.bukkit.World, java.util.UUID)}.
+     * Test method for {@link WarpSignsManager#getWarpLocation(org.bukkit.World, java.util.UUID)}.
      */
     @Test
     public void testGetWarpWorldWorld() {
-        assertNull(wsm.getWarp(mock(World.class), uuid));
+        assertNull(wsm.getWarpLocation(mock(World.class), uuid));
     }
 
     /**
-     * Test method for {@link WarpSignsManager#getWarp(org.bukkit.World, java.util.UUID)}.
+     * Test method for {@link WarpSignsManager#getWarpLocation(org.bukkit.World, java.util.UUID)}.
      */
     @Test
     public void testGetWarp() {
-        assertEquals(location, wsm.getWarp(world, uuid));
+        assertEquals(location, wsm.getWarpLocation(world, uuid));
     }
 
     /**

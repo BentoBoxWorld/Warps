@@ -37,6 +37,7 @@ import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.lists.Flags;
 import world.bentobox.bentobox.util.Util;
+import world.bentobox.warps.objects.PlayerWarp;
 import world.bentobox.warps.Warp;
 import world.bentobox.warps.event.WarpCreateEvent;
 import world.bentobox.warps.event.WarpInitiateEvent;
@@ -55,7 +56,7 @@ public class WarpSignsManager {
     private static final String WARPS = "warps";
     private final BentoBox plugin;
     // Map of all warps stored as player, warp sign Location
-    private Map<World, Map<UUID, Location>> worldsWarpList;
+    private Map<World, Map<UUID, PlayerWarp>> worldsWarpList;
     // Database handler for level data
     private final Database<WarpsData> handler;
 
@@ -68,7 +69,7 @@ public class WarpSignsManager {
      * @return map of warps
      */
     @NonNull
-    public Map<UUID, Location> getWarpMap(@Nullable World world) {
+    public Map<UUID, PlayerWarp> getWarpMap(@Nullable World world) {
         return worldsWarpList.computeIfAbsent(Util.getWorld(world), k -> new HashMap<>());
     }
 
@@ -100,11 +101,13 @@ public class WarpSignsManager {
             return false;
         }
         // Check for warps placed in a location where there was a warp before
-        if (getWarpMap(loc.getWorld()).containsValue(loc)) {
-            // remove the warp at this location, then place it
-            this.removeWarp(loc);
+        for (PlayerWarp playerWarp : getWarpMap(loc.getWorld()).values()) {
+            if (playerWarp.getLocation().equals(loc)) {
+                this.removeWarp(loc);
+                break;
+            }
         }
-        getWarpMap(loc.getWorld()).put(playerUUID, loc);
+        getWarpMap(loc.getWorld()).put(playerUUID, new PlayerWarp(loc, true));
         saveWarpList();
         Bukkit.getPluginManager().callEvent(new WarpCreateEvent(addon, loc, playerUUID));
         return true;
@@ -119,7 +122,13 @@ public class WarpSignsManager {
      * @return Location of warp or null
      */
     @Nullable
-    public Location getWarp(World world, UUID playerUUID) {
+    public Location getWarpLocation(World world, UUID playerUUID) {
+        PlayerWarp playerWarp = getWarpMap(world).get(playerUUID);
+        return playerWarp != null ? playerWarp.getLocation() : null;
+    }
+
+    @Nullable
+    public PlayerWarp getPlayerWarp(World world, UUID playerUUID) {
         return getWarpMap(world).get(playerUUID);
     }
 
@@ -130,7 +139,7 @@ public class WarpSignsManager {
      */
     @NonNull
     public String getWarpOwner(Location location) {
-        return getWarpMap(location.getWorld()).entrySet().stream().filter(en -> en.getValue().equals(location))
+        return getWarpMap(location.getWorld()).entrySet().stream().filter(en -> en.getValue().getLocation().equals(location))
                 .findFirst().map(en -> plugin.getPlayers().getName(en.getKey())).orElse("");
     }
 
@@ -140,7 +149,7 @@ public class WarpSignsManager {
      * @return Optional UUID of warp owner or empty if there is none
      */
     public Optional<UUID> getWarpOwnerUUID(Location location) {
-        return getWarpMap(location.getWorld()).entrySet().stream().filter(en -> en.getValue().equals(location))
+        return getWarpMap(location.getWorld()).entrySet().stream().filter(en -> en.getValue().getLocation().equals(location))
                 .findFirst().map(Map.Entry::getKey);
     }
 
@@ -160,6 +169,10 @@ public class WarpSignsManager {
         // Bigger value of time means a more recent login
         TreeMap<Long, UUID> map = new TreeMap<>();
         getWarpMap(world).forEach((uuid, value) -> {
+            // If the warp is not enabled, skip this iteration
+            if (!value.isEnabled()) {
+                return;
+            }
             // If never played, will be zero
             long lastPlayed = addon.getServer().getOfflinePlayer(uuid).getLastPlayed();
             // This aims to avoid the chance that players logged off at exactly the same time
@@ -188,7 +201,11 @@ public class WarpSignsManager {
     public Set<UUID> listWarps(@NonNull World world) {
         // Remove any null locations
         getWarpMap(world).values().removeIf(Objects::isNull);
-        return getWarpMap(world).entrySet().stream().filter(e -> Util.sameWorld(world, Objects.requireNonNull(e.getValue().getWorld()))).map(Map.Entry::getKey).collect(Collectors.toSet());
+        // Remove any warps that have not been toggled on
+        Map<UUID, PlayerWarp> enabledWarps = getWarpMap(world).entrySet().stream()
+                .filter(entry -> entry.getValue().isEnabled())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return enabledWarps.keySet();
     }
 
     /**
@@ -201,7 +218,8 @@ public class WarpSignsManager {
             warpsData = handler.loadObject(WARPS);
             // Load into map
             if (warpsData != null) {
-                warpsData.getWarpSigns().forEach((location,uuid) -> {
+                warpsData.getWarpSigns().forEach((pw, uuid) -> {
+                    Location location = pw.getLocation();
                     if (location != null && location.getWorld() != null) {
                         if (location.getWorld().isChunkLoaded(location.getBlockX() >> 4, location.getBlockZ() >> 4)
                                 && !location.getBlock().getType().name().contains("SIGN")) {
@@ -209,7 +227,7 @@ public class WarpSignsManager {
                         }
 
                         // Add to map
-                        getWarpMap(location.getWorld()).put(uuid, location);
+                        getWarpMap(location.getWorld()).put(uuid, new PlayerWarp(location, true));
                     }
                 });
             } else {
@@ -240,10 +258,10 @@ public class WarpSignsManager {
      */
     public void removeWarp(Location loc) {
         popSign(loc);
-        Iterator<Entry<UUID, Location>> it = getWarpMap(loc.getWorld()).entrySet().iterator();
+        Iterator<Entry<UUID, PlayerWarp>> it = getWarpMap(loc.getWorld()).entrySet().iterator();
         while (it.hasNext()) {
-            Entry<UUID, Location> en = it.next();
-            if (en.getValue().equals(loc)) {
+            Entry<UUID, PlayerWarp> en = it.next();
+            if (en.getValue().getLocation().equals(loc)) {
                 // Inform player
                 Optional.ofNullable(addon.getServer().getPlayer(en.getKey()))
                 .map(User::getInstance)
@@ -263,7 +281,7 @@ public class WarpSignsManager {
      */
     public void removeWarp(World world, UUID uuid) {
         if (getWarpMap(world).containsKey(uuid)) {
-            popSign(getWarpMap(world).get(uuid));
+            popSign(getWarpMap(world).get(uuid).getLocation());
             getWarpMap(world).remove(uuid);
 
         }
@@ -299,7 +317,7 @@ public class WarpSignsManager {
     @NonNull
     public SignCacheItem getSignInfo(@NonNull World world, @NonNull UUID uuid) {
         //get the sign info
-        Location signLocation = getWarp(world, uuid);
+        Location signLocation = getWarpLocation(world, uuid);
         if (signLocation == null || !signLocation.getBlock().getType().name().contains("SIGN")) {
             return new SignCacheItem();
         }
@@ -393,7 +411,7 @@ public class WarpSignsManager {
      * @param owner - owner of the warp
      */
     public void warpPlayer(@NonNull World world, @NonNull User user, @NonNull UUID owner) {
-        final Location warpSpot = getWarp(world, owner);
+        final Location warpSpot = getWarpLocation(world, owner);
         // Check if the warp spot is safe
         if (warpSpot == null) {
             user.sendMessage("warps.error.does-not-exist");

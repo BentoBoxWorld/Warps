@@ -28,6 +28,7 @@ import world.bentobox.bentobox.api.events.team.TeamLeaveEvent;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.util.Util;
+import world.bentobox.warps.objects.PlayerWarp;
 import world.bentobox.warps.Warp;
 import world.bentobox.warps.event.WarpRemoveEvent;
 
@@ -60,12 +61,12 @@ public class WarpSignsListener implements Listener {
             @Override
             public void run() {
                 boolean changed = false;
-                Iterator<Map.Entry<UUID, Location>> iterator =
+                Iterator<Map.Entry<UUID, PlayerWarp>> iterator =
                         addon.getWarpSignsManager().getWarpMap(event.getWorld()).entrySet().iterator();
                 while (iterator.hasNext()) {
-                    Map.Entry<UUID, Location> entry = iterator.next();
+                    Map.Entry<UUID, PlayerWarp> entry = iterator.next();
                     UUID uuid = entry.getKey();
-                    Location location = entry.getValue();
+                    Location location = entry.getValue().getLocation();
                     if (event.getChunk().getX() == location.getBlockX() >> 4
                             && event.getChunk().getZ() == location.getBlockZ() >> 4
                             && !Tag.SIGNS.isTagged(location.getBlock().getType())) {
@@ -126,16 +127,16 @@ public class WarpSignsListener implements Listener {
 
     private boolean isPlayersSign(Player player, Block b, boolean inWorld) {
         // Welcome sign detected - check to see if it is this player's sign
-        Map<UUID, Location> list = addon.getWarpSignsManager().getWarpMap(b.getWorld());
+        Map<UUID, PlayerWarp> list = addon.getWarpSignsManager().getWarpMap(b.getWorld());
         String reqPerm = inWorld ? addon.getPermPrefix(b.getWorld()) + "mod.removesign" : Warp.WELCOME_WARP_SIGNS + ".mod.removesign";
-        return ((list.containsKey(player.getUniqueId()) && list.get(player.getUniqueId()).equals(b.getLocation()))
+        return ((list.containsKey(player.getUniqueId()) && list.get(player.getUniqueId()).getLocation().equals(b.getLocation()))
                 || player.isOp()  || player.hasPermission(reqPerm));
     }
 
     private boolean isWarpSign(Block b) {
         Sign s = (Sign) b.getState();
         return s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getSettings().getWelcomeLine())
-                && addon.getWarpSignsManager().getWarpMap(b.getWorld()).containsValue(s.getLocation());
+                && addon.getWarpSignsManager().getWarpMap(b.getWorld()).values().stream().anyMatch(playerWarp -> playerWarp.getLocation().equals(s.getLocation()));
     }
 
     /**
@@ -175,7 +176,7 @@ public class WarpSignsListener implements Listener {
             }
 
             // Check if the player already has a sign
-            final Location oldSignLoc = addon.getWarpSignsManager().getWarp(b.getWorld(), user.getUniqueId());
+            final Location oldSignLoc = addon.getWarpSignsManager().getWarpLocation(b.getWorld(), user.getUniqueId());
             if (oldSignLoc != null) {
                 // A sign already exists. Check if it still there and if
                 // so,
@@ -221,15 +222,15 @@ public class WarpSignsListener implements Listener {
 
         final Island island = e.getIsland();
 
-        final Map<UUID, Location> islandWarps = addon
+        final Map<UUID, PlayerWarp> islandWarps = addon
                 .getWarpSignsManager()
                 .getWarpMap(island.getWorld())
                 .entrySet()
                 .stream()
-                .filter(x -> island.inIslandSpace(x.getValue()))
+                .filter(x -> island.inIslandSpace(x.getValue().getLocation()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        for(Map.Entry<UUID, Location> entry : islandWarps.entrySet()) {
+        for(Map.Entry<UUID, PlayerWarp> entry : islandWarps.entrySet()) {
             if(island.getRank(entry.getKey()) >= e.getSetTo()) continue;
 
             //The user has a lower rank than the new set value.
