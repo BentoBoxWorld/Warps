@@ -1,58 +1,58 @@
-# ##########################################################################################
-#  This is a YML file. Be careful when editing. Check your edits in a YAML checker like    #
-#  the one at http://yaml-online-parser.appspot.com                                        #
-# ##########################################################################################
-
+---
 warp:
   help:
     description: 传送至对应玩家的坐标告示牌
-    parameters: <player name>
+    parameters: "<player name>"
 warps:
-  deactivate: '&c检测到不活跃的坐标告示牌!'
+  deactivate: "&c检测到不活跃的坐标告示牌!"
   error:
-    does-not-exist: '&c啊哦! 那个传送点已经不存在了!'
-    no-permission: '&c你没有权限做这件事!'
-    no-remove: '&c你不能移除该告示牌!'
-    no-warps-yet: '&c尚无可用传送点.'
-    not-enough-level: '&c你空岛的等级还不够高!'
-    not-on-island: '&c你必须在自己的空岛上做这件事!'
-    not-safe: '&c该传送点不安全!'
-    your-level-is: '&c你空岛的等级只有[level], 但必须高于[required]. 使用/is level查看等级.'
-    not-correct-rank: '&c你在团队中的地位不足以让你设立传送点!'
+    does-not-exist: "&c啊哦! 那个传送点已经不存在了!"
+    no-permission: "&c你没有权限做这件事!"
+    no-remove: "&c你不能移除该告示牌!"
+    no-warps-yet: "&c尚无可用传送点."
+    not-enough-level: "&c你空岛的等级还不够高!"
+    not-on-island: "&c你必须在自己的空岛上做这件事!"
+    not-safe: "&c该传送点不安全!"
+    your-level-is: "&c你空岛的等级只有[level], 但必须高于[required]. 使用/is level查看等级."
+    not-correct-rank: "&c你在团队中的地位不足以让你设立传送点!"
   help:
     description: 打开传送点面板
-  player-warped: '&2 [name]传送到了你[gamemode]的坐标告示牌!'
-  sign-removed: '&c坐标告示牌已移除!'
-  success: '&a成功!'
-  warpTip: '&6放置一个顶部为[text]的坐标告示牌'
-  warpToPlayersSign: '&6正在传送至[player]的坐标告示牌'
-  
+  player-warped: "&2 [name]传送到了你[gamemode]的坐标告示牌!"
+  sign-removed: "&c坐标告示牌已移除!"
+  success: "&a成功!"
+  warpTip: "&6放置一个顶部为[text]的坐标告示牌"
+  warpToPlayersSign: "&6正在传送至[player]的坐标告示牌"
   gui:
     titles:
-      # The title of warp panel
-      warp-title: '&0&l坐标告示牌'
+      warp-title: "&0&l坐标告示牌"
     buttons:
-      # Button that is used in multi-page GUIs which allows to return to previous page.
       previous:
-        name: '&f&l上一页'
-        description: '&7跳转到第[number]页' # Button that is used in multi-page GUIs which allows to go to next page.
+        name: "&f&l上一页"
+        description: "&7跳转到第[number]页"
       next:
-        name: '&f&l下一页'
-        description: '&7跳转到第[number]页' # Button for a warp
+        name: "&f&l下一页"
+        description: "&7跳转到第[number]页"
       warp:
-        name: '&f&l [name]'
-        description: '[sign_text]' # Button for a random warp
+        name: "&f&l [name]"
+        description: "[sign_text]"
       random:
-        name: '&f&l随机传送'
-        description: '&7嗯...我会出现在哪里?'
+        name: "&f&l随机传送"
+        description: "&7嗯...我会出现在哪里?"
     tips:
-      click-to-previous: '&e点击&7 查看上一页.'
-      click-to-next: '&e点击&7 查看下一页.'
-      click-to-warp: '&e点击&7 进行传送.'
+      click-to-previous: "&e点击&7 查看上一页."
+      click-to-next: "&e点击&7 查看下一页."
+      click-to-warp: "&e点击&7 进行传送."
   conversations:
-    # Prefix for messages that are send from server.
-    prefix: '&l&6 [BentoBox]: &r'
-
+    prefix: "&l&6 [BentoBox]: &r"
+togglewarp:
+  help:
+    description: 切换扭曲符号
+  enabled: "&a 你的扭曲现在可见了！"
+  disabled: "&c 你的扭曲现已隐藏！"
+  error:
+    no-permission: "&c您没有权限这么做！"
+    generic: "&c 切换扭曲时发生错误。"
+    no-warp: "&c 您没有可​​切换的扭曲！"
 protection:
   flags:
     PLACE_WARP:
