@@ -20,15 +20,21 @@ warps:
   player-warped: "&2 [name] があなたの [gamemode] ワープサインにワープしました!"
   sign-removed: "&c ワープサインが削除されました!"
   success: "&a 成功しました!"
+  warpTip: "&6 [text]を上部に記したワープサインを配置する"
+  warpToPlayersSign: "&6 [player]のサインにワープ"
   gui:
     titles:
       warp-title: "&0&l ワープサイン"
     buttons:
       previous:
         name: "&f&l 前のページ"
+        description: "&7 [number] ページに切り替える"
       next:
         name: "&f&l 次のページ"
-      warp: {}
+        description: "&7 [number]ページに切り替える"
+      warp:
+        name: "&f&l [name]"
+        description: "[sign_text]"
       random:
         name: "&f&l ランダムワープ"
         description: "&7 うーん、どこに現れるんだろう？"
