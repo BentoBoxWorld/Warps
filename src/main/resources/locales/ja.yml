@@ -1,32 +1,54 @@
-###########################################################################################
-# This is a YML file. Be careful when editing. Check your edits in a YAML checker like    #
-# the one at http://yaml-online-parser.appspot.com                                        #
-###########################################################################################
-
-warp: 
-  help: 
-    description: "プレイヤーのワープサインにワープする"
-    parameters: <名>
-warps: 
-  deactivate: "&c前のワープサインが無効になりました!"
-  error: 
-    does-not-exist: "&cそのワープはもう存在しません！"
-    no-permission: "&C許可がありません！"
-    no-remove: "&Cワープサインは外せません！"
-    no-warps-yet: "&C利用可能なワープはまだありません"
-    not-enough-level: "&C島のレベルは十分に高くありません！"
-    not-on-island: "&Cあなたの島にいなければなりません！"
-    not-safe: "&cワープは安全ではありません。!"
-    your-level-is: "&c島レベルはわずか[level]で、[required]より高くなければなりません"
-  help: 
-    description: "ワープパネルを開く"
-  next: "&6次のページ"
-  player-warped: "&2[name]はあなたのワープサインに反った!"
-  previous: "&6前のページ"
-  sign-removed: "&Cワープサインを削除!"
-  success: "&A完了!"
-  title: "ワープサイン"
-  warpTip: "&6最初の行に[text]と一緒にワープサインを置きます"
-  warpToPlayersSign: "&6[player]のサインに反っている"
-
-    
+---
+warp:
+  help:
+    description: プレイヤーのワープサインにワープする
+    parameters: "<名>"
+warps:
+  deactivate: "&c 古いワープサインが無効になりました!"
+  error:
+    does-not-exist: "&c ああ、やられた！そのワープはもう存在しない！"
+    no-permission: "&c あなたにはそれを実行する権限がありません!"
+    no-remove: "&c その標識は削除できません!"
+    no-warps-yet: "&c ワープはまだ利用できません"
+    not-enough-level: "&c あなたの島のレベルは十分に高くありません!"
+    not-on-island: "&c それを実行するには、自分の島にいる必要があります。"
+    not-safe: "&c そのワープは安全ではありません!"
+    your-level-is: "&c あなたの島のレベルは [level] のみで、[required] より高くなければなりません。level コマンドを実行してください。"
+    not-correct-rank: "&c ワープを設定するための適切なランクがありません。"
+  help:
+    description: ワープパネルを開く
+  player-warped: "&2 [name] があなたの [gamemode] ワープサインにワープしました!"
+  sign-removed: "&c ワープサインが削除されました!"
+  success: "&a 成功しました!"
+  gui:
+    titles:
+      warp-title: "&0&l ワープサイン"
+    buttons:
+      previous:
+        name: "&f&l 前のページ"
+      next:
+        name: "&f&l 次のページ"
+      warp: {}
+      random:
+        name: "&f&l ランダムワープ"
+        description: "&7 うーん、どこに現れるんだろう？"
+    tips:
+      click-to-previous: "&e 前のページを表示するには &7 をクリックします。"
+      click-to-next: "&e 次のページを表示するには &7 をクリックします。"
+      click-to-warp: "&e ワープするには &7 をクリックします。"
+  conversations:
+    prefix: "&l&6 [弁当箱]: &r"
+togglewarp:
+  help:
+    description: ワープサインを切り替える
+  enabled: "&a ワープが見えるようになりました!"
+  disabled: "&c ワープが非表示になりました!"
+  error:
+    no-permission: "&c あなたにはそれを実行する権限がありません!"
+    generic: "&c ワープの切り替え中にエラーが発生しました。"
+    no-warp: "&c 切り替えるワープがありません!"
+protection:
+  flags:
+    PLACE_WARP:
+      name: ワープを配置
+      description: ワープサインの設置を許可する
