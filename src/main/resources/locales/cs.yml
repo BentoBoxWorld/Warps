@@ -15,6 +15,7 @@ warps:
     not-safe: "&c Tento warp není bezpečný!"
     your-level-is: "&c Úroveň tvého ostrova je jen [level], musí být vyšší než [required].
       Spusť příkaz pro úroveň."
+    not-correct-rank: "&c Nemáte správnou hodnost pro nastavení warpu!"
   help:
     description: otevřít panel warpů
   player-warped: "&2 [name] se pokřivilo na váš [gamemode] warp znamení!"
@@ -23,20 +24,38 @@ warps:
   warpTip: "&6 Polož warp ceduli s [text] na vrchu"
   warpToPlayersSign: "&6 Teleportuji tě na ceduli [player]"
   gui:
-    titles: {}
+    titles:
+      warp-title: "&0&l Warp Signs"
     buttons:
       previous:
+        name: "&f&l Předchozí stránka"
         description: "&7 Přepnout na stránku [number]"
       next:
+        name: "&f&l Další stránka"
         description: "&7 Přepnout na stránku [number]"
       warp:
         name: "&f&l [name]"
-      random: {}
-    tips: {}
-  conversations: {}
+        description: "[sign_text]"
+      random:
+        name: "&f&l Náhodné pokřivení"
+        description: "&7 Hmm, kde se objevím?"
+    tips:
+      click-to-previous: "&e Klepnutím na &7 zobrazíte předchozí stránku."
+      click-to-next: "&e Klepnutím na &7 zobrazíte další stránku."
+      click-to-warp: "&e Klikněte na &7 pro deformaci."
+  conversations:
+    prefix: "&l&6 [BentoBox]: &r"
 togglewarp:
-  help: {}
-  error: {}
+  help:
+    description: přepnout znak warp
+  enabled: "&a Vaše warp je nyní viditelný!"
+  disabled: "&c Váš warp je nyní skrytý!"
+  error:
+    no-permission: "&c K tomu nemáte oprávnění!"
+    generic: "&c Při přepínání vašeho warpu došlo k chybě."
+    no-warp: "&c Nemáte warp k přepínání!"
 protection:
   flags:
-    PLACE_WARP: {}
+    PLACE_WARP:
+      name: Umístěte Warp
+      description: Povolit umístění warp znamení
