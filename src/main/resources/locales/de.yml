@@ -17,7 +17,7 @@ warps:
       sein. Nutze das Level Kommando."
   help:
     description: Öffnet das Warps Panel
-  player-warped: "&2 [name] hat sich zu deinem Warp Schild gewarpt!"
+  player-warped: "&2 [name] ist zu deinem [gamemode]-Warp-Zeichen gesprungen!"
   sign-removed: "&c Warp Schild entfernt!"
   success: "&a Erfolg!"
   warpTip: "&6 Platziere ein Warp Schild mit [text] in der ersten Zeile"
@@ -44,3 +44,9 @@ warps:
       click-to-warp: "&e Zum Warpen &7 klicken."
   conversations:
     prefix: "&l&6 [BentoBox]: &r"
+togglewarp:
+  help: {}
+  error: {}
+protection:
+  flags:
+    PLACE_WARP: {}
