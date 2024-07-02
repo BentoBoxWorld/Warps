@@ -15,7 +15,7 @@ import world.bentobox.warps.Warp;
  * @author Poslovitch
  *
  */
-public class WarpCreateEvent extends Event{
+public class WarpCreateEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
     private final Location warpLoc;

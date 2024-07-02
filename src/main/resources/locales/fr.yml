@@ -4,25 +4,50 @@ warp:
     description: te téléporte au Warp d'un autre joueur
     parameters: "<pseudo>"
 warps:
-  deactivate: "&cAncien panneau de Warp désactivé !"
+  deactivate: "&c Ancienne pancarte de warp désactivée !"
   error:
-    does-not-exist: "&cCe Warp n'existe plus !"
-    no-permission: "&cVous n'avez pas la permission pour faire cela !"
-    no-remove: "&cVous ne pouvez pas supprimer ce panneau !"
-    no-warps-yet: "&cIl n'y a encore aucun Warp sur ce serveur."
-    not-enough-level: "&cVotre niveau d'île n'est pas assez élevé pour faire cela
-      !"
-    not-on-island: "&cVous devez être sur votre île pour faire cela !"
-    not-safe: "&cCe Warp n'est pas sûr!"
-    your-level-is: "&cVotre île est seulement niveau [level] et doit être niveau [required]."
+    does-not-exist: "&c Oh ! Cette téléportation n'existe plus !"
+    no-permission: "&c Vous n'avez pas le droit de faire cela !"
+    no-remove: "&c Vous ne pouvez pas enlever cette pancarte !"
+    no-warps-yet: "&c Il n'y a pas encore de téléportation disponible"
+    not-enough-level: "&c Le niveau de votre île n'est pas assez élevé !"
+    not-on-island: "&c Vous devez être sur votre île pour faire cela !"
+    not-safe: "&c Cette téléportation n'est pas sûre !"
+    your-level-is: "&c Le niveau de votre île n'est que [level] et doit être supérieur
+      à [required]. Exécutez la commande level."
+    not-correct-rank: "&c Vous n'avez pas le grade adéquat pour poser une chaîne !"
   help:
     description: Ouvre le menu des Warps
-  next: "&6Page suivante"
-  player-warped: "& 2 [pseudo] s'est téléporté à votre panneau Warp !"
-  previous: "&6Page précédente"
-  random: "&4 Warp aléatoire "
-  sign-removed: "&cPanneau de Warp supprimé !"
-  success: "&aSuccès !"
-  title: Panneau Warp
-  warpTip: "&6Placez un panneau et écrivez [text] sur la première ligne."
-  warpToPlayersSign: "&6 Téléportation vers le panneau de [pseudo]"
+  player-warped: "&2 [name] s'est rendu à votre pancarte de téléportation [gamemode]
+    !"
+  sign-removed: "&c Panneau de téléportation enlevé !"
+  success: "&a Succès !"
+  warpTip: "&6 Placer une pancarte de téléportation avec [text] sur le dessus"
+  warpToPlayersSign: "&6 Téléportation a la pancarte de [player]"
+  gui:
+    titles:
+      warp-title: "&0&l Pancarte de téléportation"
+    buttons:
+      previous:
+        name: "&f&l Page précédente"
+        description: "&7 Aller à la page [numéro]."
+      next:
+        name: "&f&l Page suivante"
+        description: "&7 Passer à la page [numéro]."
+      warp:
+        name: "&f&l [name]"
+        description: "[sign_text]"
+      random:
+        name: "&f&l Téléportation aléatoire"
+        description: "&7 Hmm, où vais-je apparaître ?"
+    tips:
+      click-to-previous: "&e Cliquez sur &7 pour afficher la page précédente."
+      click-to-next: "&e Cliquez sur &7 pour afficher la page suivante."
+      click-to-warp: "&e Cliquez sur &7 pour te téléporter."
+  conversations:
+    prefix: "&l&6 [BentoBox]: &r"
+protection:
+  flags:
+    PLACE_WARP:
+      name: Place téléportation
+      description: Autoriser le placement d'un panneau téléportation

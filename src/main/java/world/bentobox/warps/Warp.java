@@ -17,6 +17,7 @@ import world.bentobox.bentobox.api.flags.clicklisteners.CycleClick;
 import world.bentobox.bentobox.managers.RanksManager;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.level.Level;
+import world.bentobox.warps.commands.ToggleWarpCommand;
 import world.bentobox.warps.commands.WarpCommand;
 import world.bentobox.warps.commands.WarpsCommand;
 import world.bentobox.warps.config.Settings;
@@ -100,6 +101,7 @@ public class Warp extends Addon {
             // Load the master warp and warps command
             new WarpCommand(this);
             new WarpsCommand(this);
+            new ToggleWarpCommand(this);
         }
     }
 
@@ -140,6 +142,7 @@ public class Warp extends Addon {
 
                 new WarpCommand(this, gameModeAddon.getPlayerCommand().get());
                 new WarpsCommand(this, gameModeAddon.getPlayerCommand().get());
+                new ToggleWarpCommand(this, gameModeAddon.getPlayerCommand().get());
                 this.hooked = true;
             }
         });
@@ -288,7 +291,7 @@ public class Warp extends Addon {
         }
         return switch (requestLabel) {
             case "getSortedWarps" -> getWarpSignsManager().getSortedWarps(world);
-            case "getWarp" -> uuid == null ? null : getWarpSignsManager().getWarp(world, uuid);
+            case "getWarp" -> uuid == null ? null : getWarpSignsManager().getWarpLocation(world, uuid);
             case "getWarpMap" -> getWarpSignsManager().getWarpMap(world);
             case "hasWarp" -> uuid == null ? null : getWarpSignsManager().hasWarp(world, uuid);
             case "listWarps" -> getWarpSignsManager().listWarps(world);
