@@ -15,9 +15,10 @@ warps:
     not-safe: "&c Dieser Warp ist nicht sicher!"
     your-level-is: "&c Dein Insel-Level ist erst [level] und muss höher als [required]
       sein. Nutze das Level Kommando."
+    not-correct-rank: "&c Sie haben nicht den richtigen Rang, um einen Warp einzustellen!"
   help:
     description: Öffnet das Warps Panel
-  player-warped: "&2 [name] hat sich zu deinem Warp Schild gewarpt!"
+  player-warped: "&2 [name] ist zu deinem [gamemode]-Warp-Zeichen gesprungen!"
   sign-removed: "&c Warp Schild entfernt!"
   success: "&a Erfolg!"
   warpTip: "&6 Platziere ein Warp Schild mit [text] in der ersten Zeile"
@@ -44,3 +45,17 @@ warps:
       click-to-warp: "&e Zum Warpen &7 klicken."
   conversations:
     prefix: "&l&6 [BentoBox]: &r"
+togglewarp:
+  help:
+    description: das Warp-Zeichen umschalten
+  enabled: "&a Ihr Warp ist jetzt sichtbar!"
+  disabled: "&c Ihr Warp ist jetzt verborgen!"
+  error:
+    no-permission: "&c Sie haben keine Berechtigung, das zu tun!"
+    generic: "&c Beim Umschalten Ihres Warps ist ein Fehler aufgetreten."
+    no-warp: "&c Sie haben keinen Warp zum Umschalten!"
+protection:
+  flags:
+    PLACE_WARP:
+      name: Warp platzieren
+      description: Platzieren von Warp-Zeichen zulassen
