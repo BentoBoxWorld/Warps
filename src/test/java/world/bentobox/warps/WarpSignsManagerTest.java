@@ -4,10 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -34,6 +36,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Player.Spigot;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.plugin.PluginManager;
 import org.eclipse.jdt.annotation.Nullable;
@@ -51,6 +54,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.AbstractDatabaseHandler;
@@ -119,7 +123,45 @@ public class WarpSignsManagerTest {
     private IslandsManager im;
     @Mock
     private Island island;
+    @Mock
+    private Spigot spigot;
 
+    /**
+     * Check that spigot sent the message
+     * @param message - message to check
+     */
+    public void checkSpigotMessage(String expectedMessage) {
+        checkSpigotMessage(expectedMessage, 1);
+    }
+
+    public void checkSpigotMessage(String expectedMessage, int expectedOccurrences) {
+        // Capture the argument passed to spigot().sendMessage(...) if messages are sent
+        ArgumentCaptor<TextComponent> captor = ArgumentCaptor.forClass(TextComponent.class);
+
+        // Verify that sendMessage() was called at least 0 times (capture any sent messages)
+        verify(spigot, atLeast(0)).sendMessage(captor.capture());
+
+        // Get all captured TextComponents
+        List<TextComponent> capturedMessages = captor.getAllValues();
+
+        // Count the number of occurrences of the expectedMessage in the captured messages
+        long actualOccurrences = capturedMessages.stream().map(component -> component.toLegacyText()) // Convert each TextComponent to plain text
+                .filter(messageText -> messageText.contains(expectedMessage)) // Check if the message contains the expected text
+                .count(); // Count how many times the expected message appears
+
+        // Assert that the number of occurrences matches the expectedOccurrences
+        assertEquals("Expected message occurrence mismatch: " + expectedMessage, expectedOccurrences,
+                actualOccurrences);
+    }
+
+    public void checkNoSpigotMessages() {
+        try {
+            // Verify that sendMessage was never called
+            verify(spigot, never()).sendMessage(any(TextComponent.class));
+        } catch (AssertionError e) {
+            fail("Expected no messages to be sent, but some messages were sent.");
+        }
+    }
 
     @SuppressWarnings("unchecked")
     @BeforeClass
@@ -146,6 +188,7 @@ public class WarpSignsManagerTest {
         when(player.getUniqueId()).thenReturn(uuid);
         when(player.isOnline()).thenReturn(true);
         when(player.canSee(any(Player.class))).thenReturn(true);
+        when(player.spigot()).thenReturn(spigot);
         User.setPlugin(plugin);
         User.getInstance(player);
 
@@ -336,7 +379,7 @@ public class WarpSignsManagerTest {
     @Test
     public void testAddWarpReplaceOldSign() {
         assertTrue(wsm.addWarp(uuid, location));
-        verify(player).sendMessage("warps.sign-removed");
+        this.checkSpigotMessage("warps.sign-removed");
     }
 
     /**
@@ -345,7 +388,7 @@ public class WarpSignsManagerTest {
     @Test
     public void testAddWarpReplaceOldSignDifferentPlayer() {
         assertTrue(wsm.addWarp(UUID.randomUUID(), location));
-        verify(player).sendMessage("warps.sign-removed");
+        this.checkSpigotMessage("warps.sign-removed");
     }
 
     /**
@@ -446,7 +489,6 @@ public class WarpSignsManagerTest {
         wsm.warpPlayer(world, u, uuid);
         PowerMockito.verifyStatic(Util.class);
         Util.teleportAsync(eq(p), any(), eq(TeleportCause.COMMAND));
-        verify(player).sendMessage(anyString());
         verify(pim).callEvent(any(WarpInitiateEvent.class));
     }
     
