@@ -1,27 +1,60 @@
 ---
 warp:
   help:
-    description: 传送到该玩家的传送木牌处
+    description: 传送至对应玩家的坐标告示牌
     parameters: "<player name>"
 warps:
-  help:
-    description: 打开传送面板
-  title: 传送木牌
-  deactivate: "&c 旧传送牌已停用！"
+  deactivate: "&c检测到不活跃的坐标告示牌!"
   error:
-    does-not-exist: "&c 哦不！那个传送点已经没了！"
-    no-permission: "&c 你无权那样做！"
-    no-remove: "&c 你拿不掉那个牌子的！"
-    no-warps-yet: "&c 暂无可用传送点"
-    not-enough-level: "&c 你的岛等级不够高！"
-    not-on-island: "&c 你得在自己的岛屿上操作！"
-    not-safe: "&c 目标传送点不安全！"
-    your-level-is: "&c 你的岛现在 [level] 级，需要 [required] 级。 试试岛屿等级命令吧。"
-  next: "&6 次页"
-  player-warped: "&2 [name] 传送到了你的传送牌!"
-  previous: "&6 前页"
-  random: "&4 随机传送"
-  sign-removed: "&c 拆掉传送牌了!"
-  success: "&a 成了！"
-  warpTip: "&6 放个牌子第一行写 [text]"
-  warpToPlayersSign: "&6 正传送到 [player] 的牌子"
+    does-not-exist: "&c啊哦! 那个传送点已经不存在了!"
+    no-permission: "&c你没有权限做这件事!"
+    no-remove: "&c你不能移除该告示牌!"
+    no-warps-yet: "&c尚无可用传送点."
+    not-enough-level: "&c你空岛的等级还不够高!"
+    not-on-island: "&c你必须在自己的空岛上做这件事!"
+    not-safe: "&c该传送点不安全!"
+    your-level-is: "&c你空岛的等级只有[level], 但必须高于[required]. 使用/is level查看等级."
+    not-correct-rank: "&c你在团队中的地位不足以让你设立传送点!"
+  help:
+    description: 打开传送点面板
+  player-warped: "&2 [name]传送到了你[gamemode]的坐标告示牌!"
+  sign-removed: "&c坐标告示牌已移除!"
+  success: "&a成功!"
+  warpTip: "&6放置一个顶部为[text]的坐标告示牌"
+  warpToPlayersSign: "&6正在传送至[player]的坐标告示牌"
+  gui:
+    titles:
+      warp-title: "&0&l坐标告示牌"
+    buttons:
+      previous:
+        name: "&f&l上一页"
+        description: "&7跳转到第[number]页"
+      next:
+        name: "&f&l下一页"
+        description: "&7跳转到第[number]页"
+      warp:
+        name: "&f&l [name]"
+        description: "[sign_text]"
+      random:
+        name: "&f&l随机传送"
+        description: "&7嗯...我会出现在哪里?"
+    tips:
+      click-to-previous: "&e点击&7 查看上一页."
+      click-to-next: "&e点击&7 查看下一页."
+      click-to-warp: "&e点击&7 进行传送."
+  conversations:
+    prefix: "&l&6 [BentoBox]: &r"
+togglewarp:
+  help:
+    description: 切换扭曲符号
+  enabled: "&a 你的扭曲现在可见了！"
+  disabled: "&c 你的扭曲现已隐藏！"
+  error:
+    no-permission: "&c您没有权限这么做！"
+    generic: "&c 切换扭曲时发生错误。"
+    no-warp: "&c 您没有可​​切换的扭曲！"
+protection:
+  flags:
+    PLACE_WARP:
+      name: 放置传送点
+      description: 允许放置坐标告示牌

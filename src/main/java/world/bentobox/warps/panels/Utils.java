@@ -52,7 +52,7 @@ public class Utils
             List<String> permissions = user.getEffectivePermissions().stream().
                 map(PermissionAttachmentInfo::getPermission).
                 filter(permission -> permission.startsWith(permPrefix)).
-                collect(Collectors.toList());
+                    toList();
 
             for (String permission : permissions)
             {

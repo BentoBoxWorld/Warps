@@ -50,12 +50,12 @@ public class WarpCommand extends DelayedTeleportCommand {
                 user.sendMessage("warps.warpTip", "[text]", addon.getSettings().getWelcomeLine());
                 return false;
             } else {
-                // Attemp to find warp with exact player's name
+                // Attempt to find warp with exact player's name
                 UUID foundWarp = warpList.stream().filter(u -> getPlayers().getName(u).equalsIgnoreCase(args.get(0))).findFirst().orElse(null);
 
                 if (foundWarp == null) {
 
-                    // Atempt to find warp which starts with the given name
+                    // Attempt to find warp which starts with the given name
                     UUID foundAlernativeWarp = warpList.stream().filter(u -> getPlayers().getName(u).toLowerCase().startsWith(args.get(0).toLowerCase())).findFirst().orElse(null);
 
                     if (foundAlernativeWarp == null) {

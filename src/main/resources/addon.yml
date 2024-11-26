@@ -2,7 +2,7 @@ name: Warps
 main: world.bentobox.warps.Warp
 version: ${version}${build.number}
 icon: OAK_SIGN
-api-version: 1.17
+api-version: 3.0.0
 
 authors: tastybento
 
@@ -17,4 +17,7 @@ permissions:
     default: true
   '[gamemode].island.addwarp':
     description: Player can create a welcome warp sign
+    default: true
+  '[gamemode].island.togglewarp':
+    description: Player can toggle a warp sign
     default: true

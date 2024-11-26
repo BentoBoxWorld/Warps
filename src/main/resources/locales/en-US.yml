@@ -60,6 +60,16 @@ warps:
     # Prefix for messages that are send from server.
     prefix: "&l&6 [BentoBox]: &r"
 
+togglewarp:
+  help:
+    description: "toggle the warp sign"
+  enabled: "&a Your warp is now visible!"
+  disabled: "&c Your warp is now hidden!"
+  error:
+    no-permission: "&c You do not have permission to do that!"
+    generic: "&c An error occurred while toggling your warp."
+    no-warp: "&c You do not have a warp to toggle!"
+
 protection:
   flags:
     PLACE_WARP:

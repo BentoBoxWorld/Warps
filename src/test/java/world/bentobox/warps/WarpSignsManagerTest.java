@@ -4,11 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,6 +36,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Player.Spigot;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.plugin.PluginManager;
 import org.eclipse.jdt.annotation.Nullable;
@@ -40,6 +45,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
@@ -48,6 +54,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
+import net.md_5.bungee.api.chat.TextComponent;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.AbstractDatabaseHandler;
@@ -60,9 +67,11 @@ import world.bentobox.bentobox.managers.PlaceholdersManager;
 import world.bentobox.bentobox.managers.PlayersManager;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.config.Settings;
+import world.bentobox.warps.event.WarpCreateEvent;
 import world.bentobox.warps.event.WarpInitiateEvent;
 import world.bentobox.warps.managers.SignCacheManager;
 import world.bentobox.warps.managers.WarpSignsManager;
+import world.bentobox.warps.objects.PlayerWarp;
 import world.bentobox.warps.objects.WarpsData;
 
 
@@ -114,7 +123,45 @@ public class WarpSignsManagerTest {
     private IslandsManager im;
     @Mock
     private Island island;
+    @Mock
+    private Spigot spigot;
 
+    /**
+     * Check that spigot sent the message
+     * @param message - message to check
+     */
+    public void checkSpigotMessage(String expectedMessage) {
+        checkSpigotMessage(expectedMessage, 1);
+    }
+
+    public void checkSpigotMessage(String expectedMessage, int expectedOccurrences) {
+        // Capture the argument passed to spigot().sendMessage(...) if messages are sent
+        ArgumentCaptor<TextComponent> captor = ArgumentCaptor.forClass(TextComponent.class);
+
+        // Verify that sendMessage() was called at least 0 times (capture any sent messages)
+        verify(spigot, atLeast(0)).sendMessage(captor.capture());
+
+        // Get all captured TextComponents
+        List<TextComponent> capturedMessages = captor.getAllValues();
+
+        // Count the number of occurrences of the expectedMessage in the captured messages
+        long actualOccurrences = capturedMessages.stream().map(component -> component.toLegacyText()) // Convert each TextComponent to plain text
+                .filter(messageText -> messageText.contains(expectedMessage)) // Check if the message contains the expected text
+                .count(); // Count how many times the expected message appears
+
+        // Assert that the number of occurrences matches the expectedOccurrences
+        assertEquals("Expected message occurrence mismatch: " + expectedMessage, expectedOccurrences,
+                actualOccurrences);
+    }
+
+    public void checkNoSpigotMessages() {
+        try {
+            // Verify that sendMessage was never called
+            verify(spigot, never()).sendMessage(any(TextComponent.class));
+        } catch (AssertionError e) {
+            fail("Expected no messages to be sent, but some messages were sent.");
+        }
+    }
 
     @SuppressWarnings("unchecked")
     @BeforeClass
@@ -141,6 +188,7 @@ public class WarpSignsManagerTest {
         when(player.getUniqueId()).thenReturn(uuid);
         when(player.isOnline()).thenReturn(true);
         when(player.canSee(any(Player.class))).thenReturn(true);
+        when(player.spigot()).thenReturn(spigot);
         User.setPlugin(plugin);
         User.getInstance(player);
 
@@ -191,7 +239,7 @@ public class WarpSignsManagerTest {
 
         // Handler
         when(handler.objectExists("warps")).thenReturn(true);
-        Map<Location, UUID> warpMap = Collections.singletonMap(location, uuid);
+        Map<PlayerWarp, UUID> warpMap = Collections.singletonMap(new PlayerWarp(location, true), uuid);
         when(load.getWarpSigns()).thenReturn(warpMap);
         when(handler.loadObject(anyString())).thenReturn(load);
 
@@ -271,7 +319,8 @@ public class WarpSignsManagerTest {
      */
     @Test
     public void testGetWarpMapNullLocation() {
-        Map<Location, UUID> warpMap = Collections.singletonMap(null, uuid);
+        PlayerWarp playerWarp = new PlayerWarp(null, true);
+        Map<PlayerWarp, UUID> warpMap = Collections.singletonMap(playerWarp, uuid);
         when(load.getWarpSigns()).thenReturn(warpMap);
         wsm = new WarpSignsManager(addon, plugin);
         assertTrue("Map is not empty", wsm.getWarpMap(world).isEmpty());
@@ -330,7 +379,7 @@ public class WarpSignsManagerTest {
     @Test
     public void testAddWarpReplaceOldSign() {
         assertTrue(wsm.addWarp(uuid, location));
-        verify(player).sendMessage("warps.sign-removed");
+        this.checkSpigotMessage("warps.sign-removed");
     }
 
     /**
@@ -339,7 +388,7 @@ public class WarpSignsManagerTest {
     @Test
     public void testAddWarpReplaceOldSignDifferentPlayer() {
         assertTrue(wsm.addWarp(UUID.randomUUID(), location));
-        verify(player).sendMessage("warps.sign-removed");
+        this.checkSpigotMessage("warps.sign-removed");
     }
 
     /**
@@ -349,23 +398,23 @@ public class WarpSignsManagerTest {
     public void testAddWarp() {
         Location loc = mock(Location.class);
         assertTrue(wsm.addWarp(uuid, loc));
-        verify(pim).callEvent(any(WarpInitiateEvent.class));
+        verify(pim).callEvent(any(WarpCreateEvent.class));
     }
 
     /**
-     * Test method for {@link WarpSignsManager#getWarp(org.bukkit.World, java.util.UUID)}.
+     * Test method for {@link WarpSignsManager#getWarpLocation(org.bukkit.World, java.util.UUID)}.
      */
     @Test
     public void testGetWarpWorldWorld() {
-        assertNull(wsm.getWarp(mock(World.class), uuid));
+        assertNull(wsm.getWarpLocation(mock(World.class), uuid));
     }
 
     /**
-     * Test method for {@link WarpSignsManager#getWarp(org.bukkit.World, java.util.UUID)}.
+     * Test method for {@link WarpSignsManager#getWarpLocation(org.bukkit.World, java.util.UUID)}.
      */
     @Test
     public void testGetWarp() {
-        assertEquals(location, wsm.getWarp(world, uuid));
+        assertEquals(location, wsm.getWarpLocation(world, uuid));
     }
 
     /**
@@ -440,7 +489,38 @@ public class WarpSignsManagerTest {
         wsm.warpPlayer(world, u, uuid);
         PowerMockito.verifyStatic(Util.class);
         Util.teleportAsync(eq(p), any(), eq(TeleportCause.COMMAND));
-        verify(player).sendMessage(anyString());
+        verify(pim).callEvent(any(WarpInitiateEvent.class));
+    }
+    
+    /**
+     * Test method for {@link WarpSignsManager#warpPlayer(org.bukkit.World, world.bentobox.bentobox.api.user.User, java.util.UUID)}.
+     */
+    @Test
+    public void testWarpPlayerEventCancelled() {
+     // Capture the event passed to callEvent
+        ArgumentCaptor<WarpInitiateEvent> eventCaptor = ArgumentCaptor.forClass(WarpInitiateEvent.class);
+
+        // Simulate the event being called and cancelled
+        doAnswer(invocation -> {
+            WarpInitiateEvent event = (WarpInitiateEvent) invocation.getArgument(0);
+            event.setCancelled(true);
+            return null;
+        }).when(pim).callEvent(eventCaptor.capture());
+        
+        Player p = mock(Player.class);
+        when(p.getUniqueId()).thenReturn(UUID.randomUUID());
+        when(p.getWorld()).thenReturn(world);
+        when(p.getName()).thenReturn("tastybento");
+        when(p.getLocation()).thenReturn(location);
+        when(p.isOnline()).thenReturn(true);
+        when(p.canSee(any(Player.class))).thenReturn(true);
+        @Nullable
+        User u = User.getInstance(p);
+        PowerMockito.when(Util.teleportAsync(any(), any(), any())).thenReturn(CompletableFuture.completedFuture(true));
+        wsm.warpPlayer(world, u, uuid);
+        PowerMockito.verifyStatic(Util.class, never());
+        Util.teleportAsync(eq(p), any(), eq(TeleportCause.COMMAND));
+        verify(player, never()).sendMessage(anyString());
     }
 
     /**
