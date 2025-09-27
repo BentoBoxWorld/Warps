@@ -153,6 +153,15 @@ public class WarpSignsManager {
         return getWarpMap(location.getWorld()).entrySet().stream().filter(en -> en.getValue().getLocation().equals(location))
                 .findFirst().map(Map.Entry::getKey);
     }
+    
+    /**
+     * Check if there is a warp sign at this location
+     * @param location location to check
+     * @return true if there is a warp sign at this location
+     */
+    public boolean isWarpAt(Location location) {
+        return getWarpMap(location.getWorld()).entrySet().stream().map(en -> en.getValue().getLocation().equals(location)).findFirst().isPresent();
+    }
 
     /**
      * Get sorted list of warps with most recent players listed first
