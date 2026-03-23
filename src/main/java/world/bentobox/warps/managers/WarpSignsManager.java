@@ -36,6 +36,7 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.lists.Flags;
+import world.bentobox.bentobox.managers.MapManager;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.objects.PlayerWarp;
 import world.bentobox.warps.Warp;
@@ -54,6 +55,8 @@ import world.bentobox.warps.panels.Utils;
 public class WarpSignsManager {
     private static final int MAX_WARPS = 600;
     private static final String WARPS = "warps";
+    private static final String MAP_MARKER_SET = "warps";
+    private static final String MAP_MARKER_SET_LABEL = "Warp Signs";
     private final BentoBox plugin;
     // Map of all warps stored as player, warp sign Location
     private Map<World, Map<UUID, PlayerWarp>> worldsWarpList;
@@ -86,6 +89,12 @@ public class WarpSignsManager {
         handler = new Database<>(addon, WarpsData.class);
         // Load the warps
         loadWarpList();
+        // Initialize map markers for all loaded warps
+        if (addon.getSettings().isShowWarpsOnMap()) {
+            MapManager mapManager = plugin.getMapManager();
+            mapManager.createMarkerSet(MAP_MARKER_SET, MAP_MARKER_SET_LABEL);
+            populateMapMarkers();
+        }
     }
 
     /**
@@ -109,6 +118,7 @@ public class WarpSignsManager {
         }
         getWarpMap(loc.getWorld()).put(playerUUID, new PlayerWarp(loc, true));
         saveWarpList();
+        addMapMarker(loc.getWorld(), playerUUID, loc);
         Bukkit.getPluginManager().callEvent(new WarpCreateEvent(addon, loc, playerUUID));
         return true;
     }
@@ -277,6 +287,7 @@ public class WarpSignsManager {
                 .ifPresent(user -> user.sendMessage("warps.sign-removed"));
                 // Remove sign from warp panel cache
                 addon.getSignCacheManager().removeWarp(loc.getWorld(), en.getKey());
+                removeMapMarker(loc.getWorld(), en.getKey());
                 it.remove();
             }
         }
@@ -296,6 +307,7 @@ public class WarpSignsManager {
         }
         // Remove sign from warp panel cache
         addon.getSignCacheManager().removeWarp(world, uuid);
+        removeMapMarker(world, uuid);
         saveWarpList();
     }
 
@@ -512,5 +524,48 @@ public class WarpSignsManager {
      */
     public boolean hasWarp(@NonNull World world, @NonNull UUID playerUUID) {
         return getWarpMap(world).containsKey(playerUUID);
+    }
+
+    // ---- Map marker helpers ----
+
+    private String getMarkerId(@NonNull World world, @NonNull UUID playerUUID) {
+        return world.getName() + ":" + playerUUID;
+    }
+
+    /**
+     * Adds a point marker for a warp on the web map.
+     */
+    public void addMapMarker(@NonNull World world, @NonNull UUID playerUUID, @NonNull Location loc) {
+        if (!addon.getSettings().isShowWarpsOnMap()) {
+            return;
+        }
+        String label = plugin.getPlayers().getName(playerUUID);
+        plugin.getMapManager().addPointMarker(MAP_MARKER_SET, getMarkerId(world, playerUUID), label, loc);
+    }
+
+    /**
+     * Removes a warp's point marker from the web map.
+     */
+    public void removeMapMarker(@NonNull World world, @NonNull UUID playerUUID) {
+        if (!addon.getSettings().isShowWarpsOnMap()) {
+            return;
+        }
+        plugin.getMapManager().removePointMarker(MAP_MARKER_SET, getMarkerId(world, playerUUID));
+    }
+
+    /**
+     * Populates map markers for all loaded enabled warps.
+     */
+    private void populateMapMarkers() {
+        MapManager mapManager = plugin.getMapManager();
+        worldsWarpList.forEach((world, warpMap) ->
+            warpMap.forEach((uuid, playerWarp) -> {
+                if (playerWarp.isEnabled()) {
+                    String label = plugin.getPlayers().getName(uuid);
+                    mapManager.addPointMarker(MAP_MARKER_SET, getMarkerId(world, uuid), label,
+                            playerWarp.getLocation());
+                }
+            })
+        );
     }
 }

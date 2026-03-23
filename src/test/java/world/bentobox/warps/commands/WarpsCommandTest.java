@@ -1,44 +1,40 @@
 package world.bentobox.warps.commands;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.eclipse.jdt.annotation.NonNull;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
-import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.commands.CompositeCommand;
 import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.managers.CommandsManager;
-import world.bentobox.bentobox.managers.IslandWorldManager;
-import world.bentobox.bentobox.managers.PlayersManager;
-import world.bentobox.warps.managers.SignCacheManager;
+import world.bentobox.warps.CommonTestSetup;
 import world.bentobox.warps.Warp;
-import world.bentobox.warps.managers.WarpSignsManager;
 import world.bentobox.warps.config.Settings;
+import world.bentobox.warps.managers.SignCacheManager;
+import world.bentobox.warps.managers.WarpSignsManager;
 
 /**
  * @author tastybento
  *
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Bukkit.class, BentoBox.class})
-public class WarpsCommandTest {
+public class WarpsCommandTest extends CommonTestSetup {
 
     private static final String WELCOME_LINE = "[Welcome]";
     @Mock
@@ -46,33 +42,24 @@ public class WarpsCommandTest {
     @Mock
     private User user;
     @Mock
-    private World world;
-    @Mock
-    private IslandWorldManager iwm;
-    @Mock
     private Warp addon;
-    // Command under test
     private WarpsCommand wc;
     @Mock
     private Settings settings;
     @Mock
     private WarpSignsManager wsm;
     @Mock
-    private PlayersManager pm;
-    @Mock
     private SignCacheManager wpm;
 
-    /**
-     */
-    @Before
-    public void setUp() {
-        // Set up plugin
-        BentoBox plugin = mock(BentoBox.class);
-        Whitebox.setInternalState(BentoBox.class, "instance", plugin);
+    @Override
+    @BeforeEach
+    public void setUp() throws Exception {
+        super.setUp();
 
         // Command manager
         CommandsManager cm = mock(CommandsManager.class);
         when(plugin.getCommandsManager()).thenReturn(cm);
+
         // Addon
         when(ic.getAddon()).thenReturn(addon);
         when(ic.getPermissionPrefix()).thenReturn("bskyblock.");
@@ -83,7 +70,7 @@ public class WarpsCommandTest {
         // Player
         when(user.getWorld()).thenReturn(world);
 
-        // settings
+        // Settings
         when(addon.getSettings()).thenReturn(settings);
         when(settings.getWarpsCommand()).thenReturn("warps");
         when(settings.getWelcomeLine()).thenReturn(WELCOME_LINE);
@@ -99,27 +86,26 @@ public class WarpsCommandTest {
 
         CompletableFuture<List<UUID>> warps = new CompletableFuture<>();
         warps.complete(set.stream().toList());
-
         when(wsm.getSortedWarps(world)).thenReturn(warps);
 
         // Warp Panel Manager
         when(addon.getSignCacheManager()).thenReturn(wpm);
+    }
 
+    @Override
+    @AfterEach
+    public void tearDown() throws Exception {
+        super.tearDown();
     }
 
     public void warpCommandWarpsCompositeCommand() {
-        // Command under test
         wc = new WarpsCommand(addon, ic);
     }
 
     public void warpCommandWarps() {
-        // Command under test
         wc = new WarpsCommand(addon);
     }
 
-    /**
-     * Test method for {@link world.bentobox.warps.commands.WarpsCommand#setup()}.
-     */
     @Test
     public void testSetupWarpCompositeCommand() {
         warpCommandWarpsCompositeCommand();
@@ -128,9 +114,6 @@ public class WarpsCommandTest {
         assertEquals("warps.help.description", wc.getDescription());
     }
 
-    /**
-     * Test method for {@link world.bentobox.warps.commands.WarpsCommand#setup()}.
-     */
     @Test
     public void testSetupWarp() {
         warpCommandWarps();
@@ -139,10 +122,6 @@ public class WarpsCommandTest {
         assertEquals("warps.help.description", wc.getDescription());
     }
 
-
-    /**
-     * Test method for {@link world.bentobox.warps.commands.WarpsCommand#execute(world.bentobox.bentobox.api.user.User, java.lang.String, java.util.List)}.
-     */
     @Test
     public void testExecuteUserStringListOfStringNoWarpsYet() {
         when(wsm.listWarps(world)).thenReturn(Collections.emptySet());
@@ -152,9 +131,6 @@ public class WarpsCommandTest {
         verify(user).sendMessage("warps.warpTip", "[text]", WELCOME_LINE);
     }
 
-    /**
-     * Test method for {@link world.bentobox.warps.commands.WarpsCommand#execute(world.bentobox.bentobox.api.user.User, java.lang.String, java.util.List)}.
-     */
     @Test
     public void testExecuteUserStringListOfStringNoWarpsYetNoAddon() {
         when(wsm.listWarps(world)).thenReturn(Collections.emptySet());
@@ -164,22 +140,15 @@ public class WarpsCommandTest {
         verify(user).sendMessage("warps.warpTip", "[text]", WELCOME_LINE);
     }
 
-    /**
-     * Test method for {@link world.bentobox.warps.commands.WarpsCommand#execute(world.bentobox.bentobox.api.user.User, java.lang.String, java.util.List)}.
-     */
     @Test
     public void testExecuteUserStringListOfString() {
         warpCommandWarpsCompositeCommand();
         assertTrue(wc.execute(user, "warps", Collections.emptyList()));
     }
 
-    /**
-     * Test method for {@link world.bentobox.warps.commands.WarpsCommand#execute(world.bentobox.bentobox.api.user.User, java.lang.String, java.util.List)}.
-     */
     @Test
     public void testExecuteUserStringListOfStringNoAddon() {
         warpCommandWarps();
         assertTrue(wc.execute(user, "warps", Collections.emptyList()));
     }
-
 }
