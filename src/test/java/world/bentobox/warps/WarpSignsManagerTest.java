@@ -204,7 +204,7 @@ public class WarpSignsManagerTest extends CommonTestSetup {
     public void testWarpSignsManager() {
         verify(addon).log("Loading warps...");
         verify(load).getWarpSigns();
-        verify(block).getType();
+        verify(block, times(2)).getType();
     }
 
     @Test
@@ -233,6 +233,13 @@ public class WarpSignsManagerTest extends CommonTestSetup {
     public void testAddWarp() {
         Location loc = mock(Location.class);
         when(loc.getWorld()).thenReturn(world);
+        Block locBlock = mock(Block.class);
+        when(loc.getBlock()).thenReturn(locBlock);
+        when(locBlock.getType()).thenReturn(Material.OAK_WALL_SIGN);
+        Sign locSign = mock(Sign.class);
+        when(locSign.getLines()).thenReturn(new String[]{"[Welcome]", "My Warp", "", ""});
+        when(locSign.getType()).thenReturn(Material.OAK_WALL_SIGN);
+        when(locBlock.getState()).thenReturn(locSign);
         assertTrue(wsm.addWarp(uuid, loc));
         verify(pim).callEvent(any(WarpCreateEvent.class));
     }
@@ -332,17 +339,25 @@ public class WarpSignsManagerTest extends CommonTestSetup {
     @Test
     public void testMapMarkersCreatedOnStartup() {
         verify(mapManager).createMarkerSet("warps", "Warp Signs");
-        verify(mapManager).addPointMarker(eq("warps"), eq("world:" + uuid), eq("tastybento"), eq(location));
+        // Label should be the sign text (lines 2-4), not the player name
+        verify(mapManager).addPointMarker(eq("warps"), eq("world:" + uuid), eq("line2 line3 line4"), eq(location), eq("sign"));
     }
 
     @Test
     public void testAddWarpCreatesMapMarker() {
         Location loc = mock(Location.class);
         when(loc.getWorld()).thenReturn(world);
+        Block newBlock = mock(Block.class);
+        when(loc.getBlock()).thenReturn(newBlock);
+        when(newBlock.getType()).thenReturn(Material.OAK_WALL_SIGN);
+        Sign newSign = mock(Sign.class);
+        when(newSign.getLines()).thenReturn(new String[]{"[Welcome]", "Shop", "Free stuff", ""});
+        when(newSign.getType()).thenReturn(Material.OAK_WALL_SIGN);
+        when(newBlock.getState()).thenReturn(newSign);
         UUID newUuid = UUID.randomUUID();
-        when(pm.getName(newUuid)).thenReturn("newplayer");
         wsm.addWarp(newUuid, loc);
-        verify(mapManager).addPointMarker(eq("warps"), eq("world:" + newUuid), eq("newplayer"), eq(loc));
+        // Label should be the sign text, not the player name
+        verify(mapManager).addPointMarker(eq("warps"), eq("world:" + newUuid), eq("Shop Free stuff"), eq(loc), eq("sign"));
     }
 
     @Test

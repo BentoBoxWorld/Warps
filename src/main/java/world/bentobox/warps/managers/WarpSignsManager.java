@@ -57,6 +57,7 @@ public class WarpSignsManager {
     private static final String WARPS = "warps";
     private static final String MAP_MARKER_SET = "warps";
     private static final String MAP_MARKER_SET_LABEL = "Warp Signs";
+
     private final BentoBox plugin;
     // Map of all warps stored as player, warp sign Location
     private Map<World, Map<UUID, PlayerWarp>> worldsWarpList;
@@ -547,8 +548,19 @@ public class WarpSignsManager {
         if (mapManager == null) {
             return;
         }
-        String label = plugin.getPlayers().getName(playerUUID);
-        mapManager.addPointMarker(MAP_MARKER_SET, getMarkerId(world, playerUUID), label, loc);
+        String label = getMarkerLabel(world, playerUUID);
+        mapManager.addPointMarker(MAP_MARKER_SET, getMarkerId(world, playerUUID), label, loc, "sign");
+    }
+
+    /**
+     * Builds the marker label from the sign text, falling back to the player name.
+     */
+    private String getMarkerLabel(@NonNull World world, @NonNull UUID playerUUID) {
+        SignCacheItem signInfo = getSignInfo(world, playerUUID);
+        if (signInfo.getSignText() != null && !signInfo.getSignText().isEmpty()) {
+            return String.join(" ", signInfo.getSignText()).replaceAll("§.", "").trim();
+        }
+        return plugin.getPlayers().getName(playerUUID);
     }
 
     /**
@@ -573,9 +585,9 @@ public class WarpSignsManager {
         worldsWarpList.forEach((world, warpMap) ->
             warpMap.forEach((uuid, playerWarp) -> {
                 if (playerWarp.isEnabled()) {
-                    String label = plugin.getPlayers().getName(uuid);
+                    String label = getMarkerLabel(world, uuid);
                     mapManager.addPointMarker(MAP_MARKER_SET, getMarkerId(world, uuid), label,
-                            playerWarp.getLocation());
+                            playerWarp.getLocation(), "sign");
                 }
             })
         );
