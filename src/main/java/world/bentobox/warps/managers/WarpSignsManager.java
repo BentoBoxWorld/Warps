@@ -92,8 +92,12 @@ public class WarpSignsManager {
         // Initialize map markers for all loaded warps
         if (addon.getSettings().isShowWarpsOnMap()) {
             MapManager mapManager = plugin.getMapManager();
-            mapManager.createMarkerSet(MAP_MARKER_SET, MAP_MARKER_SET_LABEL);
-            populateMapMarkers();
+            if (mapManager != null) {
+                mapManager.createMarkerSet(MAP_MARKER_SET, MAP_MARKER_SET_LABEL);
+                populateMapMarkers();
+            } else {
+                addon.logWarning("Map manager is not available — web map markers will be disabled.");
+            }
         }
     }
 
@@ -539,8 +543,12 @@ public class WarpSignsManager {
         if (!addon.getSettings().isShowWarpsOnMap()) {
             return;
         }
+        MapManager mapManager = plugin.getMapManager();
+        if (mapManager == null) {
+            return;
+        }
         String label = plugin.getPlayers().getName(playerUUID);
-        plugin.getMapManager().addPointMarker(MAP_MARKER_SET, getMarkerId(world, playerUUID), label, loc);
+        mapManager.addPointMarker(MAP_MARKER_SET, getMarkerId(world, playerUUID), label, loc);
     }
 
     /**
@@ -550,7 +558,11 @@ public class WarpSignsManager {
         if (!addon.getSettings().isShowWarpsOnMap()) {
             return;
         }
-        plugin.getMapManager().removePointMarker(MAP_MARKER_SET, getMarkerId(world, playerUUID));
+        MapManager mapManager = plugin.getMapManager();
+        if (mapManager == null) {
+            return;
+        }
+        mapManager.removePointMarker(MAP_MARKER_SET, getMarkerId(world, playerUUID));
     }
 
     /**
