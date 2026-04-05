@@ -124,7 +124,7 @@
             <id>papermc</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
             <snapshots>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </snapshots>
         </repository>
         <repository>
