@@ -15,6 +15,7 @@ warps:
     not-safe: "&c Ten teleport nie jest bezpieczny!"
     your-level-is: "&c Twój poziom wyspy to [level], a musi wynosić co najmniej [required].
       Użyj komendy /is level."
+    not-correct-rank: "&c Nie masz odpowiedniej rangi, aby ustawić warp!"
   help:
     description: otwiera panel warpów
   player-warped: "&2 [name] teleportował się do twojej tabliczki!"
@@ -44,3 +45,17 @@ warps:
       click-to-warp: "&e Kliknij &7, aby przenieść."
   conversations:
     prefix: "&l&6 [BentoBox]: &r"
+togglewarp:
+  help:
+    description: przełącz tabliczkę warp
+  enabled: "&a Twój warp jest teraz widoczny!"
+  disabled: "&c Twój warp jest teraz ukryty!"
+  error:
+    no-permission: "&c Brak uprawnień!"
+    generic: "&c Wystąpił błąd podczas przełączania twojego warpu."
+    no-warp: "&c Nie masz warpu do przełączenia!"
+protection:
+  flags:
+    PLACE_WARP:
+      name: Ustaw Warp
+      description: Zezwól na postawienie tabliczki warp

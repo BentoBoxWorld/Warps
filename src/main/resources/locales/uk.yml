@@ -45,6 +45,15 @@ warps:
       click-to-warp: "&e Натисніть &7, щоб деформувати."
   conversations:
     prefix: "&l&6 [BentoBox]: &r"
+togglewarp:
+  help:
+    description: перемкнути знак варпу
+  enabled: "&a Ваш варп тепер видимий!"
+  disabled: "&c Ваш варп тепер прихований!"
+  error:
+    no-permission: "&c Ви не маєте на це дозволу!"
+    generic: "&c Сталася помилка під час перемикання варпу."
+    no-warp: "&c У вас немає варпу для перемикання!"
 protection:
   flags:
     PLACE_WARP:

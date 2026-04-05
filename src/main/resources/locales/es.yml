@@ -46,6 +46,15 @@ warps:
       click-to-warp: "&e Clic &7 para teletransportarse."
   conversations:
     prefix: "&l&6 [BentoBox]: &r"
+togglewarp:
+  help:
+    description: alternar el cartel de teletransporte
+  enabled: "&a ¡Tu teletransporte ahora es visible!"
+  disabled: "&c ¡Tu teletransporte ahora está oculto!"
+  error:
+    no-permission: "&c ¡No tienes permisos para hacer eso!"
+    generic: "&c Ocurrió un error al alternar tu teletransporte."
+    no-warp: "&c ¡No tienes un teletransporte para alternar!"
 protection:
   flags:
     PLACE_WARP:

@@ -1,29 +1,61 @@
-# 
-# This is a YML file. Be careful when editing. Check your edits in a YAML checker like    #
-# the one at http://yaml-online-parser.appspot.com                                        #
+---
 warp:
   help:
     description: đi đến điểm dịch chuyển của người chơi
-    parameters: <tên người chơi>
+    parameters: "<tên người chơi>"
 warps:
-  deactivate: '&cBảng cũ đã vô hiệu hóa!'
+  deactivate: "&c Bảng cũ đã vô hiệu hóa!"
   error:
-    does-not-exist: '&cUầy! Điểm dịch chuyển đó không tồn tại!'
-    no-permission: '&cBạn không có quyền làm điều đó!'
-    no-remove: '&cBạn không thể xóa bảng đó!'
-    no-warps-yet: '&cChưa có điểm dịch chuyển nào'
-    not-enough-level: '&cCấp đảo của bạn không đủ cao!'
-    not-on-island: '&cBạn phải ở đảo của bạn để làm điều đó!'
-    not-safe: '&cĐiểm dịch chuyển không an toàn!'
-    your-level-is: '&cCấp đảo của bạn là [level] và phải cao hơn [required]. Hãy dùng lệnh xem cấp đảo.'
+    does-not-exist: "&c Uầy! Điểm dịch chuyển đó không tồn tại!"
+    no-permission: "&c Bạn không có quyền làm điều đó!"
+    no-remove: "&c Bạn không thể xóa bảng đó!"
+    no-warps-yet: "&c Chưa có điểm dịch chuyển nào"
+    not-enough-level: "&c Cấp đảo của bạn không đủ cao!"
+    not-on-island: "&c Bạn phải ở đảo của bạn để làm điều đó!"
+    not-safe: "&c Điểm dịch chuyển không an toàn!"
+    your-level-is: "&c Cấp đảo của bạn là [level] và phải cao hơn [required].
+      Hãy dùng lệnh xem cấp đảo."
+    not-correct-rank: "&c Bạn không có cấp bậc phù hợp để đặt điểm dịch chuyển!"
   help:
     description: mở bảng dịch chuyển
-  next: '&6Trang kế'
-  player-warped: '&2[name] đã vào điểm dịch chuyển của bạn!'
-  previous: '&6Trang trước'
-  random: '&4Điểm dịch chuyển ngẫu nhiên'
-  sign-removed: '&cĐã xóa bảng dịch chuyển!'
-  success: '&aThành công!'
-  title: Bảng Dịch Chuyển
-  warpTip: '&6Đặt bảng với dòng chữ [text] ở dòng đầu tiên'
-  warpToPlayersSign: '&6Đang dịch chuyển đến chỗ của [player]'
+  player-warped: "&2 [name] đã vào điểm dịch chuyển [gamemode] của bạn!"
+  sign-removed: "&c Đã xóa bảng dịch chuyển!"
+  success: "&a Thành công!"
+  warpTip: "&6 Đặt bảng với dòng chữ [text] ở dòng đầu tiên"
+  warpToPlayersSign: "&6 Đang dịch chuyển đến chỗ của [player]"
+  gui:
+    titles:
+      warp-title: "&0&l Bảng Dịch Chuyển"
+    buttons:
+      previous:
+        name: "&f&l Trang Trước"
+        description: "&7 Chuyển sang trang [number]"
+      next:
+        name: "&f&l Trang Tiếp"
+        description: "&7 Chuyển sang trang [number]"
+      warp:
+        name: "&f&l [name]"
+        description: "[sign_text]"
+      random:
+        name: "&f&l Dịch Chuyển Ngẫu Nhiên"
+        description: "&7 Hmm, tôi sẽ xuất hiện ở đâu nhỉ?"
+    tips:
+      click-to-previous: "&e Nhấp &7 để xem trang trước."
+      click-to-next: "&e Nhấp &7 để xem trang tiếp theo."
+      click-to-warp: "&e Nhấp &7 để dịch chuyển."
+  conversations:
+    prefix: "&l&6 [BentoBox]: &r"
+togglewarp:
+  help:
+    description: chuyển đổi bảng dịch chuyển
+  enabled: "&a Điểm dịch chuyển của bạn hiện đã hiển thị!"
+  disabled: "&c Điểm dịch chuyển của bạn hiện đã ẩn!"
+  error:
+    no-permission: "&c Bạn không có quyền làm điều đó!"
+    generic: "&c Đã xảy ra lỗi khi chuyển đổi điểm dịch chuyển của bạn."
+    no-warp: "&c Bạn không có điểm dịch chuyển nào để chuyển đổi!"
+protection:
+  flags:
+    PLACE_WARP:
+      name: Đặt Điểm Dịch Chuyển
+      description: Cho phép đặt bảng dịch chuyển

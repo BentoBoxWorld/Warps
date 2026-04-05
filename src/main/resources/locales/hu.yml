@@ -4,25 +4,58 @@ warp:
     description: Teleportálás a játékos teleport táblájához
     parameters: "<játékosnév>"
 warps:
-  deactivate: "&cRégi teleport tábla deaktiválva!"
+  deactivate: "&c Régi teleport tábla deaktiválva!"
   error:
-    does-not-exist: "&cAjjaj! Ez a teleport nem létezik!"
-    no-permission: "&cNincs jogod ehhez!"
-    no-remove: "&cNem törölheted ezt a táblát!"
-    no-warps-yet: "&cJelenleg nem érhetőek el teleportok"
-    not-enough-level: "&cA szigeted szintje nem elég magas!"
-    not-on-island: "&cEhhez szigeten kell lenned!"
-    not-safe: "&cEz a teleport nem biztonságos!"
-    your-level-is: "&cJelenleg a sziget szinted [level], és nagyobbnak kell lennie,
-      mint [required]."
+    does-not-exist: "&c Ajjaj! Ez a teleport nem létezik!"
+    no-permission: "&c Nincs jogod ehhez!"
+    no-remove: "&c Nem törölheted ezt a táblát!"
+    no-warps-yet: "&c Jelenleg nem érhetőek el teleportok"
+    not-enough-level: "&c A szigeted szintje nem elég magas!"
+    not-on-island: "&c Ehhez szigeten kell lenned!"
+    not-safe: "&c Ez a teleport nem biztonságos!"
+    your-level-is: "&c Jelenleg a sziget szinted [level], és nagyobbnak kell lennie,
+      mint [required]. Futtasd a szint parancsot."
+    not-correct-rank: "&c Nincs megfelelő rangod a warp beállításához!"
   help:
     description: Teleportok panel megnyitása
-  next: "&6Következő oldal"
-  player-warped: "&2[name] teleportált a teleport tábládhoz!"
-  previous: "&6Előző oldal"
-  random: "&4Véletlenszerű Teleport"
-  sign-removed: "&cTeleport tábla törölve!"
-  success: "&aSikeres!"
-  title: Teleport Táblák
-  warpTip: "&6Helyezz le egy teleport táblát a következő szöveggel [text] a tetején"
-  warpToPlayersSign: "&6Teleportálás [player] táblájához"
+  player-warped: "&2 [name] teleportált a [gamemode] teleport tábládhoz!"
+  sign-removed: "&c Teleport tábla törölve!"
+  success: "&a Sikeres!"
+  warpTip: "&6 Helyezz le egy teleport táblát a következő szöveggel [text] a tetején"
+  warpToPlayersSign: "&6 Teleportálás [player] táblájához"
+  gui:
+    titles:
+      warp-title: "&0&l Teleport Táblák"
+    buttons:
+      previous:
+        name: "&f&l Előző oldal"
+        description: "&7 Ugrás a(z) [number]. oldalra"
+      next:
+        name: "&f&l Következő oldal"
+        description: "&7 Ugrás a(z) [number]. oldalra"
+      warp:
+        name: "&f&l [name]"
+        description: "[sign_text]"
+      random:
+        name: "&f&l Véletlenszerű Teleport"
+        description: "&7 Hmm, hol fogok megjelenni?"
+    tips:
+      click-to-previous: "&e Kattintson &7 az előző oldal megtekintéséhez."
+      click-to-next: "&e Kattintson &7 a következő oldal megtekintéséhez."
+      click-to-warp: "&e Kattintson &7 a teleportáláshoz."
+  conversations:
+    prefix: "&l&6 [BentoBox]: &r"
+togglewarp:
+  help:
+    description: warp jel átváltása
+  enabled: "&a A warped most látható!"
+  disabled: "&c A warped most rejtett!"
+  error:
+    no-permission: "&c Nincs jogod ehhez!"
+    generic: "&c Hiba történt a warp átváltása közben."
+    no-warp: "&c Nincs warpod amit átválthatnál!"
+protection:
+  flags:
+    PLACE_WARP:
+      name: Warp elhelyezése
+      description: Warp jel elhelyezésének engedélyezése

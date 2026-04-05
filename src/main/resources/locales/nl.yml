@@ -45,6 +45,15 @@ warps:
       click-to-warp: "&e Klik &7 om te teleporteren."
   conversations:
     prefix: "&l&6 [BentoBox]: &r"
+togglewarp:
+  help:
+    description: schakel het warpbord
+  enabled: "&a Je warp is nu zichtbaar!"
+  disabled: "&c Je warp is nu verborgen!"
+  error:
+    no-permission: "&c Je hebt geen permissies om dit te doen!"
+    generic: "&c Er is een fout opgetreden bij het omschakelen van je warp."
+    no-warp: "&c Je hebt geen warp om te schakelen!"
 protection:
   flags:
     PLACE_WARP:
