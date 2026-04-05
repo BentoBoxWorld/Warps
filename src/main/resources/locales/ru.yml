@@ -1,65 +1,78 @@
-###########################################################################################
-# Это YML файл. Будьте осторожны при редактировании. Проверяйте свои правки              #
-# в YAML валидаторе, например, на http://yaml-online-parser.appspot.com                  #
-###########################################################################################
+# ######################################################################################## #
+# Это YML файл. Будьте осторожны при редактировании. Проверяйте свои правки                #
+# в YAML валидаторе, например, на http://yaml-online-parser.appspot.com                    #
+# ######################################################################################## #
 
 warp:
   help:
-    description: телепортироваться на знак варпа игрока
-    parameters: "<название>"
+    description: телепортироваться на варп игрока
+    parameters: <игрок>
 warps:
-  deactivate: "&c Старый знак телепортации деактивирован!"
+  deactivate: <red>Старый варп деактивирован!</red>
   error:
-    does-not-exist: "&c Этот знак телепорта больше не существует!"
-    no-permission: "&c У вас нет разрешения на это!"
-    no-remove: "&c Вы не можете удалить этот знак!"
-    no-warps-yet: "&c Телепортов пока нет"
-    not-enough-level: "&c Ваш уровень острова недостаточно высок!"
-    not-on-island: "&c Вы должны быть на вашем острове, чтобы сделать это!"
-    not-safe: "&c Место назначения не является безопасным!"
-    your-level-is: "&c Уровень вашего острова всего [level] и должен быть выше [required].
-      Запустите команду уровня."
-    not-correct-rank: "&c У вас нет необходимого ранга для установки варпа!"
+    does-not-exist: <red>Ой! Этот варп больше не существует!</red>
+    no-permission: <red>У вас нет разрешения на это!</red>
+    no-remove: <red>Вы не можете удалить этот варп!</red>
+    no-warps-yet: <red>В данный момент нет доступных варпов.</red>
+    not-enough-level: <red>Уровень вашего острова недостаточно высок!</red>
+    not-on-island: <red>Вы должны быть на своём острове, чтобы сделать это!</red>
+    not-safe: <red>Этот варп небезопасен!</red>
+    your-level-is: <red>Уровень вашего острова всего [level] и должен быть выше [required].</red>
+    not-correct-rank: <red>У вас недопустимый ранг, чтобы установить варп!</red>
   help:
     description: открыть панель варпов
-  player-warped: "&2 [name] телепортировался к вашему знаку варпа [gamemode]!"
-  sign-removed: "&c Знак варпа удалён!"
-  success: "&a Успех!"
-  warpTip: "&6 Поместите знак варпа с [text] в первой строке"
-  warpToPlayersSign: "&6 Телепортация к знаку [player]"
+  player-warped: <dark_green>[name] телепортировался на ваш варп [gamemode]!</dark_green>
+  sign-removed: <red>Варп удалён!</red>
+  success: <green>Успех!</green>
+  warpTip: <gold>Разместите варп с "[text]" вверху таблички.</gold>
+  warpToPlayersSign: <gold>Телепортация на варп игрока [player]</gold>
+  
   gui:
     titles:
-      warp-title: "&0&l Знаки телепортации"
+      # Название панели.
+      warp-title: <black><bold>Варпы игроков</bold></black>
     buttons:
+      # Кнопка возврата на предыдущую страницу.
       previous:
-        name: "&f&l Предыдущая страница"
-        description: "&7 Переключить на страницу [number]"
+        name: <white><bold>Предыдущая страница</bold></white>
+        description: <gray>Перейти на страницу [number]</gray>
+      # Кнопка перехода на следующую страницу.
       next:
-        name: "&f&l Следующая страница"
-        description: "&7 Переключить на страницу [number]"
+        name: <white><bold>Следующая страница</bold></white>
+        description: <gray>Перейти на страницу [number]</gray>
+      # Кнопка телепортации на варп игрока.
       warp:
-        name: "&f&l [name]"
-        description: "[sign_text]"
+        name: <white><bold>[name]</bold></white>
+        description: '[sign_text]'
+      # Кнопка случайной телепортации на варп игрока.
       random:
-        name: "&f&l Случайный варп"
-        description: "&7 Хм, где я появлюсь?"
+        name: <white><bold>Случайная телепортация</bold></white>
+        description: <gray>Хм, куда же я попаду?</gray>
     tips:
-      click-to-previous: "&e Нажмите &7 для перехода на предыдущую страницу."
-      click-to-next: "&e Нажмите &7 для перехода на следующую страницу."
-      click-to-warp: "&e Нажмите &7 для телепортации."
+      click-to-previous: <yellow>Нажмите</yellow><gray>, чтобы посмотреть предыдущую
+        страницу.</gray>
+      click-to-next: <yellow>Нажмите</yellow><gray>, чтобы посмотреть следующую страницу.</gray>
+      click-to-warp: <yellow>Нажмите</yellow><gray>, чтобы телепортироваться.</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    # Префикс для сообщений от сервера.
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
+  next: '&6ледующая страница'
+  previous: '&6Предыдущая страница'
+  title: Телепорт Знаки
+  random: '&4Случайный телепорт'
+
 togglewarp:
   help:
-    description: переключить знак варпа
-  enabled: "&a Ваш варп теперь виден!"
-  disabled: "&c Ваш варп теперь скрыт!"
+    description: вкл/выкл варп
+  enabled: <green>Ваш варп теперь виден!</green>
+  disabled: <red>Ваш варп был скрыт!</red>
   error:
-    no-permission: "&c У вас нет разрешения на это!"
-    generic: "&c Произошла ошибка при переключении варпа."
-    no-warp: "&c У вас нет варпа для переключения!"
+    no-permission: <red>У вас нет разрешения на это!</red>
+    generic: <red>Произошла ошибка при переключении вашего варпа.</red>
+    no-warp: <red>У вас нет варпа для переключения!</red>
+
 protection:
   flags:
     PLACE_WARP:
-      name: Разместить варп
-      description: Разрешить размещение знака варпа
+      name: Размещение варпа
+      description: Предотвращает размещение варпа
