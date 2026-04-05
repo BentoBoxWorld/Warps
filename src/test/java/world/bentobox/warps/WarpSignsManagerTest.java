@@ -375,7 +375,8 @@ public class WarpSignsManagerTest extends CommonTestSetup {
     @Test
     public void testMapMarkersDisabled() {
         when(settings.isShowWarpsOnMap()).thenReturn(false);
+        Mockito.clearInvocations(mapManager);
         wsm = new WarpSignsManager(addon, plugin);
-        verify(mapManager, times(1)).createMarkerSet(anyString(), anyString());
+        verify(mapManager, never()).createMarkerSet(anyString(), anyString());
     }
 }
