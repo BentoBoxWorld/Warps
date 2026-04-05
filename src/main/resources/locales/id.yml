@@ -45,6 +45,15 @@ warps:
       click-to-warp: "&e Klik &7 untuk warp."
   conversations:
     prefix: "&l&6 [BentoBox]: &r"
+togglewarp:
+  help:
+    description: alihkan tanda warp
+  enabled: "&a Warp kamu sekarang terlihat!"
+  disabled: "&c Warp kamu sekarang tersembunyi!"
+  error:
+    no-permission: "&c Kamu tidak punya izin untuk melakukan itu!"
+    generic: "&c Terjadi kesalahan saat mengalihkan warp kamu."
+    no-warp: "&c Kamu tidak memiliki warp untuk dialihkan!"
 protection:
   flags:
     PLACE_WARP:

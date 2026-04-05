@@ -6,22 +6,22 @@ warp:
 warps:
   deactivate: "&c 舊傳送牌已停用！"
   error:
-    does-not-exist: "&c 哦不！那個傳送點已經沒了！"
-    no-permission: "&c 你沒有權限這樣做！"
-    no-remove: "&c 你拿不掉那個牌子的！"
-    no-warps-yet: "&c 暫無可用傳送點"
-    not-enough-level: "&c 你的島嶼等級不夠高！"
-    not-on-island: "&c 你得在自己的島嶼上操作！"
-    not-safe: "&c 目標傳送點不安全！"
-    your-level-is: "&c 你的島嶼現在 [level] 級，需要 [required] 級。試試島嶼等級命令吧。"
-    not-correct-rank: "&c 你的島嶼成員等級不足以設置傳送點！"
+    does-not-exist: "&c 哦不！嗰個傳送點已經唔存在喇！"
+    no-permission: "&c 你冇權限咁做！"
+    no-remove: "&c 你唔可以移除嗰塊牌！"
+    no-warps-yet: "&c 暫時冇可用傳送點"
+    not-enough-level: "&c 你嘅島嶼等級唔夠高！"
+    not-on-island: "&c 你要喺自己嘅島嶼上面先可以咁做！"
+    not-safe: "&c 目標傳送點唔安全！"
+    your-level-is: "&c 你嘅島嶼現在係 [level] 級，需要 [required] 級。試下島嶼等級命令喇。"
+    not-correct-rank: "&c 你嘅島嶼成員等級唔足以設置傳送點！"
   help:
     description: 打開傳送面板
-  player-warped: "&2 [name] 傳送到了你的 [gamemode] 傳送牌！"
-  sign-removed: "&c 拆掉傳送牌了！"
+  player-warped: "&2 [name] 傳送到咗你嘅 [gamemode] 傳送牌！"
+  sign-removed: "&c 傳送牌已移除！"
   success: "&a 成功！"
-  warpTip: "&6 放個牌子第一行寫 [text]"
-  warpToPlayersSign: "&6 正傳送到 [player] 的牌子"
+  warpTip: "&6 放個牌第一行寫 [text]"
+  warpToPlayersSign: "&6 正在傳送到 [player] 嘅牌"
   gui:
     titles:
       warp-title: "&0&l 傳送告示牌"
@@ -37,7 +37,7 @@ warps:
         description: "[sign_text]"
       random:
         name: "&f&l 隨機傳送"
-        description: "&7 嗯...我會出現在哪裡？"
+        description: "&7 嗯...我會出現喺邊度？"
     tips:
       click-to-previous: "&e 點擊 &7 查看上一頁。"
       click-to-next: "&e 點擊 &7 查看下一頁。"
@@ -47,12 +47,12 @@ warps:
 togglewarp:
   help:
     description: 切換傳送符號
-  enabled: "&a 你的傳送點現在可見了！"
-  disabled: "&c 你的傳送點現已隱藏！"
+  enabled: "&a 你嘅傳送點依家可見咗！"
+  disabled: "&c 你嘅傳送點依家隱藏咗！"
   error:
-    no-permission: "&c 你沒有權限這樣做！"
+    no-permission: "&c 你冇權限咁做！"
     generic: "&c 切換傳送點時發生錯誤。"
-    no-warp: "&c 你沒有可切換的傳送點！"
+    no-warp: "&c 你冇可切換嘅傳送點！"
 protection:
   flags:
     PLACE_WARP:

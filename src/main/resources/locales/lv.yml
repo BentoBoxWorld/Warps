@@ -4,9 +4,6 @@ warp:
     description: pārvietoties pie spēlētāja uzaicinājuma zīmes
     parameters: "<spēlētāja vārds>"
 warps:
-  help:
-    description: atver uzaicinājumu zīmju sarakstu
-  title: Uzaicinājuma Zīmes
   deactivate: "&c Iepriekšēja uzaicinājuma zīme deaktivizēta!"
   error:
     does-not-exist: "&c Oh! Šī uzaicinājuma zīme vairs neeksistē!"
@@ -15,14 +12,50 @@ warps:
     no-warps-yet: "&c Diemžēl neviens uzaicinājums nav pieejams."
     not-enough-level: "&c Tavs salas līmenis nav pietiekošs."
     not-on-island: "&c Tev ir jābūt uz savas salas, lai veiktu šo darbību!"
-    not-safe: "&c Šīs uzaicinājums nav drošs!"
+    not-safe: "&c Šis uzaicinājums nav drošs!"
     your-level-is: "&c Tavas salas līmenis ir [level], bet ir nepieciešams vismaz
       [required]. Mēģini pārrēķināt salas līmeni."
-  next: "&6 Nākošā lapa"
-  player-warped: "&2 [name] ieradās pie uzaicinājuma zīmes!"
-  previous: "&6 Iepriekšējā lapa"
-  random: "&4 Nejaušs uzaicinājums"
+    not-correct-rank: "&c Jums nav atbilstošā ranga, lai iestatītu portālu!"
+  help:
+    description: atver uzaicinājumu zīmju sarakstu
+  player-warped: "&2 [name] ieradās pie jūsu [gamemode] uzaicinājuma zīmes!"
   sign-removed: "&c Uzaicinājuma zīme noņemta!"
   success: "&a Izdevās!"
   warpTip: "&6 Izveido zīmi ar [text] pirmajā rindā"
   warpToPlayersSign: "&6 Pārvietojas uz [player] uzaicinājuma zīmi."
+  gui:
+    titles:
+      warp-title: "&0&l Uzaicinājuma Zīmes"
+    buttons:
+      previous:
+        name: "&f&l Iepriekšējā lapa"
+        description: "&7 Pārslēgt uz lapu [number]"
+      next:
+        name: "&f&l Nākamā lapa"
+        description: "&7 Pārslēgt uz lapu [number]"
+      warp:
+        name: "&f&l [name]"
+        description: "[sign_text]"
+      random:
+        name: "&f&l Nejaušs uzaicinājums"
+        description: "&7 Hmm, kur es parādīšos?"
+    tips:
+      click-to-previous: "&e Klikšķiniet &7, lai skatītu iepriekšējo lapu."
+      click-to-next: "&e Klikšķiniet &7, lai skatītu nākamo lapu."
+      click-to-warp: "&e Klikšķiniet &7, lai pārvietotos."
+  conversations:
+    prefix: "&l&6 [BentoBox]: &r"
+togglewarp:
+  help:
+    description: pārslēgt uzaicinājuma zīmi
+  enabled: "&a Jūsu portāls tagad ir redzams!"
+  disabled: "&c Jūsu portāls tagad ir paslēpts!"
+  error:
+    no-permission: "&c Jums nav atļaujas veikt šo darbību!"
+    generic: "&c Kļūda pārslēdzot portālu."
+    no-warp: "&c Jums nav portāla, ko pārslēgt!"
+protection:
+  flags:
+    PLACE_WARP:
+      name: Novietot portālu
+      description: Atļaut novietot uzaicinājuma zīmi
