@@ -250,8 +250,8 @@ public class WarpSignsManager {
                             return;
                         }
 
-                        // Add to map
-                        getWarpMap(location.getWorld()).put(uuid, new PlayerWarp(location, true));
+                        // Add to map, preserving the persisted enabled/disabled state
+                        getWarpMap(location.getWorld()).put(uuid, pw);
                     }
                 });
             } else {
@@ -568,9 +568,6 @@ public class WarpSignsManager {
      * Removes a warp's point marker from the web map.
      */
     public void removeMapMarker(@NonNull World world, @NonNull UUID playerUUID) {
-        if (!addon.getSettings().isShowWarpsOnMap()) {
-            return;
-        }
         MapManager mapManager = plugin.getMapManager();
         if (mapManager == null) {
             return;

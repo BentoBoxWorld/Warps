@@ -379,4 +379,36 @@ public class WarpSignsManagerTest extends CommonTestSetup {
         wsm = new WarpSignsManager(addon, plugin);
         verify(mapManager, never()).createMarkerSet(anyString(), anyString());
     }
+
+    @Test
+    public void testRemoveMapMarkerStillWorksWhenMapMarkersDisabled() {
+        // Even if show-warps-on-map is false, removeMapMarker should clean up existing markers
+        when(settings.isShowWarpsOnMap()).thenReturn(false);
+        wsm.removeMapMarker(world, uuid);
+        verify(mapManager).removePointMarker("warps", "world:" + uuid);
+    }
+
+    @Test
+    public void testLoadWarpListPreservesDisabledState() {
+        // A previously disabled PlayerWarp should remain disabled after load
+        PlayerWarp disabledWarp = new PlayerWarp(location, false);
+        Map<PlayerWarp, UUID> warpMap = Collections.singletonMap(disabledWarp, uuid);
+        when(load.getWarpSigns()).thenReturn(warpMap);
+        wsm = new WarpSignsManager(addon, plugin);
+        PlayerWarp loaded = wsm.getPlayerWarp(world, uuid);
+        assertFalse(loaded.isEnabled(), "Disabled warp should remain disabled after reload");
+    }
+
+    @Test
+    public void testPopulateMapMarkersSkipsDisabledWarps() {
+        // Disabled warps loaded from disk should NOT get a marker on startup
+        PlayerWarp disabledWarp = new PlayerWarp(location, false);
+        Map<PlayerWarp, UUID> warpMap = Collections.singletonMap(disabledWarp, uuid);
+        when(load.getWarpSigns()).thenReturn(warpMap);
+        Mockito.clearInvocations(mapManager);
+        wsm = new WarpSignsManager(addon, plugin);
+        // createMarkerSet should still be called, but no addPointMarker for the disabled warp
+        verify(mapManager).createMarkerSet("warps", "Warp Signs");
+        verify(mapManager, never()).addPointMarker(anyString(), anyString(), anyString(), any(), anyString());
+    }
 }

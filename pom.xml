@@ -131,7 +131,7 @@
             <id>bentoboxworld</id>
             <url>https://repo.codemc.org/repository/bentoboxworld/</url>
             <snapshots>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </snapshots>
         </repository>
         <repository>
