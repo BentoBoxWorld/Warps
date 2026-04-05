@@ -1,8 +1,9 @@
-name: Warps
+name: BentoBox-Warps
 main: world.bentobox.warps.WarpsPladdon
-version: ${version}
-api-version: 1.17
-description: A Warp Pladdon for BentoBox
-author: tastybento
-depend:
-  - BentoBox
+version: ${project.version}${build.number}
+api-version: "1.21"
+
+authors: [tastybento]
+contributors: ["The BentoBoxWorld Community"]
+website: https://bentobox.world
+description: ${project.description}

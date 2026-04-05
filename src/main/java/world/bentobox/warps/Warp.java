@@ -7,16 +7,24 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 
 import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.configuration.Config;
+import world.bentobox.bentobox.api.flags.Flag;
+import world.bentobox.bentobox.api.flags.clicklisteners.CycleClick;
+import world.bentobox.bentobox.managers.RanksManager;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.level.Level;
+import world.bentobox.warps.commands.ToggleWarpCommand;
 import world.bentobox.warps.commands.WarpCommand;
 import world.bentobox.warps.commands.WarpsCommand;
 import world.bentobox.warps.config.Settings;
 import world.bentobox.warps.listeners.WarpSignsListener;
+import world.bentobox.warps.managers.SignCacheManager;
+import world.bentobox.warps.managers.WarpSignsManager;
+
 
 /**
  * Addin to BentoBox that enables welcome warp signs
@@ -39,14 +47,14 @@ public class Warp extends Addon {
     public static final String WELCOME_WARP_SIGNS = "welcomewarpsigns";
 
     /**
-     * Warp panel Manager
-     */
-    private WarpPanelManager warpPanelManager;
-
-    /**
      * Worlds Sign manager.
      */
     private WarpSignsManager warpSignsManager;
+
+    /**
+     * Sign Cache Manager
+     */
+    private SignCacheManager signCacheManager;
 
     /**
      * This variable stores in which worlds this addon is working.
@@ -68,6 +76,11 @@ public class Warp extends Addon {
      */
     private Config<Settings> settingsConfig;
 
+    /**
+     * Create Warp Flag
+     */
+    private Flag createWarpFlag;
+
     // ---------------------------------------------------------------------
     // Section: Methods
     // ---------------------------------------------------------------------
@@ -88,6 +101,7 @@ public class Warp extends Addon {
             // Load the master warp and warps command
             new WarpCommand(this);
             new WarpsCommand(this);
+            new ToggleWarpCommand(this);
         }
     }
 
@@ -128,6 +142,7 @@ public class Warp extends Addon {
 
                 new WarpCommand(this, gameModeAddon.getPlayerCommand().get());
                 new WarpsCommand(this, gameModeAddon.getPlayerCommand().get());
+                new ToggleWarpCommand(this, gameModeAddon.getPlayerCommand().get());
                 this.hooked = true;
             }
         });
@@ -136,13 +151,25 @@ public class Warp extends Addon {
         {
             // Start warp signs
             warpSignsManager = new WarpSignsManager(this, this.getPlugin());
-            warpPanelManager = new WarpPanelManager(this);
+            signCacheManager = new SignCacheManager(this);
             // Load the listener
             this.registerListener(new WarpSignsListener(this));
         } else {
             logWarning("Addon did not hook into anything and is not running stand-alone");
             this.setState(State.DISABLED);
         }
+
+        this.createWarpFlag = new Flag.Builder("PLACE_WARP", Material.OAK_SIGN)
+                .addon(this)
+                .defaultRank(RanksManager.MEMBER_RANK)
+                .clickHandler(new CycleClick("PLACE_WARP",
+                    RanksManager.MEMBER_RANK,
+                    RanksManager.OWNER_RANK))
+                .defaultSetting(false)
+                .mode(Flag.Mode.EXPERT)
+                .build();
+
+        getPlugin().getFlagsManager().registerFlag(this, this.createWarpFlag);
     }
 
 
@@ -169,17 +196,21 @@ public class Warp extends Addon {
             this.setState(State.DISABLED);
             return false;
         }
+
+        // Save existing panels.
+        this.saveResource("panels/warps_panel.yml", false);
+
         settingsConfig.saveConfigObject(settings);
         return true;
     }
 
 
     /**
-     * Get warp panel manager
-     * @return Warp Panel Manager
+     * Get sign cache manager
+     * @return Sign Cache Manager
      */
-    public WarpPanelManager getWarpPanelManager() {
-        return warpPanelManager;
+    public SignCacheManager getSignCacheManager() {
+        return signCacheManager;
     }
 
     public WarpSignsManager getWarpSignsManager() {
@@ -207,6 +238,13 @@ public class Warp extends Addon {
     }
 
     /**
+     * @return the createWarpFlag
+     */
+    public Flag getCreateWarpFlag() {
+        return createWarpFlag;
+    }
+
+    /**
      * Get the island level
      * @param world - world
      * @param uniqueId - player's UUID
@@ -217,8 +255,11 @@ public class Warp extends Addon {
         String name = this.getPlugin().getIWM().getAddon(world).map(g -> g.getDescription().getName()).orElse("");
         return this.getPlugin().getAddonsManager().getAddonByName(LEVEL_ADDON_NAME)
                 .map(l -> {
-                    if (!name.isEmpty() && ((Level) l).getSettings().getGameModes().contains(name)) {
-                        return ((Level) l).getIslandLevel(world, uniqueId);
+                    final Level addon = (Level) l;
+                    //getGameModes is a list of gamemodes that Level is DISABLED in,
+                    //so we need the opposite of the contains.
+                    if (!name.isEmpty() && !addon.getSettings().getGameModes().contains(name)) {
+                        return addon.getIslandLevel(world, uniqueId);
                     }
                     return null;
                 }).orElse(null);
@@ -250,7 +291,7 @@ public class Warp extends Addon {
         }
         return switch (requestLabel) {
             case "getSortedWarps" -> getWarpSignsManager().getSortedWarps(world);
-            case "getWarp" -> uuid == null ? null : getWarpSignsManager().getWarp(world, uuid);
+            case "getWarp" -> uuid == null ? null : getWarpSignsManager().getWarpLocation(world, uuid);
             case "getWarpMap" -> getWarpSignsManager().getWarpMap(world);
             case "hasWarp" -> uuid == null ? null : getWarpSignsManager().hasWarp(world, uuid);
             case "listWarps" -> getWarpSignsManager().listWarps(world);

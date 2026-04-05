@@ -18,16 +18,60 @@ warps:
     not-on-island: "&c You must be on your island to do that!"
     not-safe: "&c That warp is not safe!"
     your-level-is: "&c Your island level is only [level] and must be higher than [required]. Run the level command."
-  help: 
+    not-correct-rank: "&c You do not have the correct rank to set a warp!"
+  help:
     description: "open the warps panel"
-  next: "&6 Next page"
-  player-warped: "&2 [name] warped to your warp sign!"
-  previous: "&6 Previous page"
-  random: "&4 Random Warp"
+  player-warped: "&2 [name] warped to your [gamemode] warp sign!"
   sign-removed: "&c Warp sign removed!"
   success: "&a Success!"
-  title: "Warp Signs"
   warpTip: "&6 Place a warp sign with [text] on the top"
   warpToPlayersSign: "&6 Warping to [player]'s sign"
 
-    
+  gui:
+    titles:
+      # The title of warp panel
+      warp-title: '&0&l Warp Signs'
+    buttons:
+      # Button that is used in multi-page GUIs which allows to return to previous page.
+      previous:
+        name: "&f&l Previous Page"
+        description: |-
+          &7 Switch to [number] page
+      # Button that is used in multi-page GUIs which allows to go to next page.
+      next:
+        name: "&f&l Next Page"
+        description: |-
+          &7 Switch to [number] page
+      # Button for a warp
+      warp:
+        name: "&f&l [name]"
+        description: |-
+          [sign_text]
+      # Button for a random warp
+      random:
+        name: "&f&l Random Warp"
+        description: |-
+          &7 Hmm, where will I appear?
+    tips:
+      click-to-previous: "&e Click &7 to view previous page."
+      click-to-next: "&e Click &7 to view next page."
+      click-to-warp: "&e Click &7 to warp."
+  conversations:
+    # Prefix for messages that are send from server.
+    prefix: "&l&6 [BentoBox]: &r"
+
+togglewarp:
+  help:
+    description: "toggle the warp sign"
+  enabled: "&a Your warp is now visible!"
+  disabled: "&c Your warp is now hidden!"
+  error:
+    no-permission: "&c You do not have permission to do that!"
+    generic: "&c An error occurred while toggling your warp."
+    no-warp: "&c You do not have a warp to toggle!"
+
+protection:
+  flags:
+    PLACE_WARP:
+      name: Place Warp
+      description: Allow placing warp sign

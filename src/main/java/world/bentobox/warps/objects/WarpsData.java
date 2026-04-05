@@ -17,8 +17,12 @@ public class WarpsData implements DataObject {
 
     @Expose
     private String uniqueId = "warps";
-    @Expose
+
+    @Deprecated @Expose
     private Map<Location, UUID> warpSigns = new HashMap<>();
+
+    @Expose
+    private Map<PlayerWarp, UUID> newWarpSigns = new HashMap<>();
 
     public WarpsData() {
         // Required by YAML database
@@ -34,24 +38,40 @@ public class WarpsData implements DataObject {
         this.uniqueId = uniqueId;
     }
 
-    public Map<Location,  UUID> getWarpSigns() {
-        if (warpSigns == null)
+    public Map<PlayerWarp,  UUID> getWarpSigns() {
+        convertOldWarpSigns();
+        if (newWarpSigns == null)
             return new HashMap<>();
-        return warpSigns;
-    }
-
-    public void setWarpSigns(Map<Location, UUID> warpSigns) {
-        this.warpSigns = warpSigns;
+        return newWarpSigns;
     }
 
     /**
-     * Puts all the data from the map into this objects ready for saving
+     * Method for converting old warp signs to new warp signs
+     */
+    public void convertOldWarpSigns() {
+        if (warpSigns == null) {
+            return;
+        }
+
+        for (Map.Entry<Location, UUID> entry : warpSigns.entrySet()) {
+            PlayerWarp playerWarp = new PlayerWarp(entry.getKey(), true);
+            newWarpSigns.put(playerWarp, entry.getValue());
+        }
+        warpSigns = null;
+    }
+
+    public void setWarpSigns(Map<PlayerWarp, UUID> warpSigns) {
+        this.newWarpSigns = warpSigns;
+    }
+
+    /**
+     * Puts all the data from the map into these objects ready for saving
      * @param worldsWarpList 2D map of warp locations by world vs UUID
      * @return this class filled with data
      */
-    public WarpsData save(Map<World, Map<UUID, Location>> worldsWarpList) {
+    public WarpsData save(Map<World, Map<UUID, PlayerWarp>> worldsWarpList) {
         getWarpSigns().clear();
-        worldsWarpList.values().forEach(world -> world.forEach((uuid,location) -> warpSigns.put(location, uuid)));
+        worldsWarpList.values().forEach(world -> world.forEach((uuid,playerWarp) -> newWarpSigns.put(playerWarp, uuid)));
         return this;
     }
 

@@ -7,16 +7,15 @@
 # Warp Restriction - needed levels to be able to create a warp
 # 0 or negative values will disable this restriction 10 is default
 warplevelrestriction: 10
+#
+# Should warps be removed when the island protection settings
+# change, and the owner of the warp does no longer have
+# the correct rank
+removeExistingWarpsWhenFlagChanges: true
 # 
 # Text that player must put on sign to make it a warp sign
 # Not case sensitive!
 welcomeLine: '[Welcome]'
-#
-# Icon that will be displayed in Warps list. SIGN counts for any kind of sign and the type of
-# wood used will be reflected in the panel if the server supports it.
-# It uses native Minecraft material strings, but using string 'PLAYER_HEAD', it is possible to
-# use player heads instead. Beware that Mojang API rate limiting may prevent heads from loading.
-icon: 'SIGN'
 #
 # This list stores GameModes in which Level addon should not work.
 # To disable addon it is necessary to write its name in new line that starts with -. Example:
@@ -24,16 +23,9 @@ icon: 'SIGN'
 #  - BSkyBlock
 disabled-gamemodes: []
 #
-# Warp panel name formatting.
-# Example: &c will make names red, &f is white
-name-format: "&f"
-#
 # Warp panel default lore formatting.
 # Example: &c will make lore red. &f is white
 lore-format: "&f"
-#
-# Allow random teleport - adds a button to the warp panel that goes to a random warp sign
-random-allowed: true
 #
 # Allow use in other worlds. Players must have the welcomewarpsigns.warp permission.
 allow-in-other-worlds: false
@@ -41,3 +33,4 @@ allow-in-other-worlds: false
 # Warp and warps commands. You can change them if they clash with other addons or plugins.
 warp-command: warp
 warps-command: warps
+togglewarp-command: togglewarp

@@ -38,7 +38,7 @@ import world.bentobox.bentobox.managers.CommandsManager;
 import world.bentobox.bentobox.managers.IslandWorldManager;
 import world.bentobox.bentobox.managers.PlayersManager;
 import world.bentobox.warps.Warp;
-import world.bentobox.warps.WarpSignsManager;
+import world.bentobox.warps.managers.WarpSignsManager;
 import world.bentobox.warps.config.Settings;
 
 /**

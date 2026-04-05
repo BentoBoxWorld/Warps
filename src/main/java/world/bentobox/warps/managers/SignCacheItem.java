@@ -1,4 +1,4 @@
-package world.bentobox.warps;
+package world.bentobox.warps.managers;
 
 import java.util.List;
 

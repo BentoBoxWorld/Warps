@@ -10,7 +10,7 @@ import com.google.gson.annotations.Expose;
 
 import world.bentobox.bentobox.database.objects.DataObject;
 import world.bentobox.bentobox.database.objects.Table;
-import world.bentobox.warps.SignCacheItem;
+import world.bentobox.warps.managers.SignCacheItem;
 
 @Table(name = "WarpSignCache")
 public class SignCache implements DataObject {

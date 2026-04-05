@@ -4,7 +4,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,6 +15,8 @@ import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,16 +25,18 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.eclipse.jdt.annotation.Nullable;
 
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.events.addon.AddonEvent;
+import world.bentobox.bentobox.api.events.flags.FlagProtectionChangeEvent;
 import world.bentobox.bentobox.api.events.team.TeamKickEvent;
 import world.bentobox.bentobox.api.events.team.TeamLeaveEvent;
 import world.bentobox.bentobox.api.user.User;
+import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.Warp;
 import world.bentobox.warps.event.WarpRemoveEvent;
+import world.bentobox.warps.objects.PlayerWarp;
 
 /**
  * Handles warping. Players can add one sign
@@ -61,18 +67,18 @@ public class WarpSignsListener implements Listener {
             @Override
             public void run() {
                 boolean changed = false;
-                Iterator<Map.Entry<UUID, Location>> iterator =
+                Iterator<Map.Entry<UUID, PlayerWarp>> iterator =
                         addon.getWarpSignsManager().getWarpMap(event.getWorld()).entrySet().iterator();
                 while (iterator.hasNext()) {
-                    Map.Entry<UUID, Location> entry = iterator.next();
+                    Map.Entry<UUID, PlayerWarp> entry = iterator.next();
                     UUID uuid = entry.getKey();
-                    Location location = entry.getValue();
+                    Location location = entry.getValue().getLocation();
                     if (event.getChunk().getX() == location.getBlockX() >> 4
                             && event.getChunk().getZ() == location.getBlockZ() >> 4
                             && !Tag.SIGNS.isTagged(location.getBlock().getType())) {
                         iterator.remove();
                         // Remove sign from warp panel cache
-                        addon.getWarpPanelManager().removeWarp(event.getWorld(), uuid);
+                        addon.getSignCacheManager().removeWarp(event.getWorld(), uuid);
                         changed = true;
                     }
                 }
@@ -106,7 +112,6 @@ public class WarpSignsListener implements Listener {
         Block b = e.getBlock();
         boolean inWorld = addon.getPlugin().getIWM().inWorld(b.getWorld());
         // Signs only
-        // FIXME: When we drop support for 1.13, switch to Tag.SIGNS
         if (!b.getType().name().contains("SIGN")
                 || (inWorld && !addon.inRegisteredWorld(b.getWorld()))
                 || (!inWorld && !addon.getSettings().isAllowInOtherWorlds())
@@ -114,7 +119,6 @@ public class WarpSignsListener implements Listener {
             return;
         }
         User user = User.getInstance(e.getPlayer());
-        if (user == null) return;
         UUID owner = addon.getWarpSignsManager().getWarpOwnerUUID(b.getLocation()).orElse(null);
         if (isPlayersSign(e.getPlayer(), b, inWorld)) {
             addon.getWarpSignsManager().removeWarp(b.getLocation());
@@ -126,18 +130,34 @@ public class WarpSignsListener implements Listener {
         }
     }
 
+    /**
+     * Check if this block is a registered warp sign owned by player so that it can be acted on
+     * @param player - player trying to do something to the sign
+     * @param b - sign block
+     * @param inWorld - true if this is a BentoBox game world
+     * @return true if this player is op, has mod bypass permission, or is the sign owner
+     */
     private boolean isPlayersSign(Player player, Block b, boolean inWorld) {
         // Welcome sign detected - check to see if it is this player's sign
-        Map<UUID, Location> list = addon.getWarpSignsManager().getWarpMap(b.getWorld());
+        Map<UUID, PlayerWarp> list = addon.getWarpSignsManager().getWarpMap(b.getWorld());
         String reqPerm = inWorld ? addon.getPermPrefix(b.getWorld()) + "mod.removesign" : Warp.WELCOME_WARP_SIGNS + ".mod.removesign";
-        return ((list.containsKey(player.getUniqueId()) && list.get(player.getUniqueId()).equals(b.getLocation()))
+        return ((list.containsKey(player.getUniqueId()) && list.get(player.getUniqueId()).getLocation().equals(b.getLocation()))
                 || player.isOp()  || player.hasPermission(reqPerm));
     }
 
+    /**
+     * Checks if this block is a warp sign. Requires it to have the correct title and be registered as a warp sign
+     * @param b warp sign block
+     * @return true if it is a valid warp sign
+     */
     private boolean isWarpSign(Block b) {
-        Sign s = (Sign) b.getState();
-        return s.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getSettings().getWelcomeLine())
-                && addon.getWarpSignsManager().getWarpMap(b.getWorld()).containsValue(s.getLocation());
+        if (b.getState() instanceof Sign s) {
+            SignSide side = s.getSide(Side.FRONT);
+            return side.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getSettings().getWelcomeLine())
+                    && addon.getWarpSignsManager().getWarpMap(b.getWorld()).values().stream()
+                    .anyMatch(playerWarp -> playerWarp.getLocation().equals(s.getLocation()));
+        }
+        return false;
     }
 
     /**
@@ -147,41 +167,64 @@ public class WarpSignsListener implements Listener {
      */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onSignWarpCreate(SignChangeEvent e) {
+        User user = Objects.requireNonNull(User.getInstance(e.getPlayer()));
         Block b = e.getBlock();
+        Location loc = b.getLocation();
         boolean inWorld = addon.getPlugin().getIWM().inWorld(b.getWorld());
         if ((inWorld && !addon.inRegisteredWorld(b.getWorld())) || (!inWorld && !addon.getSettings().isAllowInOtherWorlds()) ) {
             return;
         }
         String title = e.getLine(0);
-        User user = Objects.requireNonNull(User.getInstance(e.getPlayer()));
+        if (title != null && !title.equalsIgnoreCase(addon.getSettings().getWelcomeLine()) && addon.getWarpSignsManager().isWarpAt(loc)) {
+            UUID owner = addon.getWarpSignsManager().getWarpOwnerUUID(loc).orElse(null);
+            addon.getWarpSignsManager().removeWarp(loc);
+            Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(loc, user.getUniqueId(), owner));
+            return;
+        }
         // Check if someone is changing their own sign
         if (title != null && title.equalsIgnoreCase(addon.getSettings().getWelcomeLine())) {
             // Welcome sign detected - check permissions
             if (noPerms(user, b.getWorld(), inWorld)) {
                 return;
             }
+
             if (inWorld && noLevelOrIsland(user, b.getWorld())) {
                 e.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
                 return;
             }
+
+            if (inWorld && !hasCorrectIslandRank(b, user)) {
+                e.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
+                user.sendMessage("warps.error.not-correct-rank");
+                return;
+            }
+
             // Check if the player already has a sign
-            final Location oldSignLoc = addon.getWarpSignsManager().getWarp(b.getWorld(), user.getUniqueId());
+            final Location oldSignLoc = addon.getWarpSignsManager().getWarpLocation(b.getWorld(), user.getUniqueId());
             if (oldSignLoc != null) {
                 // A sign already exists. Check if it still there and if
                 // so,
                 // deactivate it
                 Block oldSignBlock = oldSignLoc.getBlock();
-                // FIXME: When we drop support for 1.13, switch to Tag.SIGNS
-                if (oldSignBlock.getType().name().contains("SIGN")) {
+                if (oldSignBlock.getState() instanceof Sign oldSign) {
                     // The block is still a sign
-                    Sign oldSign = (Sign) oldSignBlock.getState();
-                    if (oldSign.getLine(0).equalsIgnoreCase(ChatColor.GREEN + addon.getSettings().getWelcomeLine())) {
-                        oldSign.setLine(0, ChatColor.RED + addon.getSettings().getWelcomeLine());
+                    SignSide front = oldSign.getSide(Side.FRONT);
+                    SignSide back = oldSign.getSide(Side.BACK);
+                    String welcome = ChatColor.GREEN + addon.getSettings().getWelcomeLine();
+                    String disabled = ChatColor.RED + addon.getSettings().getWelcomeLine();
+                    boolean remove = false;
+                    if (front.getLine(0).equalsIgnoreCase(welcome)) {
+                        front.setLine(0, disabled);
+                        remove = true;
+                    } else if (back.getLine(0).equalsIgnoreCase(welcome)) {
+                        back.setLine(0, disabled);
+                        remove = true;
+                    }
+                    if (remove) {
                         oldSign.update(true, false);
                         user.sendMessage(WARPS_DEACTIVATE);
-                        addon.getWarpSignsManager().removeWarp(oldSignBlock.getWorld(), user.getUniqueId());
-                        @Nullable
                         UUID owner = addon.getWarpSignsManager().getWarpOwnerUUID(oldSignLoc).orElse(null);
+                        addon.getWarpSignsManager().removeWarp(oldSignBlock.getWorld(), user.getUniqueId());
                         Bukkit.getPluginManager().callEvent(new WarpRemoveEvent(oldSign.getLocation(), user.getUniqueId(), owner));
                     }
                 }
@@ -189,7 +232,46 @@ public class WarpSignsListener implements Listener {
             }
             addSign(e, user, b);
         }
+    }
 
+    private boolean hasCorrectIslandRank(Block b, User user) {
+        final Optional<Island> islandOpt = plugin.getIslands().getIslandAt(b.getLocation());
+
+        if(islandOpt.isEmpty()) return false;
+
+        final Island island = islandOpt.get();
+
+        final int userRank = island.getRank(user);
+
+        return userRank >= island.getFlag(addon.getCreateWarpFlag());
+    }
+
+    @EventHandler
+    public void onFlagChange(FlagProtectionChangeEvent e) {
+        if(!e.getEditedFlag().equals(addon.getCreateWarpFlag())) return;
+        if(!addon.getSettings().getRemoveExistingWarpsWhenFlagChanges()) return;
+
+        final Island island = e.getIsland();
+
+        final Map<UUID, PlayerWarp> islandWarps = addon
+                .getWarpSignsManager()
+                .getWarpMap(island.getWorld())
+                .entrySet()
+                .stream()
+                .filter(x -> island.inIslandSpace(x.getValue().getLocation()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        for(Map.Entry<UUID, PlayerWarp> entry : islandWarps.entrySet()) {
+            if(island.getRank(entry.getKey()) >= e.getSetTo()) continue;
+
+            //The user has a lower rank than the new set value.
+            //We need to remove the warp.
+            addon.getWarpSignsManager().removeWarp(island.getWorld(), entry.getKey());
+
+            if(Bukkit.getPlayer(entry.getKey()) != null) {
+                Objects.requireNonNull(User.getInstance(entry.getKey())).sendMessage(WARPS_DEACTIVATE);
+            }
+        }
     }
 
     private boolean noLevelOrIsland(User user, World world) {

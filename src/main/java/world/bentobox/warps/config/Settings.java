@@ -24,18 +24,17 @@ public class Settings implements ConfigObject
     private int warpLevelRestriction = 10;
 
     @ConfigComment("")
+    @ConfigComment("Should warps be removed when the island protection settings")
+    @ConfigComment("change, and the owner of the warp does no longer have")
+    @ConfigComment("the correct rank")
+    @ConfigEntry(path = "removeExistingWarpsWhenFlagChanges")
+    private boolean removeExistingWarpsWhenFlagChanges = false;
+
+    @ConfigComment("")
     @ConfigComment("Text that player must put on sign to make it a warp sign")
     @ConfigComment("Not case sensitive!")
     @ConfigEntry(path = "welcomeLine")
     private String welcomeLine = "[Welcome]";
-
-    @ConfigComment("")
-    @ConfigComment("Icon that will be displayed in Warps list. SIGN counts for any kind of sign and the type of")
-    @ConfigComment("wood used will be reflected in the panel if the server supports it.")
-    @ConfigComment("It uses native Minecraft material strings, but using string 'PLAYER_HEAD', it is possible to")
-    @ConfigComment("use player heads instead. Beware that Mojang API rate limiting may prevent heads from loading.")
-    @ConfigEntry(path = "icon")
-    private String icon = "SIGN";
 
     @ConfigComment("")
     @ConfigComment("This list stores GameModes in which Level addon should not work.")
@@ -46,21 +45,10 @@ public class Settings implements ConfigObject
     private Set<String> disabledGameModes = new HashSet<>();
 
     @ConfigComment("")
-    @ConfigComment("Warp panel name formatting.")
-    @ConfigComment("Example: &c will make names red. &f is white")
-    @ConfigEntry(path = "name-format")
-    private String nameFormat = "&f";
-
-    @ConfigComment("")
     @ConfigComment("Warp panel default lore formatting.")
     @ConfigComment("Example: &c will make lore red. &f is white")
     @ConfigEntry(path = "lore-format")
     private String loreFormat = "&f";
-
-    @ConfigComment("")
-    @ConfigComment("Allow random teleport - adds a button to the warp panel that goes to a random warp sign")
-    @ConfigEntry(path = "random-allowed")
-    private boolean randomAllowed = true;
 
     @ConfigComment("")
     @ConfigComment("Allow use in other worlds. Players must have the welcomewarpsigns.warp permission.")
@@ -73,7 +61,8 @@ public class Settings implements ConfigObject
     String warpCommand = "warp";
     @ConfigEntry(path = "warps-command")
     String warpsCommand = "warps";
-
+    @ConfigEntry(path = "togglewarp-command")
+    String toggleWarpCommand = "togglewarp";
 
     // ---------------------------------------------------------------------
     // Section: Constructor
@@ -156,42 +145,6 @@ public class Settings implements ConfigObject
 
 
     /**
-     * This method returns the icon object.
-     * @return the icon object.
-     */
-    public String getIcon()
-    {
-        return icon;
-    }
-
-
-    /**
-     * This method sets the icon object value.
-     * @param icon the icon object new value.
-     */
-    public void setIcon(String icon)
-    {
-        this.icon = icon;
-    }
-
-
-    /**
-     * @return the nameFormat
-     */
-    public String getNameFormat() {
-        return nameFormat;
-    }
-
-
-    /**
-     * @param nameFormat the nameFormat to set
-     */
-    public void setNameFormat(String nameFormat) {
-        this.nameFormat = nameFormat;
-    }
-
-
-    /**
      * @return the loreFormat
      */
     public String getLoreFormat() {
@@ -204,22 +157,6 @@ public class Settings implements ConfigObject
      */
     public void setLoreFormat(String loreFormat) {
         this.loreFormat = loreFormat;
-    }
-
-
-    /**
-     * @return the randomAllowed
-     */
-    public boolean isRandomAllowed() {
-        return randomAllowed;
-    }
-
-
-    /**
-     * @param randomAllowed the randomAllowed to set
-     */
-    public void setRandomAllowed(boolean randomAllowed) {
-        this.randomAllowed = randomAllowed;
     }
 
 
@@ -271,4 +208,31 @@ public class Settings implements ConfigObject
     }
 
 
+    /**
+     * @return the toggleWarpCommand
+     */
+    public String getToggleWarpCommand() {
+        return toggleWarpCommand;
+    }
+
+    /**
+     * @param toggleWarpCommand the toggleWarpCommand to set
+     */
+    public void setToggleWarpCommand(String toggleWarpCommand) {
+        this.toggleWarpCommand = toggleWarpCommand;
+    }
+
+    /**
+     * @return the removeExistingWarpsWhenFlagChanges
+     */
+    public boolean getRemoveExistingWarpsWhenFlagChanges() {
+        return removeExistingWarpsWhenFlagChanges;
+    }
+
+    /**
+     * @param removeExistingWarpsWhenFlagChanges the removeExistingWarpsWhenFlagChanges to set
+     */
+    public void setRemoveExistingWarpsWhenFlagChanges(boolean removeExistingWarpsWhenFlagChanges) {
+        this.removeExistingWarpsWhenFlagChanges = removeExistingWarpsWhenFlagChanges;
+    }
 }
