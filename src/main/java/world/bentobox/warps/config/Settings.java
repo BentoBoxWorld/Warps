@@ -56,6 +56,12 @@ public class Settings implements ConfigObject
     private boolean allowInOtherWorlds = false;
 
     @ConfigComment("")
+    @ConfigComment("Show warp signs as markers on web map plugins (Dynmap, BlueMap).")
+    @ConfigComment("Requires a map plugin and BentoBox map hook to be active.")
+    @ConfigEntry(path = "show-warps-on-map")
+    private boolean showWarpsOnMap = true;
+
+    @ConfigComment("")
     @ConfigComment("Warp and warps commands. You can change them if they clash with other addons or plugins.")
     @ConfigEntry(path = "warp-command")
     String warpCommand = "warp";
@@ -220,6 +226,20 @@ public class Settings implements ConfigObject
      */
     public void setToggleWarpCommand(String toggleWarpCommand) {
         this.toggleWarpCommand = toggleWarpCommand;
+    }
+
+    /**
+     * @return the showWarpsOnMap
+     */
+    public boolean isShowWarpsOnMap() {
+        return showWarpsOnMap;
+    }
+
+    /**
+     * @param showWarpsOnMap the showWarpsOnMap to set
+     */
+    public void setShowWarpsOnMap(boolean showWarpsOnMap) {
+        this.showWarpsOnMap = showWarpsOnMap;
     }
 
     /**
