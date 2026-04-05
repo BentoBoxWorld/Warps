@@ -558,7 +558,8 @@ public class WarpSignsManager {
     private String getMarkerLabel(@NonNull World world, @NonNull UUID playerUUID) {
         SignCacheItem signInfo = getSignInfo(world, playerUUID);
         if (signInfo.getSignText() != null && !signInfo.getSignText().isEmpty()) {
-            return String.join(" ", signInfo.getSignText()).replaceAll("§.", "").trim();
+            String label = ChatColor.stripColor(String.join(" ", signInfo.getSignText()));
+            return label == null ? "" : label.trim();
         }
         return plugin.getPlayers().getName(playerUUID);
     }
