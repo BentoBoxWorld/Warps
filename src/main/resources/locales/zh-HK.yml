@@ -1,0 +1,60 @@
+---
+warp:
+  help:
+    description: 傳送到該玩家的傳送木牌處
+    parameters: "<玩家名稱>"
+warps:
+  deactivate: "&c 舊傳送牌已停用！"
+  error:
+    does-not-exist: "&c 哦不！嗰個傳送點已經唔存在喇！"
+    no-permission: "&c 你冇權限咁做！"
+    no-remove: "&c 你唔可以移除嗰塊牌！"
+    no-warps-yet: "&c 暫時冇可用傳送點"
+    not-enough-level: "&c 你嘅島嶼等級唔夠高！"
+    not-on-island: "&c 你要喺自己嘅島嶼上面先可以咁做！"
+    not-safe: "&c 目標傳送點唔安全！"
+    your-level-is: "&c 你嘅島嶼現在係 [level] 級，需要 [required] 級。試下島嶼等級命令喇。"
+    not-correct-rank: "&c 你嘅島嶼成員等級唔足以設置傳送點！"
+  help:
+    description: 打開傳送面板
+  player-warped: "&2 [name] 傳送到咗你嘅 [gamemode] 傳送牌！"
+  sign-removed: "&c 傳送牌已移除！"
+  success: "&a 成功！"
+  warpTip: "&6 放個牌第一行寫 [text]"
+  warpToPlayersSign: "&6 正在傳送到 [player] 嘅牌"
+  gui:
+    titles:
+      warp-title: "&0&l 傳送告示牌"
+    buttons:
+      previous:
+        name: "&f&l 上一頁"
+        description: "&7 切換到第 [number] 頁"
+      next:
+        name: "&f&l 下一頁"
+        description: "&7 切換到第 [number] 頁"
+      warp:
+        name: "&f&l [name]"
+        description: "[sign_text]"
+      random:
+        name: "&f&l 隨機傳送"
+        description: "&7 嗯...我會出現喺邊度？"
+    tips:
+      click-to-previous: "&e 點擊 &7 查看上一頁。"
+      click-to-next: "&e 點擊 &7 查看下一頁。"
+      click-to-warp: "&e 點擊 &7 進行傳送。"
+  conversations:
+    prefix: "&l&6 [BentoBox]: &r"
+togglewarp:
+  help:
+    description: 切換傳送符號
+  enabled: "&a 你嘅傳送點依家可見咗！"
+  disabled: "&c 你嘅傳送點依家隱藏咗！"
+  error:
+    no-permission: "&c 你冇權限咁做！"
+    generic: "&c 切換傳送點時發生錯誤。"
+    no-warp: "&c 你冇可切換嘅傳送點！"
+protection:
+  flags:
+    PLACE_WARP:
+      name: 放置傳送點
+      description: 允許放置傳送告示牌

@@ -1,27 +1,60 @@
 ---
 warp:
   help:
-    description: Oyuncunun bölge tabelası.
-    parameters: "<name>"
+    description: Oyuncunun warp tabelasına ışınlan
+    parameters: "<oyuncu adı>"
 warps:
-  deactivate: "&cEski ada warpı silindi!"
+  deactivate: "&c Eski warp tabelası devre dışı bırakıldı!"
   error:
-    does-not-exist: "&cÜzgünüm. Böyle bir bölge artık yok!"
-    no-permission: "&4Buna yetkin yok!"
-    not-safe: "&4Ada bölgesi güvenli değil!"
-    no-remove: "&4Bu tabelayı kıramazsın!"
-    no-warps-yet: "&4Böyle bir bölge henüz yok."
-    not-enough-level: "&4Bunu koyman için daha fazla ada leveline ihtiyacın var."
-    not-on-island: "&4Adanda değilsin."
-    your-level-is: "&9Ada levelin &e[level] &9ve &e[required]&9'den fazla olması gerek!"
+    does-not-exist: "&c Üzgünüm. Böyle bir warp artık yok!"
+    no-permission: "&4 Buna yetkin yok!"
+    no-remove: "&4 Bu tabelayı kaldıramazsın!"
+    no-warps-yet: "&4 Böyle bir warp henüz yok."
+    not-enough-level: "&4 Bunu koyman için daha fazla ada leveline ihtiyacın var."
+    not-on-island: "&4 Adanda değilsin."
+    not-safe: "&4 Ada warpi güvenli değil!"
+    your-level-is: "&9 Ada levelin &e[level] &9ve &e[required]&9'den fazla olması gerek!"
+    not-correct-rank: "&c Bir warp ayarlamak için doğru rütbeniz yok!"
   help:
-    description: Bölge panelini açar.
-  player-warped: "&d[name] &9ada bölgene ışınlandı!"
-  sign-removed: "&4Ada tabelası kaldırıldı!"
-  success: "&aBaşarılı!"
-  title: "&dOyuncu bölgeleri &8- &5"
-  warpTip: "&6Ada bölgesi açmak için tabelanın en üstüne &a[text] &9yaz!"
-  warpToPlayersSign: "&d[player] &9bölgesine gidiliyor!"
-  next: "&6Sonraki Sayfa"
-  previous: "&6Önceki sayfa"
-  random: "&4Rastgele bölgeye git!"
+    description: Warp panelini açar.
+  player-warped: "&d [name] &9 [gamemode] warp tabelana ışınlandı!"
+  sign-removed: "&4 Warp tabelası kaldırıldı!"
+  success: "&a Başarılı!"
+  warpTip: "&6 Warp açmak için tabelanın en üstüne &a[text] &9yaz!"
+  warpToPlayersSign: "&d [player] &9 warpına gidiliyor!"
+  gui:
+    titles:
+      warp-title: "&0&l Warp Tabelaları"
+    buttons:
+      previous:
+        name: "&f&l Önceki Sayfa"
+        description: "&7 [number]. sayfaya geç"
+      next:
+        name: "&f&l Sonraki Sayfa"
+        description: "&7 [number]. sayfaya geç"
+      warp:
+        name: "&f&l [name]"
+        description: "[sign_text]"
+      random:
+        name: "&f&l Rastgele Warp"
+        description: "&7 Hmm, nerede ortaya çıkacağım?"
+    tips:
+      click-to-previous: "&e Önceki sayfayı görüntülemek için &7 tıklayın."
+      click-to-next: "&e Sonraki sayfayı görüntülemek için &7 tıklayın."
+      click-to-warp: "&e Işınlanmak için &7 tıklayın."
+  conversations:
+    prefix: "&l&6 [BentoBox]: &r"
+togglewarp:
+  help:
+    description: warp işaretini değiştir
+  enabled: "&a Warp'ınız artık görünür!"
+  disabled: "&c Warp'ınız artık gizli!"
+  error:
+    no-permission: "&c Buna yetkiniz yok!"
+    generic: "&c Warp değiştirilirken bir hata oluştu."
+    no-warp: "&c Değiştirilecek bir warp'ınız yok!"
+protection:
+  flags:
+    PLACE_WARP:
+      name: Warp Yerleştir
+      description: Warp tabelası yerleştirmeye izin ver

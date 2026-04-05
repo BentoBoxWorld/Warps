@@ -1,0 +1,61 @@
+---
+warp:
+  help:
+    description: teleportirati se na warp znak igrača
+    parameters: "<ime igrača>"
+warps:
+  deactivate: "&c Stari warp znak deaktiviran!"
+  error:
+    does-not-exist: "&c Ups! Taj warp više ne postoji!"
+    no-permission: "&c Nemate dozvolu za to!"
+    no-remove: "&c Ne možete ukloniti taj znak!"
+    no-warps-yet: "&c Još nema dostupnih warpova"
+    not-enough-level: "&c Razina vašeg otoka nije dovoljno visoka!"
+    not-on-island: "&c Morate biti na svom otoku!"
+    not-safe: "&c Taj warp nije siguran!"
+    your-level-is: "&c Razina vašeg otoka je samo [level] i mora biti viša od [required].
+      Pokrenite naredbu razine."
+    not-correct-rank: "&c Nemate odgovarajući rang za postavljanje warpa!"
+  help:
+    description: otvori panel warpova
+  player-warped: "&2 [name] se teleportirao na vaš [gamemode] warp znak!"
+  sign-removed: "&c Warp znak uklonjen!"
+  success: "&a Uspjeh!"
+  warpTip: "&6 Postavi warp znak s [text] na vrhu"
+  warpToPlayersSign: "&6 Teleportiranje na znak igrača [player]"
+  gui:
+    titles:
+      warp-title: "&0&l Warp Znakovi"
+    buttons:
+      previous:
+        name: "&f&l Prethodna stranica"
+        description: "&7 Prebaci na stranicu [number]"
+      next:
+        name: "&f&l Sljedeća stranica"
+        description: "&7 Prebaci na stranicu [number]"
+      warp:
+        name: "&f&l [name]"
+        description: "[sign_text]"
+      random:
+        name: "&f&l Nasumični Warp"
+        description: "&7 Hmm, gdje ću se pojaviti?"
+    tips:
+      click-to-previous: "&e Kliknite &7 za prikaz prethodne stranice."
+      click-to-next: "&e Kliknite &7 za prikaz sljedeće stranice."
+      click-to-warp: "&e Kliknite &7 za teleportaciju."
+  conversations:
+    prefix: "&l&6 [BentoBox]: &r"
+togglewarp:
+  help:
+    description: prebaci warp znak
+  enabled: "&a Vaš warp je sada vidljiv!"
+  disabled: "&c Vaš warp je sada skriven!"
+  error:
+    no-permission: "&c Nemate dozvolu za to!"
+    generic: "&c Dogodila se greška pri prebacivanju vašeg warpa."
+    no-warp: "&c Nemate warp za prebacivanje!"
+protection:
+  flags:
+    PLACE_WARP:
+      name: Postavi Warp
+      description: Dozvoli postavljanje warp znaka

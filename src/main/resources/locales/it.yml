@@ -1,0 +1,62 @@
+---
+warp:
+  help:
+    description: teletrasporto al cartello Warp del giocatore
+    parameters: "<nome giocatore>"
+warps:
+  deactivate: "&c Vecchio cartello Warp disattivato!"
+  error:
+    does-not-exist: "&c Quel cartello Warp non esiste più!"
+    no-permission: "&c Non hai i permessi per farlo!"
+    no-remove: "&c Non puoi rimuovere quel cartello!"
+    no-warps-yet: "&c Non ci sono ancora Warp disponibili"
+    not-enough-level: "&c Il tuo livello dell'isola non è abbastanza alto!"
+    not-on-island: "&c Devi essere nella tua isola per farlo!"
+    not-safe: "&c Il Warp non è sicuro!"
+    your-level-is: "&c Il tuo livello dell'isola è solo di [level] e deve essere
+      maggiore di [required]. Esegui il comando del calcolo dei livelli per aggiornare
+      il livello."
+    not-correct-rank: "&c Non hai il rango corretto per impostare un Warp!"
+  help:
+    description: apri il pannello dei Warp
+  player-warped: "&2 [name] teletrasportato al tuo cartello Warp [gamemode]!"
+  sign-removed: "&c Cartello Warp rimosso!"
+  success: "&a Successo!"
+  warpTip: "&6 Piazza un cartello Warp con [text] scritto nella prima riga"
+  warpToPlayersSign: "&6 Teletrasporto al cartello Warp di [player]"
+  gui:
+    titles:
+      warp-title: "&0&l Cartelli Warp"
+    buttons:
+      previous:
+        name: "&f&l Pagina Precedente"
+        description: "&7 Passa alla pagina [number]"
+      next:
+        name: "&f&l Pagina Successiva"
+        description: "&7 Passa alla pagina [number]"
+      warp:
+        name: "&f&l [name]"
+        description: "[sign_text]"
+      random:
+        name: "&f&l Warp Casuale"
+        description: "&7 Hmm, dove apparirò?"
+    tips:
+      click-to-previous: "&e Clicca &7 per vedere la pagina precedente."
+      click-to-next: "&e Clicca &7 per vedere la pagina successiva."
+      click-to-warp: "&e Clicca &7 per teletrasportarti."
+  conversations:
+    prefix: "&l&6 [BentoBox]: &r"
+togglewarp:
+  help:
+    description: attiva/disattiva il cartello warp
+  enabled: "&a Il tuo Warp è ora visibile!"
+  disabled: "&c Il tuo Warp è ora nascosto!"
+  error:
+    no-permission: "&c Non hai i permessi per farlo!"
+    generic: "&c Si è verificato un errore durante la modifica del tuo Warp."
+    no-warp: "&c Non hai un Warp da attivare/disattivare!"
+protection:
+  flags:
+    PLACE_WARP:
+      name: Piazza Warp
+      description: Permetti di piazzare un cartello Warp
