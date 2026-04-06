@@ -4,55 +4,55 @@ warp:
     description: 傳送到該玩家的傳送木牌處
     parameters: "<玩家名稱>"
 warps:
-  deactivate: "&c 舊傳送牌已停用！"
+  deactivate: <red>舊傳送牌已停用！</red>
   error:
-    does-not-exist: "&c 哦不！嗰個傳送點已經唔存在喇！"
-    no-permission: "&c 你冇權限咁做！"
-    no-remove: "&c 你唔可以移除嗰塊牌！"
-    no-warps-yet: "&c 暫時冇可用傳送點"
-    not-enough-level: "&c 你嘅島嶼等級唔夠高！"
-    not-on-island: "&c 你要喺自己嘅島嶼上面先可以咁做！"
-    not-safe: "&c 目標傳送點唔安全！"
-    your-level-is: "&c 你嘅島嶼現在係 [level] 級，需要 [required] 級。試下島嶼等級命令喇。"
-    not-correct-rank: "&c 你嘅島嶼成員等級唔足以設置傳送點！"
+    does-not-exist: <red>哦不！嗰個傳送點已經唔存在喇！</red>
+    no-permission: <red>你冇權限咁做！</red>
+    no-remove: <red>你唔可以移除嗰塊牌！</red>
+    no-warps-yet: <red>暫時冇可用傳送點</red>
+    not-enough-level: <red>你嘅島嶼等級唔夠高！</red>
+    not-on-island: <red>你要喺自己嘅島嶼上面先可以咁做！</red>
+    not-safe: <red>目標傳送點唔安全！</red>
+    your-level-is: <red>你嘅島嶼現在係 [level] 級，需要 [required] 級。試下島嶼等級命令喇。</red>
+    not-correct-rank: <red>你嘅島嶼成員等級唔足以設置傳送點！</red>
   help:
     description: 打開傳送面板
-  player-warped: "&2 [name] 傳送到咗你嘅 [gamemode] 傳送牌！"
-  sign-removed: "&c 傳送牌已移除！"
-  success: "&a 成功！"
-  warpTip: "&6 放個牌第一行寫 [text]"
-  warpToPlayersSign: "&6 正在傳送到 [player] 嘅牌"
+  player-warped: <dark_green>[name] 傳送到咗你嘅 [gamemode] 傳送牌！</dark_green>
+  sign-removed: <red>傳送牌已移除！</red>
+  success: <green>成功！</green>
+  warpTip: <gold>放個牌第一行寫 [text]</gold>
+  warpToPlayersSign: <gold>正在傳送到 [player] 嘅牌</gold>
   gui:
     titles:
-      warp-title: "&0&l 傳送告示牌"
+      warp-title: <black><bold>傳送告示牌</bold></black>
     buttons:
       previous:
-        name: "&f&l 上一頁"
-        description: "&7 切換到第 [number] 頁"
+        name: <white><bold>上一頁</bold></white>
+        description: <gray>切換到第 [number] 頁</gray>
       next:
-        name: "&f&l 下一頁"
-        description: "&7 切換到第 [number] 頁"
+        name: <white><bold>下一頁</bold></white>
+        description: <gray>切換到第 [number] 頁</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l 隨機傳送"
-        description: "&7 嗯...我會出現喺邊度？"
+        name: <white><bold>隨機傳送</bold></white>
+        description: <gray>嗯...我會出現喺邊度？</gray>
     tips:
-      click-to-previous: "&e 點擊 &7 查看上一頁。"
-      click-to-next: "&e 點擊 &7 查看下一頁。"
-      click-to-warp: "&e 點擊 &7 進行傳送。"
+      click-to-previous: <yellow>點擊 </yellow><gray>查看上一頁。</gray>
+      click-to-next: <yellow>點擊 </yellow><gray>查看下一頁。</gray>
+      click-to-warp: <yellow>點擊 </yellow><gray>進行傳送。</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
 togglewarp:
   help:
     description: 切換傳送符號
-  enabled: "&a 你嘅傳送點依家可見咗！"
-  disabled: "&c 你嘅傳送點依家隱藏咗！"
+  enabled: <green>你嘅傳送點依家可見咗！</green>
+  disabled: <red>你嘅傳送點依家隱藏咗！</red>
   error:
-    no-permission: "&c 你冇權限咁做！"
-    generic: "&c 切換傳送點時發生錯誤。"
-    no-warp: "&c 你冇可切換嘅傳送點！"
+    no-permission: <red>你冇權限咁做！</red>
+    generic: <red>切換傳送點時發生錯誤。</red>
+    no-warp: <red>你冇可切換嘅傳送點！</red>
 protection:
   flags:
     PLACE_WARP:

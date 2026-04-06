@@ -4,56 +4,55 @@ warp:
     description: đi đến điểm dịch chuyển của người chơi
     parameters: "<tên người chơi>"
 warps:
-  deactivate: "&c Bảng cũ đã vô hiệu hóa!"
+  deactivate: <red>Bảng cũ đã vô hiệu hóa!</red>
   error:
-    does-not-exist: "&c Uầy! Điểm dịch chuyển đó không tồn tại!"
-    no-permission: "&c Bạn không có quyền làm điều đó!"
-    no-remove: "&c Bạn không thể xóa bảng đó!"
-    no-warps-yet: "&c Chưa có điểm dịch chuyển nào"
-    not-enough-level: "&c Cấp đảo của bạn không đủ cao!"
-    not-on-island: "&c Bạn phải ở đảo của bạn để làm điều đó!"
-    not-safe: "&c Điểm dịch chuyển không an toàn!"
-    your-level-is: "&c Cấp đảo của bạn là [level] và phải cao hơn [required].
-      Hãy dùng lệnh xem cấp đảo."
-    not-correct-rank: "&c Bạn không có cấp bậc phù hợp để đặt điểm dịch chuyển!"
+    does-not-exist: <red>Uầy! Điểm dịch chuyển đó không tồn tại!</red>
+    no-permission: <red>Bạn không có quyền làm điều đó!</red>
+    no-remove: <red>Bạn không thể xóa bảng đó!</red>
+    no-warps-yet: <red>Chưa có điểm dịch chuyển nào</red>
+    not-enough-level: <red>Cấp đảo của bạn không đủ cao!</red>
+    not-on-island: <red>Bạn phải ở đảo của bạn để làm điều đó!</red>
+    not-safe: <red>Điểm dịch chuyển không an toàn!</red>
+    your-level-is: <red>Cấp đảo của bạn là [level] và phải cao hơn [required]. Hãy dùng lệnh xem cấp đảo.</red>
+    not-correct-rank: <red>Bạn không có cấp bậc phù hợp để đặt điểm dịch chuyển!</red>
   help:
     description: mở bảng dịch chuyển
-  player-warped: "&2 [name] đã vào điểm dịch chuyển [gamemode] của bạn!"
-  sign-removed: "&c Đã xóa bảng dịch chuyển!"
-  success: "&a Thành công!"
-  warpTip: "&6 Đặt bảng với dòng chữ [text] ở dòng đầu tiên"
-  warpToPlayersSign: "&6 Đang dịch chuyển đến chỗ của [player]"
+  player-warped: <dark_green>[name] đã vào điểm dịch chuyển [gamemode] của bạn!</dark_green>
+  sign-removed: <red>Đã xóa bảng dịch chuyển!</red>
+  success: <green>Thành công!</green>
+  warpTip: <gold>Đặt bảng với dòng chữ [text] ở dòng đầu tiên</gold>
+  warpToPlayersSign: <gold>Đang dịch chuyển đến chỗ của [player]</gold>
   gui:
     titles:
-      warp-title: "&0&l Bảng Dịch Chuyển"
+      warp-title: <black><bold>Bảng Dịch Chuyển</bold></black>
     buttons:
       previous:
-        name: "&f&l Trang Trước"
-        description: "&7 Chuyển sang trang [number]"
+        name: <white><bold>Trang Trước</bold></white>
+        description: <gray>Chuyển sang trang [number]</gray>
       next:
-        name: "&f&l Trang Tiếp"
-        description: "&7 Chuyển sang trang [number]"
+        name: <white><bold>Trang Tiếp</bold></white>
+        description: <gray>Chuyển sang trang [number]</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l Dịch Chuyển Ngẫu Nhiên"
-        description: "&7 Hmm, tôi sẽ xuất hiện ở đâu nhỉ?"
+        name: <white><bold>Dịch Chuyển Ngẫu Nhiên</bold></white>
+        description: <gray>Hmm, tôi sẽ xuất hiện ở đâu nhỉ?</gray>
     tips:
-      click-to-previous: "&e Nhấp &7 để xem trang trước."
-      click-to-next: "&e Nhấp &7 để xem trang tiếp theo."
-      click-to-warp: "&e Nhấp &7 để dịch chuyển."
+      click-to-previous: <yellow>Nhấp </yellow><gray>để xem trang trước.</gray>
+      click-to-next: <yellow>Nhấp </yellow><gray>để xem trang tiếp theo.</gray>
+      click-to-warp: <yellow>Nhấp </yellow><gray>để dịch chuyển.</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
 togglewarp:
   help:
     description: chuyển đổi bảng dịch chuyển
-  enabled: "&a Điểm dịch chuyển của bạn hiện đã hiển thị!"
-  disabled: "&c Điểm dịch chuyển của bạn hiện đã ẩn!"
+  enabled: <green>Điểm dịch chuyển của bạn hiện đã hiển thị!</green>
+  disabled: <red>Điểm dịch chuyển của bạn hiện đã ẩn!</red>
   error:
-    no-permission: "&c Bạn không có quyền làm điều đó!"
-    generic: "&c Đã xảy ra lỗi khi chuyển đổi điểm dịch chuyển của bạn."
-    no-warp: "&c Bạn không có điểm dịch chuyển nào để chuyển đổi!"
+    no-permission: <red>Bạn không có quyền làm điều đó!</red>
+    generic: <red>Đã xảy ra lỗi khi chuyển đổi điểm dịch chuyển của bạn.</red>
+    no-warp: <red>Bạn không có điểm dịch chuyển nào để chuyển đổi!</red>
 protection:
   flags:
     PLACE_WARP:

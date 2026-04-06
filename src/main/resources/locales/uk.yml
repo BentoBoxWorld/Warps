@@ -4,56 +4,55 @@ warp:
     description: телепортація на знак варпа гравця
     parameters: "<player name>"
 warps:
-  deactivate: "&c Старий знак варпу деактивовано!"
+  deactivate: <red>Старий знак варпу деактивовано!</red>
   error:
-    does-not-exist: "&c О, чорт! Того викривлення більше не існує!"
-    no-permission: "&c Ви не маєте на це дозволу!"
-    no-remove: "&c Ви не можете видалити цей знак!"
-    no-warps-yet: "&c Ще немає доступних варпів"
-    not-enough-level: "&c Рівень вашого острова недостатньо високий!"
-    not-on-island: "&c Для цього ви повинні бути на своєму острові!"
-    not-safe: "&c Ця варп небезпечна!"
-    your-level-is: "&c Рівень вашого острова становить лише [level] і має бути вищим
-      за [required]. Виконайте команду рівня."
-    not-correct-rank: "&c Ви не маєте належного рангу, щоб встановити варп!"
+    does-not-exist: <red>О, чорт! Того викривлення більше не існує!</red>
+    no-permission: <red>Ви не маєте на це дозволу!</red>
+    no-remove: <red>Ви не можете видалити цей знак!</red>
+    no-warps-yet: <red>Ще немає доступних варпів</red>
+    not-enough-level: <red>Рівень вашого острова недостатньо високий!</red>
+    not-on-island: <red>Для цього ви повинні бути на своєму острові!</red>
+    not-safe: <red>Ця варп небезпечна!</red>
+    your-level-is: <red>Рівень вашого острова становить лише [level] і має бути вищим за [required]. Виконайте команду рівня.</red>
+    not-correct-rank: <red>Ви не маєте належного рангу, щоб встановити варп!</red>
   help:
     description: відкрити панель варпів
-  player-warped: "&2 [name] телепортовано до вашого знака варпу [gamemode]!"
-  sign-removed: "&c Знак варпу видалено!"
-  success: "&a Успіх!"
-  warpTip: "&6 Розмістіть знак варпу з [text] угорі"
-  warpToPlayersSign: "&6 Телепортація на знак [player]."
+  player-warped: <dark_green>[name] телепортовано до вашого знака варпу [gamemode]!</dark_green>
+  sign-removed: <red>Знак варпу видалено!</red>
+  success: <green>Успіх!</green>
+  warpTip: <gold>Розмістіть знак варпу з [text] угорі</gold>
+  warpToPlayersSign: <gold>Телепортація на знак [player].</gold>
   gui:
     titles:
-      warp-title: "&0&l Знаки варпів"
+      warp-title: <black><bold>Знаки варпів</bold></black>
     buttons:
       previous:
-        name: "&f&l Попередня сторінка"
-        description: "&7 Перейти на сторінку [number]."
+        name: <white><bold>Попередня сторінка</bold></white>
+        description: <gray>Перейти на сторінку [number].</gray>
       next:
-        name: "&f&l Наступна сторінка"
-        description: "&7 Перейти на сторінку [number]."
+        name: <white><bold>Наступна сторінка</bold></white>
+        description: <gray>Перейти на сторінку [number].</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l Випадковий варп"
-        description: "&7 Хм, а де я з'явлюся?"
+        name: <white><bold>Випадковий варп</bold></white>
+        description: <gray>Хм, а де я з'явлюся?</gray>
     tips:
-      click-to-previous: "&e Натисніть &7, щоб переглянути попередню сторінку."
-      click-to-next: "&e Натисніть &7, щоб переглянути наступну сторінку."
-      click-to-warp: "&e Натисніть &7, щоб деформувати."
+      click-to-previous: <yellow>Натисніть </yellow><gray>, щоб переглянути попередню сторінку.</gray>
+      click-to-next: <yellow>Натисніть </yellow><gray>, щоб переглянути наступну сторінку.</gray>
+      click-to-warp: <yellow>Натисніть </yellow><gray>, щоб деформувати.</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
 togglewarp:
   help:
     description: перемкнути знак варпу
-  enabled: "&a Ваш варп тепер видимий!"
-  disabled: "&c Ваш варп тепер прихований!"
+  enabled: <green>Ваш варп тепер видимий!</green>
+  disabled: <red>Ваш варп тепер прихований!</red>
   error:
-    no-permission: "&c Ви не маєте на це дозволу!"
-    generic: "&c Сталася помилка під час перемикання варпу."
-    no-warp: "&c У вас немає варпу для перемикання!"
+    no-permission: <red>Ви не маєте на це дозволу!</red>
+    generic: <red>Сталася помилка під час перемикання варпу.</red>
+    no-warp: <red>У вас немає варпу для перемикання!</red>
 protection:
   flags:
     PLACE_WARP:

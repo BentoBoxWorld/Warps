@@ -4,55 +4,55 @@ warp:
     description: 플레이어의 워프 표지판으로 이동
     parameters: "<플레이어 이름>"
 warps:
-  deactivate: "&c 오래된 워프 표지판이 비활성화되었습니다!"
+  deactivate: <red>오래된 워프 표지판이 비활성화되었습니다!</red>
   error:
-    does-not-exist: "&c 이런! 그 워프는 더 이상 존재하지 않습니다!"
-    no-permission: "&c 그 작업을 수행할 권한이 없습니다!"
-    no-remove: "&c 그 표지판을 제거할 수 없습니다!"
-    no-warps-yet: "&c 아직 사용 가능한 워프가 없습니다"
-    not-enough-level: "&c 섬 레벨이 충분히 높지 않습니다!"
-    not-on-island: "&c 자신의 섬에 있어야 합니다!"
-    not-safe: "&c 그 워프는 안전하지 않습니다!"
-    your-level-is: "&c 섬 레벨이 [level]뿐이며 [required]보다 높아야 합니다. 레벨 명령어를 실행하세요."
-    not-correct-rank: "&c 워프를 설정할 올바른 등급이 없습니다!"
+    does-not-exist: <red>이런! 그 워프는 더 이상 존재하지 않습니다!</red>
+    no-permission: <red>그 작업을 수행할 권한이 없습니다!</red>
+    no-remove: <red>그 표지판을 제거할 수 없습니다!</red>
+    no-warps-yet: <red>아직 사용 가능한 워프가 없습니다</red>
+    not-enough-level: <red>섬 레벨이 충분히 높지 않습니다!</red>
+    not-on-island: <red>자신의 섬에 있어야 합니다!</red>
+    not-safe: <red>그 워프는 안전하지 않습니다!</red>
+    your-level-is: <red>섬 레벨이 [level]뿐이며 [required]보다 높아야 합니다. 레벨 명령어를 실행하세요.</red>
+    not-correct-rank: <red>워프를 설정할 올바른 등급이 없습니다!</red>
   help:
     description: 워프 패널 열기
-  player-warped: "&2 [name]이(가) 당신의 [gamemode] 워프 표지판으로 이동했습니다!"
-  sign-removed: "&c 워프 표지판이 제거되었습니다!"
-  success: "&a 성공!"
-  warpTip: "&6 상단에 [text]가 적힌 워프 표지판을 배치하세요"
-  warpToPlayersSign: "&6 [player]의 표지판으로 이동 중"
+  player-warped: <dark_green>[name]이(가) 당신의 [gamemode] 워프 표지판으로 이동했습니다!</dark_green>
+  sign-removed: <red>워프 표지판이 제거되었습니다!</red>
+  success: <green>성공!</green>
+  warpTip: <gold>상단에 [text]가 적힌 워프 표지판을 배치하세요</gold>
+  warpToPlayersSign: <gold>[player]의 표지판으로 이동 중</gold>
   gui:
     titles:
-      warp-title: "&0&l 워프 표지판"
+      warp-title: <black><bold>워프 표지판</bold></black>
     buttons:
       previous:
-        name: "&f&l 이전 페이지"
-        description: "&7 [number] 페이지로 이동"
+        name: <white><bold>이전 페이지</bold></white>
+        description: <gray>[number] 페이지로 이동</gray>
       next:
-        name: "&f&l 다음 페이지"
-        description: "&7 [number] 페이지로 이동"
+        name: <white><bold>다음 페이지</bold></white>
+        description: <gray>[number] 페이지로 이동</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l 랜덤 워프"
-        description: "&7 음, 어디에 나타날까요?"
+        name: <white><bold>랜덤 워프</bold></white>
+        description: <gray>음, 어디에 나타날까요?</gray>
     tips:
-      click-to-previous: "&e 클릭 &7 이전 페이지 보기."
-      click-to-next: "&e 클릭 &7 다음 페이지 보기."
-      click-to-warp: "&e 클릭 &7 워프하기."
+      click-to-previous: <yellow>클릭 </yellow><gray>이전 페이지 보기.</gray>
+      click-to-next: <yellow>클릭 </yellow><gray>다음 페이지 보기.</gray>
+      click-to-warp: <yellow>클릭 </yellow><gray>워프하기.</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
 togglewarp:
   help:
     description: 워프 표지판 전환
-  enabled: "&a 워프가 이제 표시됩니다!"
-  disabled: "&c 워프가 이제 숨겨졌습니다!"
+  enabled: <green>워프가 이제 표시됩니다!</green>
+  disabled: <red>워프가 이제 숨겨졌습니다!</red>
   error:
-    no-permission: "&c 그 작업을 수행할 권한이 없습니다!"
-    generic: "&c 워프를 전환하는 중 오류가 발생했습니다."
-    no-warp: "&c 전환할 워프가 없습니다!"
+    no-permission: <red>그 작업을 수행할 권한이 없습니다!</red>
+    generic: <red>워프를 전환하는 중 오류가 발생했습니다.</red>
+    no-warp: <red>전환할 워프가 없습니다!</red>
 protection:
   flags:
     PLACE_WARP:
