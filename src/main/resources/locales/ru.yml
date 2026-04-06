@@ -71,4 +71,4 @@ protection:
   flags:
     PLACE_WARP:
       name: Размещение варпа
-      description: Предотвращает размещение варпа
+      description: Разрешает размещение варпа
