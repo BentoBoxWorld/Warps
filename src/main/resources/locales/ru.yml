@@ -56,10 +56,6 @@ warps:
   conversations:
     # Префикс для сообщений от сервера.
     prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
-  next: '&6ледующая страница'
-  previous: '&6Предыдущая страница'
-  title: Телепорт Знаки
-  random: '&4Случайный телепорт'
 
 togglewarp:
   help:
