@@ -4,56 +4,55 @@ warp:
     description: Teleportálás a játékos teleport táblájához
     parameters: "<játékosnév>"
 warps:
-  deactivate: "&c Régi teleport tábla deaktiválva!"
+  deactivate: <red>Régi teleport tábla deaktiválva!</red>
   error:
-    does-not-exist: "&c Ajjaj! Ez a teleport nem létezik!"
-    no-permission: "&c Nincs jogod ehhez!"
-    no-remove: "&c Nem törölheted ezt a táblát!"
-    no-warps-yet: "&c Jelenleg nem érhetőek el teleportok"
-    not-enough-level: "&c A szigeted szintje nem elég magas!"
-    not-on-island: "&c Ehhez szigeten kell lenned!"
-    not-safe: "&c Ez a teleport nem biztonságos!"
-    your-level-is: "&c Jelenleg a sziget szinted [level], és nagyobbnak kell lennie,
-      mint [required]. Futtasd a szint parancsot."
-    not-correct-rank: "&c Nincs megfelelő rangod a warp beállításához!"
+    does-not-exist: <red>Ajjaj! Ez a teleport nem létezik!</red>
+    no-permission: <red>Nincs jogod ehhez!</red>
+    no-remove: <red>Nem törölheted ezt a táblát!</red>
+    no-warps-yet: <red>Jelenleg nem érhetőek el teleportok</red>
+    not-enough-level: <red>A szigeted szintje nem elég magas!</red>
+    not-on-island: <red>Ehhez szigeten kell lenned!</red>
+    not-safe: <red>Ez a teleport nem biztonságos!</red>
+    your-level-is: <red>Jelenleg a sziget szinted [level], és nagyobbnak kell lennie, mint [required]. Futtasd a szint parancsot.</red>
+    not-correct-rank: <red>Nincs megfelelő rangod a warp beállításához!</red>
   help:
     description: Teleportok panel megnyitása
-  player-warped: "&2 [name] teleportált a [gamemode] teleport tábládhoz!"
-  sign-removed: "&c Teleport tábla törölve!"
-  success: "&a Sikeres!"
-  warpTip: "&6 Helyezz le egy teleport táblát a következő szöveggel [text] a tetején"
-  warpToPlayersSign: "&6 Teleportálás [player] táblájához"
+  player-warped: <dark_green>[name] teleportált a [gamemode] teleport tábládhoz!</dark_green>
+  sign-removed: <red>Teleport tábla törölve!</red>
+  success: <green>Sikeres!</green>
+  warpTip: <gold>Helyezz le egy teleport táblát a következő szöveggel [text] a tetején</gold>
+  warpToPlayersSign: <gold>Teleportálás [player] táblájához</gold>
   gui:
     titles:
-      warp-title: "&0&l Teleport Táblák"
+      warp-title: <black><bold>Teleport Táblák</bold></black>
     buttons:
       previous:
-        name: "&f&l Előző oldal"
-        description: "&7 Ugrás a(z) [number]. oldalra"
+        name: <white><bold>Előző oldal</bold></white>
+        description: <gray>Ugrás a(z) [number]. oldalra</gray>
       next:
-        name: "&f&l Következő oldal"
-        description: "&7 Ugrás a(z) [number]. oldalra"
+        name: <white><bold>Következő oldal</bold></white>
+        description: <gray>Ugrás a(z) [number]. oldalra</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l Véletlenszerű Teleport"
-        description: "&7 Hmm, hol fogok megjelenni?"
+        name: <white><bold>Véletlenszerű Teleport</bold></white>
+        description: <gray>Hmm, hol fogok megjelenni?</gray>
     tips:
-      click-to-previous: "&e Kattintson &7 az előző oldal megtekintéséhez."
-      click-to-next: "&e Kattintson &7 a következő oldal megtekintéséhez."
-      click-to-warp: "&e Kattintson &7 a teleportáláshoz."
+      click-to-previous: <yellow>Kattintson </yellow><gray>az előző oldal megtekintéséhez.</gray>
+      click-to-next: <yellow>Kattintson </yellow><gray>a következő oldal megtekintéséhez.</gray>
+      click-to-warp: <yellow>Kattintson </yellow><gray>a teleportáláshoz.</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
 togglewarp:
   help:
     description: warp jel átváltása
-  enabled: "&a A warped most látható!"
-  disabled: "&c A warped most rejtett!"
+  enabled: <green>A warped most látható!</green>
+  disabled: <red>A warped most rejtett!</red>
   error:
-    no-permission: "&c Nincs jogod ehhez!"
-    generic: "&c Hiba történt a warp átváltása közben."
-    no-warp: "&c Nincs warpod amit átválthatnál!"
+    no-permission: <red>Nincs jogod ehhez!</red>
+    generic: <red>Hiba történt a warp átváltása közben.</red>
+    no-warp: <red>Nincs warpod amit átválthatnál!</red>
 protection:
   flags:
     PLACE_WARP:

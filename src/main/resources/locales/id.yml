@@ -4,56 +4,55 @@ warp:
     description: warp ke tanda warp pemain
     parameters: "<player name>"
 warps:
-  deactivate: "&c Tanda warp lama dinonaktifkan!"
+  deactivate: <red>Tanda warp lama dinonaktifkan!</red>
   error:
-    does-not-exist: "&c Oh! Warp itu tidak ada lagi!"
-    no-permission: "&c Kamu tidak punya izin untuk melakukan itu!"
-    no-remove: "&c Kamu tidak bisa menghapus tanda itu!"
-    no-warps-yet: "&c Belum ada warps yang tersedia"
-    not-enough-level: "&c Level pulaumu tidak cukup tinggi!"
-    not-on-island: "&c Kamu harus berada di pulaumu untuk melakukan itu!"
-    not-safe: "&c Warp itu tidak aman!"
-    your-level-is: "&c Level pulau Anda hanya [level] dan harus lebih tinggi dari
-      [required]. Jalankan perintah level."
-    not-correct-rank: "&c Kamu tidak punya rank yang benar untuk mengatur warp!"
+    does-not-exist: <red>Oh! Warp itu tidak ada lagi!</red>
+    no-permission: <red>Kamu tidak punya izin untuk melakukan itu!</red>
+    no-remove: <red>Kamu tidak bisa menghapus tanda itu!</red>
+    no-warps-yet: <red>Belum ada warps yang tersedia</red>
+    not-enough-level: <red>Level pulaumu tidak cukup tinggi!</red>
+    not-on-island: <red>Kamu harus berada di pulaumu untuk melakukan itu!</red>
+    not-safe: <red>Warp itu tidak aman!</red>
+    your-level-is: <red>Level pulau Anda hanya [level] dan harus lebih tinggi dari [required]. Jalankan perintah level.</red>
+    not-correct-rank: <red>Kamu tidak punya rank yang benar untuk mengatur warp!</red>
   help:
     description: buka panel warps
-  player-warped: "&2 [name] nge-warp ke tanda warp [gamemode] kamu!"
-  sign-removed: "&c Tanda warp dihilangkan!"
-  success: "&a Sukses!"
-  warpTip: "&6 Tempatkan tanda warp dengan [text] di atas\n"
-  warpToPlayersSign: "&6 Pergi ke tanda [player]"
+  player-warped: <dark_green>[name] nge-warp ke tanda warp [gamemode] kamu!</dark_green>
+  sign-removed: <red>Tanda warp dihilangkan!</red>
+  success: <green>Sukses!</green>
+  warpTip: <gold>Tempatkan tanda warp dengan [text] di atas</gold>
+  warpToPlayersSign: <gold>Pergi ke tanda [player]</gold>
   gui:
     titles:
-      warp-title: "&0&l Tanda Warp"
+      warp-title: <black><bold>Tanda Warp</bold></black>
     buttons:
       previous:
-        name: "&f&l Halaman Sebelumnya"
-        description: "&7 Beralih ke halaman [number]"
+        name: <white><bold>Halaman Sebelumnya</bold></white>
+        description: <gray>Beralih ke halaman [number]</gray>
       next:
-        name: "&f&l Halaman Selanjutnya"
-        description: "&7 Beralih ke halaman [number]"
+        name: <white><bold>Halaman Selanjutnya</bold></white>
+        description: <gray>Beralih ke halaman [number]</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l Warp Acak"
-        description: "&7 Hmm, di mana aku akan muncul?"
+        name: <white><bold>Warp Acak</bold></white>
+        description: <gray>Hmm, di mana aku akan muncul?</gray>
     tips:
-      click-to-previous: "&e Klik &7 untuk melihat halaman sebelumnya."
-      click-to-next: "&e Klik &7 untuk melihat halaman selanjutnya."
-      click-to-warp: "&e Klik &7 untuk warp."
+      click-to-previous: <yellow>Klik </yellow><gray>untuk melihat halaman sebelumnya.</gray>
+      click-to-next: <yellow>Klik </yellow><gray>untuk melihat halaman selanjutnya.</gray>
+      click-to-warp: <yellow>Klik </yellow><gray>untuk warp.</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
 togglewarp:
   help:
     description: alihkan tanda warp
-  enabled: "&a Warp kamu sekarang terlihat!"
-  disabled: "&c Warp kamu sekarang tersembunyi!"
+  enabled: <green>Warp kamu sekarang terlihat!</green>
+  disabled: <red>Warp kamu sekarang tersembunyi!</red>
   error:
-    no-permission: "&c Kamu tidak punya izin untuk melakukan itu!"
-    generic: "&c Terjadi kesalahan saat mengalihkan warp kamu."
-    no-warp: "&c Kamu tidak memiliki warp untuk dialihkan!"
+    no-permission: <red>Kamu tidak punya izin untuk melakukan itu!</red>
+    generic: <red>Terjadi kesalahan saat mengalihkan warp kamu.</red>
+    no-warp: <red>Kamu tidak memiliki warp untuk dialihkan!</red>
 protection:
   flags:
     PLACE_WARP:

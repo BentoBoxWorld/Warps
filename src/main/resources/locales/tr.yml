@@ -4,55 +4,55 @@ warp:
     description: Oyuncunun warp tabelasına ışınlan
     parameters: "<oyuncu adı>"
 warps:
-  deactivate: "&c Eski warp tabelası devre dışı bırakıldı!"
+  deactivate: <red>Eski warp tabelası devre dışı bırakıldı!</red>
   error:
-    does-not-exist: "&c Üzgünüm. Böyle bir warp artık yok!"
-    no-permission: "&4 Buna yetkin yok!"
-    no-remove: "&4 Bu tabelayı kaldıramazsın!"
-    no-warps-yet: "&4 Böyle bir warp henüz yok."
-    not-enough-level: "&4 Bunu koyman için daha fazla ada leveline ihtiyacın var."
-    not-on-island: "&4 Adanda değilsin."
-    not-safe: "&4 Ada warpi güvenli değil!"
-    your-level-is: "&9 Ada levelin &e[level] &9ve &e[required]&9'den fazla olması gerek!"
-    not-correct-rank: "&c Bir warp ayarlamak için doğru rütbeniz yok!"
+    does-not-exist: <red>Üzgünüm. Böyle bir warp artık yok!</red>
+    no-permission: <dark_red>Buna yetkin yok!</dark_red>
+    no-remove: <dark_red>Bu tabelayı kaldıramazsın!</dark_red>
+    no-warps-yet: <dark_red>Böyle bir warp henüz yok.</dark_red>
+    not-enough-level: <dark_red>Bunu koyman için daha fazla ada leveline ihtiyacın var.</dark_red>
+    not-on-island: <dark_red>Adanda değilsin.</dark_red>
+    not-safe: <dark_red>Ada warpi güvenli değil!</dark_red>
+    your-level-is: <blue>Ada levelin </blue><yellow>[level] </yellow><blue>ve </blue><yellow>[required]</yellow><blue>'den fazla olması gerek!</blue>
+    not-correct-rank: <red>Bir warp ayarlamak için doğru rütbeniz yok!</red>
   help:
     description: Warp panelini açar.
-  player-warped: "&d [name] &9 [gamemode] warp tabelana ışınlandı!"
-  sign-removed: "&4 Warp tabelası kaldırıldı!"
-  success: "&a Başarılı!"
-  warpTip: "&6 Warp açmak için tabelanın en üstüne &a[text] &9yaz!"
-  warpToPlayersSign: "&d [player] &9 warpına gidiliyor!"
+  player-warped: <light_purple>[name] </light_purple><blue>[gamemode] warp tabelana ışınlandı!</blue>
+  sign-removed: <dark_red>Warp tabelası kaldırıldı!</dark_red>
+  success: <green>Başarılı!</green>
+  warpTip: <gold>Warp açmak için tabelanın en üstüne </gold><green>[text] </green><blue>yaz!</blue>
+  warpToPlayersSign: <light_purple>[player] </light_purple><blue>warpına gidiliyor!</blue>
   gui:
     titles:
-      warp-title: "&0&l Warp Tabelaları"
+      warp-title: <black><bold>Warp Tabelaları</bold></black>
     buttons:
       previous:
-        name: "&f&l Önceki Sayfa"
-        description: "&7 [number]. sayfaya geç"
+        name: <white><bold>Önceki Sayfa</bold></white>
+        description: <gray>[number]. sayfaya geç</gray>
       next:
-        name: "&f&l Sonraki Sayfa"
-        description: "&7 [number]. sayfaya geç"
+        name: <white><bold>Sonraki Sayfa</bold></white>
+        description: <gray>[number]. sayfaya geç</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l Rastgele Warp"
-        description: "&7 Hmm, nerede ortaya çıkacağım?"
+        name: <white><bold>Rastgele Warp</bold></white>
+        description: <gray>Hmm, nerede ortaya çıkacağım?</gray>
     tips:
-      click-to-previous: "&e Önceki sayfayı görüntülemek için &7 tıklayın."
-      click-to-next: "&e Sonraki sayfayı görüntülemek için &7 tıklayın."
-      click-to-warp: "&e Işınlanmak için &7 tıklayın."
+      click-to-previous: <yellow>Önceki sayfayı görüntülemek için </yellow><gray>tıklayın.</gray>
+      click-to-next: <yellow>Sonraki sayfayı görüntülemek için </yellow><gray>tıklayın.</gray>
+      click-to-warp: <yellow>Işınlanmak için </yellow><gray>tıklayın.</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
 togglewarp:
   help:
     description: warp işaretini değiştir
-  enabled: "&a Warp'ınız artık görünür!"
-  disabled: "&c Warp'ınız artık gizli!"
+  enabled: <green>Warp'ınız artık görünür!</green>
+  disabled: <red>Warp'ınız artık gizli!</red>
   error:
-    no-permission: "&c Buna yetkiniz yok!"
-    generic: "&c Warp değiştirilirken bir hata oluştu."
-    no-warp: "&c Değiştirilecek bir warp'ınız yok!"
+    no-permission: <red>Buna yetkiniz yok!</red>
+    generic: <red>Warp değiştirilirken bir hata oluştu.</red>
+    no-warp: <red>Değiştirilecek bir warp'ınız yok!</red>
 protection:
   flags:
     PLACE_WARP:

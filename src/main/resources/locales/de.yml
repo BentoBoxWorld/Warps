@@ -4,56 +4,55 @@ warp:
     description: Warpt dich zu dem Warp Schild von dem Spieler
     parameters: "<player name>"
 warps:
-  deactivate: "&c Altes Warp Schild deaktiviert!"
+  deactivate: <red>Altes Warp Schild deaktiviert!</red>
   error:
-    does-not-exist: "&c Oh nein! Dieser Warp existiert nicht mehr!"
-    no-permission: "&c Hierfür hast du keine Rechte!"
-    no-remove: "&c Du kannst dieses Schild nicht entfernen!"
-    no-warps-yet: "&c Es sind noch keine Warps verfügbar"
-    not-enough-level: "&c Dein Insel-Level ist nicht hoch gneug!"
-    not-on-island: "&c Dafür musst du auf deiner Insel sein!"
-    not-safe: "&c Dieser Warp ist nicht sicher!"
-    your-level-is: "&c Dein Insel-Level ist erst [level] und muss höher als [required]
-      sein. Nutze das Level Kommando."
-    not-correct-rank: "&c Sie haben nicht den richtigen Rang, um einen Warp einzustellen!"
+    does-not-exist: <red>Oh nein! Dieser Warp existiert nicht mehr!</red>
+    no-permission: <red>Hierfür hast du keine Rechte!</red>
+    no-remove: <red>Du kannst dieses Schild nicht entfernen!</red>
+    no-warps-yet: <red>Es sind noch keine Warps verfügbar</red>
+    not-enough-level: <red>Dein Insel-Level ist nicht hoch gneug!</red>
+    not-on-island: <red>Dafür musst du auf deiner Insel sein!</red>
+    not-safe: <red>Dieser Warp ist nicht sicher!</red>
+    your-level-is: <red>Dein Insel-Level ist erst [level] und muss höher als [required] sein. Nutze das Level Kommando.</red>
+    not-correct-rank: <red>Sie haben nicht den richtigen Rang, um einen Warp einzustellen!</red>
   help:
     description: Öffnet das Warps Panel
-  player-warped: "&2 [name] ist zu deinem [gamemode]-Warp-Zeichen gesprungen!"
-  sign-removed: "&c Warp Schild entfernt!"
-  success: "&a Erfolg!"
-  warpTip: "&6 Platziere ein Warp Schild mit [text] in der ersten Zeile"
-  warpToPlayersSign: "&6 Warpe zu [player]'s Schild"
+  player-warped: <dark_green>[name] ist zu deinem [gamemode]-Warp-Zeichen gesprungen!</dark_green>
+  sign-removed: <red>Warp Schild entfernt!</red>
+  success: <green>Erfolg!</green>
+  warpTip: <gold>Platziere ein Warp Schild mit [text] in der ersten Zeile</gold>
+  warpToPlayersSign: <gold>Warpe zu [player]'s Schild</gold>
   gui:
     titles:
-      warp-title: "&0&l Warp-Schild"
+      warp-title: <black><bold>Warp-Schild</bold></black>
     buttons:
       previous:
-        name: "&f&l Vorherige Seite"
-        description: "&7 Zur Seite [number] wechseln"
+        name: <white><bold>Vorherige Seite</bold></white>
+        description: <gray>Zur Seite [number] wechseln</gray>
       next:
-        name: "&f&l Nächste Seite"
-        description: "&7 Zur Seite [number] wechseln"
+        name: <white><bold>Nächste Seite</bold></white>
+        description: <gray>Zur Seite [number] wechseln</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l Random Warp"
-        description: "&7 Hmm, wo werde ich erscheinen?"
+        name: <white><bold>Random Warp</bold></white>
+        description: <gray>Hmm, wo werde ich erscheinen?</gray>
     tips:
-      click-to-previous: "&e Klicken &7, um die vorherige Seite anzuzeigen."
-      click-to-next: "&e Klicken &7, um die nächste Seite anzuzeigen."
-      click-to-warp: "&e Zum Warpen &7 klicken."
+      click-to-previous: <yellow>Klicken </yellow><gray>, um die vorherige Seite anzuzeigen.</gray>
+      click-to-next: <yellow>Klicken </yellow><gray>, um die nächste Seite anzuzeigen.</gray>
+      click-to-warp: <yellow>Zum Warpen </yellow><gray>klicken.</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
 togglewarp:
   help:
     description: das Warp-Zeichen umschalten
-  enabled: "&a Ihr Warp ist jetzt sichtbar!"
-  disabled: "&c Ihr Warp ist jetzt verborgen!"
+  enabled: <green>Ihr Warp ist jetzt sichtbar!</green>
+  disabled: <red>Ihr Warp ist jetzt verborgen!</red>
   error:
-    no-permission: "&c Sie haben keine Berechtigung, das zu tun!"
-    generic: "&c Beim Umschalten Ihres Warps ist ein Fehler aufgetreten."
-    no-warp: "&c Sie haben keinen Warp zum Umschalten!"
+    no-permission: <red>Sie haben keine Berechtigung, das zu tun!</red>
+    generic: <red>Beim Umschalten Ihres Warps ist ein Fehler aufgetreten.</red>
+    no-warp: <red>Sie haben keinen Warp zum Umschalten!</red>
 protection:
   flags:
     PLACE_WARP:

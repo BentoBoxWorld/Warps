@@ -4,57 +4,55 @@ warp:
     description: teletrasporto al cartello Warp del giocatore
     parameters: "<nome giocatore>"
 warps:
-  deactivate: "&c Vecchio cartello Warp disattivato!"
+  deactivate: <red>Vecchio cartello Warp disattivato!</red>
   error:
-    does-not-exist: "&c Quel cartello Warp non esiste più!"
-    no-permission: "&c Non hai i permessi per farlo!"
-    no-remove: "&c Non puoi rimuovere quel cartello!"
-    no-warps-yet: "&c Non ci sono ancora Warp disponibili"
-    not-enough-level: "&c Il tuo livello dell'isola non è abbastanza alto!"
-    not-on-island: "&c Devi essere nella tua isola per farlo!"
-    not-safe: "&c Il Warp non è sicuro!"
-    your-level-is: "&c Il tuo livello dell'isola è solo di [level] e deve essere
-      maggiore di [required]. Esegui il comando del calcolo dei livelli per aggiornare
-      il livello."
-    not-correct-rank: "&c Non hai il rango corretto per impostare un Warp!"
+    does-not-exist: <red>Quel cartello Warp non esiste più!</red>
+    no-permission: <red>Non hai i permessi per farlo!</red>
+    no-remove: <red>Non puoi rimuovere quel cartello!</red>
+    no-warps-yet: <red>Non ci sono ancora Warp disponibili</red>
+    not-enough-level: <red>Il tuo livello dell'isola non è abbastanza alto!</red>
+    not-on-island: <red>Devi essere nella tua isola per farlo!</red>
+    not-safe: <red>Il Warp non è sicuro!</red>
+    your-level-is: <red>Il tuo livello dell'isola è solo di [level] e deve essere maggiore di [required]. Esegui il comando del calcolo dei livelli per aggiornare il livello.</red>
+    not-correct-rank: <red>Non hai il rango corretto per impostare un Warp!</red>
   help:
     description: apri il pannello dei Warp
-  player-warped: "&2 [name] teletrasportato al tuo cartello Warp [gamemode]!"
-  sign-removed: "&c Cartello Warp rimosso!"
-  success: "&a Successo!"
-  warpTip: "&6 Piazza un cartello Warp con [text] scritto nella prima riga"
-  warpToPlayersSign: "&6 Teletrasporto al cartello Warp di [player]"
+  player-warped: <dark_green>[name] teletrasportato al tuo cartello Warp [gamemode]!</dark_green>
+  sign-removed: <red>Cartello Warp rimosso!</red>
+  success: <green>Successo!</green>
+  warpTip: <gold>Piazza un cartello Warp con [text] scritto nella prima riga</gold>
+  warpToPlayersSign: <gold>Teletrasporto al cartello Warp di [player]</gold>
   gui:
     titles:
-      warp-title: "&0&l Cartelli Warp"
+      warp-title: <black><bold>Cartelli Warp</bold></black>
     buttons:
       previous:
-        name: "&f&l Pagina Precedente"
-        description: "&7 Passa alla pagina [number]"
+        name: <white><bold>Pagina Precedente</bold></white>
+        description: <gray>Passa alla pagina [number]</gray>
       next:
-        name: "&f&l Pagina Successiva"
-        description: "&7 Passa alla pagina [number]"
+        name: <white><bold>Pagina Successiva</bold></white>
+        description: <gray>Passa alla pagina [number]</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l Warp Casuale"
-        description: "&7 Hmm, dove apparirò?"
+        name: <white><bold>Warp Casuale</bold></white>
+        description: <gray>Hmm, dove apparirò?</gray>
     tips:
-      click-to-previous: "&e Clicca &7 per vedere la pagina precedente."
-      click-to-next: "&e Clicca &7 per vedere la pagina successiva."
-      click-to-warp: "&e Clicca &7 per teletrasportarti."
+      click-to-previous: <yellow>Clicca </yellow><gray>per vedere la pagina precedente.</gray>
+      click-to-next: <yellow>Clicca </yellow><gray>per vedere la pagina successiva.</gray>
+      click-to-warp: <yellow>Clicca </yellow><gray>per teletrasportarti.</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
 togglewarp:
   help:
     description: attiva/disattiva il cartello warp
-  enabled: "&a Il tuo Warp è ora visibile!"
-  disabled: "&c Il tuo Warp è ora nascosto!"
+  enabled: <green>Il tuo Warp è ora visibile!</green>
+  disabled: <red>Il tuo Warp è ora nascosto!</red>
   error:
-    no-permission: "&c Non hai i permessi per farlo!"
-    generic: "&c Si è verificato un errore durante la modifica del tuo Warp."
-    no-warp: "&c Non hai un Warp da attivare/disattivare!"
+    no-permission: <red>Non hai i permessi per farlo!</red>
+    generic: <red>Si è verificato un errore durante la modifica del tuo Warp.</red>
+    no-warp: <red>Non hai un Warp da attivare/disattivare!</red>
 protection:
   flags:
     PLACE_WARP:

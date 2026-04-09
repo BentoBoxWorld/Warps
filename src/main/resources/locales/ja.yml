@@ -4,55 +4,55 @@ warp:
     description: プレイヤーのワープサインにワープする
     parameters: "<名>"
 warps:
-  deactivate: "&c 古いワープサインが無効になりました!"
+  deactivate: <red>古いワープサインが無効になりました!</red>
   error:
-    does-not-exist: "&c ああ、やられた！そのワープはもう存在しない！"
-    no-permission: "&c あなたにはそれを実行する権限がありません!"
-    no-remove: "&c その標識は削除できません!"
-    no-warps-yet: "&c ワープはまだ利用できません"
-    not-enough-level: "&c あなたの島のレベルは十分に高くありません!"
-    not-on-island: "&c それを実行するには、自分の島にいる必要があります。"
-    not-safe: "&c そのワープは安全ではありません!"
-    your-level-is: "&c あなたの島のレベルは [level] のみで、[required] より高くなければなりません。level コマンドを実行してください。"
-    not-correct-rank: "&c ワープを設定するための適切なランクがありません。"
+    does-not-exist: <red>ああ、やられた！そのワープはもう存在しない！</red>
+    no-permission: <red>あなたにはそれを実行する権限がありません!</red>
+    no-remove: <red>その標識は削除できません!</red>
+    no-warps-yet: <red>ワープはまだ利用できません</red>
+    not-enough-level: <red>あなたの島のレベルは十分に高くありません!</red>
+    not-on-island: <red>それを実行するには、自分の島にいる必要があります。</red>
+    not-safe: <red>そのワープは安全ではありません!</red>
+    your-level-is: <red>あなたの島のレベルは [level] のみで、[required] より高くなければなりません。level コマンドを実行してください。</red>
+    not-correct-rank: <red>ワープを設定するための適切なランクがありません。</red>
   help:
     description: ワープパネルを開く
-  player-warped: "&2 [name] があなたの [gamemode] ワープサインにワープしました!"
-  sign-removed: "&c ワープサインが削除されました!"
-  success: "&a 成功しました!"
-  warpTip: "&6 [text]を上部に記したワープサインを配置する"
-  warpToPlayersSign: "&6 [player]のサインにワープ"
+  player-warped: <dark_green>[name] があなたの [gamemode] ワープサインにワープしました!</dark_green>
+  sign-removed: <red>ワープサインが削除されました!</red>
+  success: <green>成功しました!</green>
+  warpTip: <gold>[text]を上部に記したワープサインを配置する</gold>
+  warpToPlayersSign: <gold>[player]のサインにワープ</gold>
   gui:
     titles:
-      warp-title: "&0&l ワープサイン"
+      warp-title: <black><bold>ワープサイン</bold></black>
     buttons:
       previous:
-        name: "&f&l 前のページ"
-        description: "&7 [number] ページに切り替える"
+        name: <white><bold>前のページ</bold></white>
+        description: <gray>[number] ページに切り替える</gray>
       next:
-        name: "&f&l 次のページ"
-        description: "&7 [number]ページに切り替える"
+        name: <white><bold>次のページ</bold></white>
+        description: <gray>[number]ページに切り替える</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l ランダムワープ"
-        description: "&7 うーん、どこに現れるんだろう？"
+        name: <white><bold>ランダムワープ</bold></white>
+        description: <gray>うーん、どこに現れるんだろう？</gray>
     tips:
-      click-to-previous: "&e 前のページを表示するには &7 をクリックします。"
-      click-to-next: "&e 次のページを表示するには &7 をクリックします。"
-      click-to-warp: "&e ワープするには &7 をクリックします。"
+      click-to-previous: <yellow>前のページを表示するには </yellow><gray>をクリックします。</gray>
+      click-to-next: <yellow>次のページを表示するには </yellow><gray>をクリックします。</gray>
+      click-to-warp: <yellow>ワープするには </yellow><gray>をクリックします。</gray>
   conversations:
-    prefix: "&l&6 [弁当箱]: &r"
+    prefix: '<gold><bold>[弁当箱]: </bold></gold><reset>'
 togglewarp:
   help:
     description: ワープサインを切り替える
-  enabled: "&a ワープが見えるようになりました!"
-  disabled: "&c ワープが非表示になりました!"
+  enabled: <green>ワープが見えるようになりました!</green>
+  disabled: <red>ワープが非表示になりました!</red>
   error:
-    no-permission: "&c あなたにはそれを実行する権限がありません!"
-    generic: "&c ワープの切り替え中にエラーが発生しました。"
-    no-warp: "&c 切り替えるワープがありません!"
+    no-permission: <red>あなたにはそれを実行する権限がありません!</red>
+    generic: <red>ワープの切り替え中にエラーが発生しました。</red>
+    no-warp: <red>切り替えるワープがありません!</red>
 protection:
   flags:
     PLACE_WARP:

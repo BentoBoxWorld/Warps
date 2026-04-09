@@ -4,56 +4,55 @@ warp:
     description: teleportare la semnul de warp al jucătorului
     parameters: "<numele jucătorului>"
 warps:
-  deactivate: "&c Semnul de warp vechi a fost dezactivat!"
+  deactivate: <red>Semnul de warp vechi a fost dezactivat!</red>
   error:
-    does-not-exist: "&c Acel warp nu mai există!"
-    no-permission: "&c Nu ai permisiunea să faci asta!"
-    no-remove: "&c Nu poți elimina acel semn!"
-    no-warps-yet: "&c Nu există warps disponibile încă"
-    not-enough-level: "&c Nivelul insulei tale nu este suficient de ridicat!"
-    not-on-island: "&c Trebuie să fii pe insula ta pentru a face asta!"
-    not-safe: "&c Acel warp nu este sigur!"
-    your-level-is: "&c Nivelul insulei tale este doar [level] și trebuie să fie mai mare
-      decât [required]. Rulează comanda de nivel."
-    not-correct-rank: "&c Nu ai rangul corect pentru a seta un warp!"
+    does-not-exist: <red>Acel warp nu mai există!</red>
+    no-permission: <red>Nu ai permisiunea să faci asta!</red>
+    no-remove: <red>Nu poți elimina acel semn!</red>
+    no-warps-yet: <red>Nu există warps disponibile încă</red>
+    not-enough-level: <red>Nivelul insulei tale nu este suficient de ridicat!</red>
+    not-on-island: <red>Trebuie să fii pe insula ta pentru a face asta!</red>
+    not-safe: <red>Acel warp nu este sigur!</red>
+    your-level-is: <red>Nivelul insulei tale este doar [level] și trebuie să fie mai mare decât [required]. Rulează comanda de nivel.</red>
+    not-correct-rank: <red>Nu ai rangul corect pentru a seta un warp!</red>
   help:
     description: deschide panoul de warps
-  player-warped: "&2 [name] s-a teleportat la semnul tău de warp [gamemode]!"
-  sign-removed: "&c Semnul de warp a fost eliminat!"
-  success: "&a Succes!"
-  warpTip: "&6 Plasează un semn de warp cu [text] în partea de sus"
-  warpToPlayersSign: "&6 Teleportare la semnul lui [player]"
+  player-warped: <dark_green>[name] s-a teleportat la semnul tău de warp [gamemode]!</dark_green>
+  sign-removed: <red>Semnul de warp a fost eliminat!</red>
+  success: <green>Succes!</green>
+  warpTip: <gold>Plasează un semn de warp cu [text] în partea de sus</gold>
+  warpToPlayersSign: <gold>Teleportare la semnul lui [player]</gold>
   gui:
     titles:
-      warp-title: "&0&l Semne Warp"
+      warp-title: <black><bold>Semne Warp</bold></black>
     buttons:
       previous:
-        name: "&f&l Pagina Anterioară"
-        description: "&7 Treci la pagina [number]"
+        name: <white><bold>Pagina Anterioară</bold></white>
+        description: <gray>Treci la pagina [number]</gray>
       next:
-        name: "&f&l Pagina Următoare"
-        description: "&7 Treci la pagina [number]"
+        name: <white><bold>Pagina Următoare</bold></white>
+        description: <gray>Treci la pagina [number]</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l Warp Aleatoriu"
-        description: "&7 Hmm, unde voi apărea?"
+        name: <white><bold>Warp Aleatoriu</bold></white>
+        description: <gray>Hmm, unde voi apărea?</gray>
     tips:
-      click-to-previous: "&e Apasă &7 pentru a vedea pagina anterioară."
-      click-to-next: "&e Apasă &7 pentru a vedea pagina următoare."
-      click-to-warp: "&e Apasă &7 pentru teleportare."
+      click-to-previous: <yellow>Apasă </yellow><gray>pentru a vedea pagina anterioară.</gray>
+      click-to-next: <yellow>Apasă </yellow><gray>pentru a vedea pagina următoare.</gray>
+      click-to-warp: <yellow>Apasă </yellow><gray>pentru teleportare.</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
 togglewarp:
   help:
     description: comută semnul de warp
-  enabled: "&a Warp-ul tău este acum vizibil!"
-  disabled: "&c Warp-ul tău este acum ascuns!"
+  enabled: <green>Warp-ul tău este acum vizibil!</green>
+  disabled: <red>Warp-ul tău este acum ascuns!</red>
   error:
-    no-permission: "&c Nu ai permisiunea să faci asta!"
-    generic: "&c A apărut o eroare la comutarea warp-ului tău."
-    no-warp: "&c Nu ai un warp de comutat!"
+    no-permission: <red>Nu ai permisiunea să faci asta!</red>
+    generic: <red>A apărut o eroare la comutarea warp-ului tău.</red>
+    no-warp: <red>Nu ai un warp de comutat!</red>
 protection:
   flags:
     PLACE_WARP:

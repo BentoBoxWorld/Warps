@@ -4,56 +4,55 @@ warp:
     description: teleportirati se na warp znak igrača
     parameters: "<ime igrača>"
 warps:
-  deactivate: "&c Stari warp znak deaktiviran!"
+  deactivate: <red>Stari warp znak deaktiviran!</red>
   error:
-    does-not-exist: "&c Ups! Taj warp više ne postoji!"
-    no-permission: "&c Nemate dozvolu za to!"
-    no-remove: "&c Ne možete ukloniti taj znak!"
-    no-warps-yet: "&c Još nema dostupnih warpova"
-    not-enough-level: "&c Razina vašeg otoka nije dovoljno visoka!"
-    not-on-island: "&c Morate biti na svom otoku!"
-    not-safe: "&c Taj warp nije siguran!"
-    your-level-is: "&c Razina vašeg otoka je samo [level] i mora biti viša od [required].
-      Pokrenite naredbu razine."
-    not-correct-rank: "&c Nemate odgovarajući rang za postavljanje warpa!"
+    does-not-exist: <red>Ups! Taj warp više ne postoji!</red>
+    no-permission: <red>Nemate dozvolu za to!</red>
+    no-remove: <red>Ne možete ukloniti taj znak!</red>
+    no-warps-yet: <red>Još nema dostupnih warpova</red>
+    not-enough-level: <red>Razina vašeg otoka nije dovoljno visoka!</red>
+    not-on-island: <red>Morate biti na svom otoku!</red>
+    not-safe: <red>Taj warp nije siguran!</red>
+    your-level-is: <red>Razina vašeg otoka je samo [level] i mora biti viša od [required]. Pokrenite naredbu razine.</red>
+    not-correct-rank: <red>Nemate odgovarajući rang za postavljanje warpa!</red>
   help:
     description: otvori panel warpova
-  player-warped: "&2 [name] se teleportirao na vaš [gamemode] warp znak!"
-  sign-removed: "&c Warp znak uklonjen!"
-  success: "&a Uspjeh!"
-  warpTip: "&6 Postavi warp znak s [text] na vrhu"
-  warpToPlayersSign: "&6 Teleportiranje na znak igrača [player]"
+  player-warped: <dark_green>[name] se teleportirao na vaš [gamemode] warp znak!</dark_green>
+  sign-removed: <red>Warp znak uklonjen!</red>
+  success: <green>Uspjeh!</green>
+  warpTip: <gold>Postavi warp znak s [text] na vrhu</gold>
+  warpToPlayersSign: <gold>Teleportiranje na znak igrača [player]</gold>
   gui:
     titles:
-      warp-title: "&0&l Warp Znakovi"
+      warp-title: <black><bold>Warp Znakovi</bold></black>
     buttons:
       previous:
-        name: "&f&l Prethodna stranica"
-        description: "&7 Prebaci na stranicu [number]"
+        name: <white><bold>Prethodna stranica</bold></white>
+        description: <gray>Prebaci na stranicu [number]</gray>
       next:
-        name: "&f&l Sljedeća stranica"
-        description: "&7 Prebaci na stranicu [number]"
+        name: <white><bold>Sljedeća stranica</bold></white>
+        description: <gray>Prebaci na stranicu [number]</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l Nasumični Warp"
-        description: "&7 Hmm, gdje ću se pojaviti?"
+        name: <white><bold>Nasumični Warp</bold></white>
+        description: <gray>Hmm, gdje ću se pojaviti?</gray>
     tips:
-      click-to-previous: "&e Kliknite &7 za prikaz prethodne stranice."
-      click-to-next: "&e Kliknite &7 za prikaz sljedeće stranice."
-      click-to-warp: "&e Kliknite &7 za teleportaciju."
+      click-to-previous: <yellow>Kliknite </yellow><gray>za prikaz prethodne stranice.</gray>
+      click-to-next: <yellow>Kliknite </yellow><gray>za prikaz sljedeće stranice.</gray>
+      click-to-warp: <yellow>Kliknite </yellow><gray>za teleportaciju.</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
 togglewarp:
   help:
     description: prebaci warp znak
-  enabled: "&a Vaš warp je sada vidljiv!"
-  disabled: "&c Vaš warp je sada skriven!"
+  enabled: <green>Vaš warp je sada vidljiv!</green>
+  disabled: <red>Vaš warp je sada skriven!</red>
   error:
-    no-permission: "&c Nemate dozvolu za to!"
-    generic: "&c Dogodila se greška pri prebacivanju vašeg warpa."
-    no-warp: "&c Nemate warp za prebacivanje!"
+    no-permission: <red>Nemate dozvolu za to!</red>
+    generic: <red>Dogodila se greška pri prebacivanju vašeg warpa.</red>
+    no-warp: <red>Nemate warp za prebacivanje!</red>
 protection:
   flags:
     PLACE_WARP:

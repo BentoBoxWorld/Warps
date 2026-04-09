@@ -4,56 +4,55 @@ warp:
     description: pārvietoties pie spēlētāja uzaicinājuma zīmes
     parameters: "<spēlētāja vārds>"
 warps:
-  deactivate: "&c Iepriekšēja uzaicinājuma zīme deaktivizēta!"
+  deactivate: <red>Iepriekšēja uzaicinājuma zīme deaktivizēta!</red>
   error:
-    does-not-exist: "&c Oh! Šī uzaicinājuma zīme vairs neeksistē!"
-    no-permission: "&c Tev nav atļaujas veikt šo darbību!"
-    no-remove: "&c Tu nevari noņemt šo zīmi!"
-    no-warps-yet: "&c Diemžēl neviens uzaicinājums nav pieejams."
-    not-enough-level: "&c Tavs salas līmenis nav pietiekošs."
-    not-on-island: "&c Tev ir jābūt uz savas salas, lai veiktu šo darbību!"
-    not-safe: "&c Šis uzaicinājums nav drošs!"
-    your-level-is: "&c Tavas salas līmenis ir [level], bet ir nepieciešams vismaz
-      [required]. Mēģini pārrēķināt salas līmeni."
-    not-correct-rank: "&c Jums nav atbilstošā ranga, lai iestatītu portālu!"
+    does-not-exist: <red>Oh! Šī uzaicinājuma zīme vairs neeksistē!</red>
+    no-permission: <red>Tev nav atļaujas veikt šo darbību!</red>
+    no-remove: <red>Tu nevari noņemt šo zīmi!</red>
+    no-warps-yet: <red>Diemžēl neviens uzaicinājums nav pieejams.</red>
+    not-enough-level: <red>Tavs salas līmenis nav pietiekošs.</red>
+    not-on-island: <red>Tev ir jābūt uz savas salas, lai veiktu šo darbību!</red>
+    not-safe: <red>Šis uzaicinājums nav drošs!</red>
+    your-level-is: <red>Tavas salas līmenis ir [level], bet ir nepieciešams vismaz [required]. Mēģini pārrēķināt salas līmeni.</red>
+    not-correct-rank: <red>Jums nav atbilstošā ranga, lai iestatītu portālu!</red>
   help:
     description: atver uzaicinājumu zīmju sarakstu
-  player-warped: "&2 [name] ieradās pie jūsu [gamemode] uzaicinājuma zīmes!"
-  sign-removed: "&c Uzaicinājuma zīme noņemta!"
-  success: "&a Izdevās!"
-  warpTip: "&6 Izveido zīmi ar [text] pirmajā rindā"
-  warpToPlayersSign: "&6 Pārvietojas uz [player] uzaicinājuma zīmi."
+  player-warped: <dark_green>[name] ieradās pie jūsu [gamemode] uzaicinājuma zīmes!</dark_green>
+  sign-removed: <red>Uzaicinājuma zīme noņemta!</red>
+  success: <green>Izdevās!</green>
+  warpTip: <gold>Izveido zīmi ar [text] pirmajā rindā</gold>
+  warpToPlayersSign: <gold>Pārvietojas uz [player] uzaicinājuma zīmi.</gold>
   gui:
     titles:
-      warp-title: "&0&l Uzaicinājuma Zīmes"
+      warp-title: <black><bold>Uzaicinājuma Zīmes</bold></black>
     buttons:
       previous:
-        name: "&f&l Iepriekšējā lapa"
-        description: "&7 Pārslēgt uz lapu [number]"
+        name: <white><bold>Iepriekšējā lapa</bold></white>
+        description: <gray>Pārslēgt uz lapu [number]</gray>
       next:
-        name: "&f&l Nākamā lapa"
-        description: "&7 Pārslēgt uz lapu [number]"
+        name: <white><bold>Nākamā lapa</bold></white>
+        description: <gray>Pārslēgt uz lapu [number]</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l Nejaušs uzaicinājums"
-        description: "&7 Hmm, kur es parādīšos?"
+        name: <white><bold>Nejaušs uzaicinājums</bold></white>
+        description: <gray>Hmm, kur es parādīšos?</gray>
     tips:
-      click-to-previous: "&e Klikšķiniet &7, lai skatītu iepriekšējo lapu."
-      click-to-next: "&e Klikšķiniet &7, lai skatītu nākamo lapu."
-      click-to-warp: "&e Klikšķiniet &7, lai pārvietotos."
+      click-to-previous: <yellow>Klikšķiniet </yellow><gray>, lai skatītu iepriekšējo lapu.</gray>
+      click-to-next: <yellow>Klikšķiniet </yellow><gray>, lai skatītu nākamo lapu.</gray>
+      click-to-warp: <yellow>Klikšķiniet </yellow><gray>, lai pārvietotos.</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
 togglewarp:
   help:
     description: pārslēgt uzaicinājuma zīmi
-  enabled: "&a Jūsu portāls tagad ir redzams!"
-  disabled: "&c Jūsu portāls tagad ir paslēpts!"
+  enabled: <green>Jūsu portāls tagad ir redzams!</green>
+  disabled: <red>Jūsu portāls tagad ir paslēpts!</red>
   error:
-    no-permission: "&c Jums nav atļaujas veikt šo darbību!"
-    generic: "&c Kļūda pārslēdzot portālu."
-    no-warp: "&c Jums nav portāla, ko pārslēgt!"
+    no-permission: <red>Jums nav atļaujas veikt šo darbību!</red>
+    generic: <red>Kļūda pārslēdzot portālu.</red>
+    no-warp: <red>Jums nav portāla, ko pārslēgt!</red>
 protection:
   flags:
     PLACE_WARP:

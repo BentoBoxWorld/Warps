@@ -4,56 +4,55 @@ warp:
     description: teletransportar para o sinal de warp do jogador
     parameters: "<nome do jogador>"
 warps:
-  deactivate: "&c Sinal de warp antigo desativado!"
+  deactivate: <red>Sinal de warp antigo desativado!</red>
   error:
-    does-not-exist: "&c Eita! Esse warp não existe mais!"
-    no-permission: "&c Você não tem permissão para fazer isso!"
-    no-remove: "&c Você não pode remover esse sinal!"
-    no-warps-yet: "&c Não há warps disponíveis ainda"
-    not-enough-level: "&c O nível da sua ilha não é alto o suficiente!"
-    not-on-island: "&c Você precisa estar na sua ilha para fazer isso!"
-    not-safe: "&c Esse warp não é seguro!"
-    your-level-is: "&c O nível da sua ilha é apenas [level] e deve ser maior que [required].
-      Execute o comando de nível."
-    not-correct-rank: "&c Você não tem o cargo correto para definir um warp!"
+    does-not-exist: <red>Eita! Esse warp não existe mais!</red>
+    no-permission: <red>Você não tem permissão para fazer isso!</red>
+    no-remove: <red>Você não pode remover esse sinal!</red>
+    no-warps-yet: <red>Não há warps disponíveis ainda</red>
+    not-enough-level: <red>O nível da sua ilha não é alto o suficiente!</red>
+    not-on-island: <red>Você precisa estar na sua ilha para fazer isso!</red>
+    not-safe: <red>Esse warp não é seguro!</red>
+    your-level-is: <red>O nível da sua ilha é apenas [level] e deve ser maior que [required]. Execute o comando de nível.</red>
+    not-correct-rank: <red>Você não tem o cargo correto para definir um warp!</red>
   help:
     description: abrir o painel de warps
-  player-warped: "&2 [name] teletransportou para o seu sinal de warp [gamemode]!"
-  sign-removed: "&c Sinal de warp removido!"
-  success: "&a Sucesso!"
-  warpTip: "&6 Coloque um sinal de warp com [text] no topo"
-  warpToPlayersSign: "&6 Teletransportando para o sinal de [player]"
+  player-warped: <dark_green>[name] teletransportou para o seu sinal de warp [gamemode]!</dark_green>
+  sign-removed: <red>Sinal de warp removido!</red>
+  success: <green>Sucesso!</green>
+  warpTip: <gold>Coloque um sinal de warp com [text] no topo</gold>
+  warpToPlayersSign: <gold>Teletransportando para o sinal de [player]</gold>
   gui:
     titles:
-      warp-title: "&0&l Sinais de Warp"
+      warp-title: <black><bold>Sinais de Warp</bold></black>
     buttons:
       previous:
-        name: "&f&l Página Anterior"
-        description: "&7 Mudar para a página [number]"
+        name: <white><bold>Página Anterior</bold></white>
+        description: <gray>Mudar para a página [number]</gray>
       next:
-        name: "&f&l Próxima Página"
-        description: "&7 Mudar para a página [number]"
+        name: <white><bold>Próxima Página</bold></white>
+        description: <gray>Mudar para a página [number]</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l Warp Aleatório"
-        description: "&7 Hmm, onde vou aparecer?"
+        name: <white><bold>Warp Aleatório</bold></white>
+        description: <gray>Hmm, onde vou aparecer?</gray>
     tips:
-      click-to-previous: "&e Clique &7 para ver a página anterior."
-      click-to-next: "&e Clique &7 para ver a próxima página."
-      click-to-warp: "&e Clique &7 para teletransportar."
+      click-to-previous: <yellow>Clique </yellow><gray>para ver a página anterior.</gray>
+      click-to-next: <yellow>Clique </yellow><gray>para ver a próxima página.</gray>
+      click-to-warp: <yellow>Clique </yellow><gray>para teletransportar.</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
 togglewarp:
   help:
     description: alternar o sinal de warp
-  enabled: "&a Seu warp agora está visível!"
-  disabled: "&c Seu warp agora está oculto!"
+  enabled: <green>Seu warp agora está visível!</green>
+  disabled: <red>Seu warp agora está oculto!</red>
   error:
-    no-permission: "&c Você não tem permissão para fazer isso!"
-    generic: "&c Ocorreu um erro ao alternar seu warp."
-    no-warp: "&c Você não tem um warp para alternar!"
+    no-permission: <red>Você não tem permissão para fazer isso!</red>
+    generic: <red>Ocorreu um erro ao alternar seu warp.</red>
+    no-warp: <red>Você não tem um warp para alternar!</red>
 protection:
   flags:
     PLACE_WARP:

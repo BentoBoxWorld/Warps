@@ -4,56 +4,55 @@ warp:
     description: teleportuje cię do tabliczki innego gracza
     parameters: "<gracz>"
 warps:
-  deactivate: "&c Stary teleport został zdezaktywowany!"
+  deactivate: <red>Stary teleport został zdezaktywowany!</red>
   error:
-    does-not-exist: "&c Ten teleport nie istnieje."
-    no-permission: "&c Brak uprawnień!"
-    no-remove: "&c Nie możesz usunąć tej tabliczki!"
-    no-warps-yet: "&c Nie ma jeszcze stworzonych teleportów."
-    not-enough-level: "&c Twój poziom wyspy nie jest wystarczająco wysoki!"
-    not-on-island: "&c Musisz być na wyspie, by to zrobić."
-    not-safe: "&c Ten teleport nie jest bezpieczny!"
-    your-level-is: "&c Twój poziom wyspy to [level], a musi wynosić co najmniej [required].
-      Użyj komendy /is level."
-    not-correct-rank: "&c Nie masz odpowiedniej rangi, aby ustawić warp!"
+    does-not-exist: <red>Ten teleport nie istnieje.</red>
+    no-permission: <red>Brak uprawnień!</red>
+    no-remove: <red>Nie możesz usunąć tej tabliczki!</red>
+    no-warps-yet: <red>Nie ma jeszcze stworzonych teleportów.</red>
+    not-enough-level: <red>Twój poziom wyspy nie jest wystarczająco wysoki!</red>
+    not-on-island: <red>Musisz być na wyspie, by to zrobić.</red>
+    not-safe: <red>Ten teleport nie jest bezpieczny!</red>
+    your-level-is: <red>Twój poziom wyspy to [level], a musi wynosić co najmniej [required]. Użyj komendy /is level.</red>
+    not-correct-rank: <red>Nie masz odpowiedniej rangi, aby ustawić warp!</red>
   help:
     description: otwiera panel warpów
-  player-warped: "&2 [name] teleportował się do twojej tabliczki!"
-  sign-removed: "&c Usunięto tabliczkę!"
-  success: "&a Sukces!"
-  warpTip: "&6 Postaw tabliczkę z napisem [text]"
-  warpToPlayersSign: "&6 Teleportowanie do tabliczki gracza [player]"
+  player-warped: <dark_green>[name] teleportował się do twojej tabliczki!</dark_green>
+  sign-removed: <red>Usunięto tabliczkę!</red>
+  success: <green>Sukces!</green>
+  warpTip: <gold>Postaw tabliczkę z napisem [text]</gold>
+  warpToPlayersSign: <gold>Teleportowanie do tabliczki gracza [player]</gold>
   gui:
     titles:
-      warp-title: "&0&l Lista dostępnych wysp"
+      warp-title: <black><bold>Lista dostępnych wysp</bold></black>
     buttons:
       previous:
-        name: "&f&l Poprzednia strona"
-        description: "&7 Przełącz na stronę [number]"
+        name: <white><bold>Poprzednia strona</bold></white>
+        description: <gray>Przełącz na stronę [number]</gray>
       next:
-        name: "&f&l następna strona"
-        description: "&7 Przełącz na stronę [number]"
+        name: <white><bold>następna strona</bold></white>
+        description: <gray>Przełącz na stronę [number]</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l Losowa wyspa"
-        description: "&7 Hmm, gdzie się pojawię?"
+        name: <white><bold>Losowa wyspa</bold></white>
+        description: <gray>Hmm, gdzie się pojawię?</gray>
     tips:
-      click-to-previous: "&e Kliknij &7, aby wyświetlić poprzednią stronę."
-      click-to-next: "&e Kliknij &7, aby wyświetlić następną stronę."
-      click-to-warp: "&e Kliknij &7, aby przenieść."
+      click-to-previous: <yellow>Kliknij </yellow><gray>, aby wyświetlić poprzednią stronę.</gray>
+      click-to-next: <yellow>Kliknij </yellow><gray>, aby wyświetlić następną stronę.</gray>
+      click-to-warp: <yellow>Kliknij </yellow><gray>, aby przenieść.</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
 togglewarp:
   help:
     description: przełącz tabliczkę warp
-  enabled: "&a Twój warp jest teraz widoczny!"
-  disabled: "&c Twój warp jest teraz ukryty!"
+  enabled: <green>Twój warp jest teraz widoczny!</green>
+  disabled: <red>Twój warp jest teraz ukryty!</red>
   error:
-    no-permission: "&c Brak uprawnień!"
-    generic: "&c Wystąpił błąd podczas przełączania twojego warpu."
-    no-warp: "&c Nie masz warpu do przełączenia!"
+    no-permission: <red>Brak uprawnień!</red>
+    generic: <red>Wystąpił błąd podczas przełączania twojego warpu.</red>
+    no-warp: <red>Nie masz warpu do przełączenia!</red>
 protection:
   flags:
     PLACE_WARP:
