@@ -26,6 +26,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
@@ -36,6 +37,7 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.database.Database;
 import world.bentobox.bentobox.database.objects.Island;
 import world.bentobox.bentobox.lists.Flags;
+import world.bentobox.bentobox.managers.MapManager;
 import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.objects.PlayerWarp;
 import world.bentobox.warps.Warp;
@@ -54,6 +56,9 @@ import world.bentobox.warps.panels.Utils;
 public class WarpSignsManager {
     private static final int MAX_WARPS = 600;
     private static final String WARPS = "warps";
+    private static final String MAP_MARKER_SET = "warps";
+    private static final String MAP_MARKER_SET_LABEL = "Warp Signs";
+
     private final BentoBox plugin;
     // Map of all warps stored as player, warp sign Location
     private Map<World, Map<UUID, PlayerWarp>> worldsWarpList;
@@ -86,6 +91,16 @@ public class WarpSignsManager {
         handler = new Database<>(addon, WarpsData.class);
         // Load the warps
         loadWarpList();
+        // Initialize map markers for all loaded warps
+        if (addon.getSettings().isShowWarpsOnMap()) {
+            MapManager mapManager = plugin.getMapManager();
+            if (mapManager != null) {
+                mapManager.createMarkerSet(MAP_MARKER_SET, MAP_MARKER_SET_LABEL);
+                populateMapMarkers();
+            } else {
+                addon.logWarning("Map manager is not available — web map markers will be disabled.");
+            }
+        }
     }
 
     /**
@@ -109,6 +124,7 @@ public class WarpSignsManager {
         }
         getWarpMap(loc.getWorld()).put(playerUUID, new PlayerWarp(loc, true));
         saveWarpList();
+        addMapMarker(loc.getWorld(), playerUUID, loc);
         Bukkit.getPluginManager().callEvent(new WarpCreateEvent(addon, loc, playerUUID));
         return true;
     }
@@ -235,8 +251,8 @@ public class WarpSignsManager {
                             return;
                         }
 
-                        // Add to map
-                        getWarpMap(location.getWorld()).put(uuid, new PlayerWarp(location, true));
+                        // Add to map, preserving the persisted enabled/disabled state
+                        getWarpMap(location.getWorld()).put(uuid, pw);
                     }
                 });
             } else {
@@ -277,6 +293,7 @@ public class WarpSignsManager {
                 .ifPresent(user -> user.sendMessage("warps.sign-removed"));
                 // Remove sign from warp panel cache
                 addon.getSignCacheManager().removeWarp(loc.getWorld(), en.getKey());
+                removeMapMarker(loc.getWorld(), en.getKey());
                 it.remove();
             }
         }
@@ -296,6 +313,7 @@ public class WarpSignsManager {
         }
         // Remove sign from warp panel cache
         addon.getSignCacheManager().removeWarp(world, uuid);
+        removeMapMarker(world, uuid);
         saveWarpList();
     }
 
@@ -512,5 +530,65 @@ public class WarpSignsManager {
      */
     public boolean hasWarp(@NonNull World world, @NonNull UUID playerUUID) {
         return getWarpMap(world).containsKey(playerUUID);
+    }
+
+    // ---- Map marker helpers ----
+
+    private String getMarkerId(@NonNull World world, @NonNull UUID playerUUID) {
+        return world.getName() + ":" + playerUUID;
+    }
+
+    /**
+     * Adds a point marker for a warp on the web map.
+     */
+    public void addMapMarker(@NonNull World world, @NonNull UUID playerUUID, @NonNull Location loc) {
+        if (!addon.getSettings().isShowWarpsOnMap()) {
+            return;
+        }
+        MapManager mapManager = plugin.getMapManager();
+        if (mapManager == null) {
+            return;
+        }
+        String label = getMarkerLabel(world, playerUUID);
+        mapManager.addPointMarker(MAP_MARKER_SET, getMarkerId(world, playerUUID), label, loc, "sign");
+    }
+
+    /**
+     * Builds the marker label from the sign text, falling back to the player name.
+     */
+    private String getMarkerLabel(@NonNull World world, @NonNull UUID playerUUID) {
+        SignCacheItem signInfo = getSignInfo(world, playerUUID);
+        if (signInfo.getSignText() != null && !signInfo.getSignText().isEmpty()) {
+            String label = ChatColor.stripColor(String.join(" ", signInfo.getSignText()));
+            return label == null ? "" : label.trim();
+        }
+        return plugin.getPlayers().getName(playerUUID);
+    }
+
+    /**
+     * Removes a warp's point marker from the web map.
+     */
+    public void removeMapMarker(@NonNull World world, @NonNull UUID playerUUID) {
+        MapManager mapManager = plugin.getMapManager();
+        if (mapManager == null) {
+            return;
+        }
+        mapManager.removePointMarker(MAP_MARKER_SET, getMarkerId(world, playerUUID));
+    }
+
+    /**
+     * Populates map markers for all loaded enabled warps.
+     */
+    private void populateMapMarkers() {
+        MapManager mapManager = plugin.getMapManager();
+        worldsWarpList.forEach((world, warpMap) ->
+            warpMap.forEach((uuid, playerWarp) -> {
+                if (playerWarp.isEnabled()) {
+                    String label = getMarkerLabel(world, uuid);
+                    mapManager.addPointMarker(MAP_MARKER_SET, getMarkerId(world, uuid), label,
+                            playerWarp.getLocation(), "sign");
+                }
+            })
+        );
     }
 }

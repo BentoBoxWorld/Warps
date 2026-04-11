@@ -1,6 +1,5 @@
 package world.bentobox.warps.listeners;
 
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -9,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -18,12 +16,10 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -33,33 +29,18 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.sign.SignSide;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Player.Spigot;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.plugin.PluginManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockbukkit.mockbukkit.MockBukkit;
-import org.mockbukkit.mockbukkit.ServerMock;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.stubbing.Answer;
 
 import net.md_5.bungee.api.chat.TextComponent;
-import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.events.flags.FlagProtectionChangeEvent;
 import world.bentobox.bentobox.api.flags.Flag;
 import world.bentobox.bentobox.api.user.User;
-import world.bentobox.bentobox.database.objects.Island;
-import world.bentobox.bentobox.managers.IslandWorldManager;
-import world.bentobox.bentobox.managers.IslandsManager;
-import world.bentobox.bentobox.managers.LocalesManager;
-import world.bentobox.bentobox.managers.PlaceholdersManager;
-import world.bentobox.bentobox.util.Util;
+import world.bentobox.warps.CommonTestSetup;
 import world.bentobox.warps.Warp;
 import world.bentobox.warps.config.Settings;
 import world.bentobox.warps.managers.WarpSignsManager;
@@ -69,7 +50,7 @@ import world.bentobox.warps.objects.PlayerWarp;
  * @author tastybento
  *
  */
-public class WarpSignsListenerTest {
+public class WarpSignsListenerTest extends CommonTestSetup {
 
     @Mock
     private Warp addon;
@@ -78,47 +59,27 @@ public class WarpSignsListenerTest {
     @Mock
     private Player player;
     @Mock
-    private World world;
-    @Mock
     private Sign s;
     @Mock
     private SignSide signSide;
     @Mock
     private WarpSignsManager wsm;
-    private PluginManager pm;
-    private String[] lines;
     @Mock
     private FileConfiguration config;
     @Mock
     private Settings settings;
-    @Mock
-    private IslandsManager im;
-    @Mock
-    private IslandWorldManager iwm;
-    @Mock
-    private Island island;
-    @Mock
-    private Spigot spigot;
 
-    private AutoCloseable closeable;
-    private ServerMock mockServer;
-    private MockedStatic<Bukkit> mockedBukkit;
-    private MockedStatic<Util> mockedUtil;
+    private String[] lines;
 
+    @Override
     @BeforeEach
-    public void setUp() {
-        closeable = MockitoAnnotations.openMocks(this);
-        mockServer = MockBukkit.mock();
-
-        // Bukkit
-        mockedBukkit = Mockito.mockStatic(Bukkit.class);
-        pm = mock(PluginManager.class);
-        mockedBukkit.when(Bukkit::getPluginManager).thenReturn(pm);
-        mockedBukkit.when(Bukkit::getServer).thenReturn(mockServer);
+    public void setUp() throws Exception {
+        super.setUp();
 
         when(addon.inRegisteredWorld(any())).thenReturn(true);
         when(config.getString(anyString())).thenReturn("[WELCOME]");
         when(addon.getConfig()).thenReturn(config);
+
         // Block
         Material sign;
         try {
@@ -131,36 +92,30 @@ public class WarpSignsListenerTest {
 
         // Player
         when(player.hasPermission(anyString())).thenReturn(false);
-        UUID uuid = UUID.randomUUID();
-        when(player.getUniqueId()).thenReturn(uuid);
+        UUID playerUuid = UUID.randomUUID();
+        when(player.getUniqueId()).thenReturn(playerUuid);
         when(player.getWorld()).thenReturn(world);
         when(player.spigot()).thenReturn(spigot);
         when(s.getLine(anyInt())).thenReturn(ChatColor.GREEN + "[WELCOME]");
         when(block.getState()).thenReturn(s);
         when(s.getSide(any())).thenReturn(signSide);
         when(signSide.getLine(anyInt())).thenReturn(ChatColor.GREEN + "[WELCOME]");
-        // warp signs manager
+
+        // Warp signs manager
         when(addon.getWarpSignsManager()).thenReturn(wsm);
         Map<UUID, PlayerWarp> list = new HashMap<>();
-        Location location = mock(Location.class);
-        when(location.getBlock()).thenReturn(block);
-        when(s.getLocation()).thenReturn(location);
-        when(block.getLocation()).thenReturn(location);
-        list.put(uuid, new PlayerWarp(location, true));
-        // Player is in world
+        Location loc = mock(Location.class);
+        when(loc.getBlock()).thenReturn(block);
+        when(s.getLocation()).thenReturn(loc);
+        when(block.getLocation()).thenReturn(loc);
+        list.put(playerUuid, new PlayerWarp(loc, true));
         when(wsm.getWarpMap(world)).thenReturn(list);
-        //Player has a warp sign already here
-        when(wsm.getWarpLocation(any(), any())).thenReturn(location);
-        // Unique spot
+        when(wsm.getWarpLocation(any(), any())).thenReturn(loc);
         when(wsm.addWarp(any(), any())).thenReturn(true);
-        // Bentobox
-        BentoBox plugin = mock(BentoBox.class);
+
+        // BentoBox
         when(addon.getPlugin()).thenReturn(plugin);
         User.setPlugin(plugin);
-        LocalesManager lm = mock(LocalesManager.class);
-        when(lm.get(any(), any())).thenAnswer((Answer<String>) invocation -> invocation.getArgument(1, String.class));
-        when(lm.getAvailablePrefixes(any())).thenReturn(java.util.Collections.emptySet());
-        when(plugin.getLocalesManager()).thenReturn(lm);
 
         // Lines
         lines = new String[] {"[WELCOME]", "line2", "line3", "line4"};
@@ -169,78 +124,24 @@ public class WarpSignsListenerTest {
         when(settings.getWelcomeLine()).thenReturn("[WELCOME]");
         when(addon.getSettings()).thenReturn(settings);
 
-        island = mock(Island.class);
         when(im.getIslandAt(any())).thenReturn(Optional.of(island));
 
         // On island
-        when(plugin.getIslands()).thenReturn(im);
         when(im.userIsOnIsland(any(World.class), any(User.class))).thenReturn(true);
 
         // Sufficient level
         when(addon.getLevel(any(), any())).thenReturn(100L);
-
-        // IWM
-        when(plugin.getIWM()).thenReturn(iwm);
-        when(iwm.getAddon(any())).thenReturn(Optional.empty());
-        when(iwm.inWorld(any(World.class))).thenReturn(true);
-        when(iwm.getFriendlyName(any())).thenReturn("BSkyBlock");
-
-        Answer<String> answer = invocation -> invocation.getArgument(1, String.class);
-
-        // Util
-        mockedUtil = Mockito.mockStatic(Util.class, Mockito.CALLS_REAL_METHODS);
-        mockedUtil.when(() -> Util.getWorld(any())).thenReturn(world);
-        mockedUtil.when(() -> Util.stripSpaceAfterColorCodes(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class));
-        mockedUtil.when(() -> Util.translateColorCodes(any())).thenAnswer((Answer<String>) invocation -> invocation.getArgument(0, String.class));
-
-        // Locales
-        when(lm.get(any(User.class), anyString())).thenAnswer(answer);
-        when(plugin.getLocalesManager()).thenReturn(lm);
-
-        // Placeholders
-        PlaceholdersManager placeholdersManager = mock(PlaceholdersManager.class);
-        when(plugin.getPlaceholdersManager()).thenReturn(placeholdersManager);
-        when(placeholdersManager.replacePlaceholders(any(), any())).thenAnswer(answer);
-
     }
 
+    @Override
     @AfterEach
     public void tearDown() throws Exception {
-        mockedBukkit.closeOnDemand();
-        mockedUtil.closeOnDemand();
-        closeable.close();
-        MockBukkit.unmock();
-        User.clearUsers();
-        Mockito.framework().clearInlineMocks();
+        super.tearDown();
     }
 
-    /**
-     * Check that spigot sent the message
-     * @param message - message to check
-     */
-    public void checkSpigotMessage(String expectedMessage) {
-        checkSpigotMessage(expectedMessage, 1);
-    }
-
+    @Override
     public void checkSpigotMessage(String expectedMessage, int expectedOccurrences) {
-        ArgumentCaptor<net.kyori.adventure.text.Component> captor = ArgumentCaptor
-                .forClass(net.kyori.adventure.text.Component.class);
-        verify(player, atLeast(0)).sendMessage(captor.capture());
-        List<net.kyori.adventure.text.Component> capturedMessages = captor.getAllValues();
-        long actualOccurrences = capturedMessages.stream()
-                .map(c -> net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText().serialize(c))
-                .filter(messageText -> messageText.contains(expectedMessage))
-                .count();
-        assertEquals(expectedOccurrences, actualOccurrences,
-                "Expected message occurrence mismatch: " + expectedMessage);
-    }
-
-    public void checkNoSpigotMessages() {
-        try {
-            verify(player, never()).sendMessage(any(net.kyori.adventure.text.Component.class));
-        } catch (AssertionError e) {
-            fail("Expected no messages to be sent, but some messages were sent.");
-        }
+        checkSpigotMessage(player, expectedMessage, expectedOccurrences);
     }
 
     @Test
@@ -271,17 +172,15 @@ public class WarpSignsListenerTest {
     public void testOnSignNotWelcomeSign() {
         WarpSignsListener wsl = new WarpSignsListener(addon);
         BlockBreakEvent e = new BlockBreakEvent(block, player);
-        when(signSide.getLine(Mockito.anyInt())).thenReturn(ChatColor.RED + "[WELCOME]");
+        when(signSide.getLine(anyInt())).thenReturn(ChatColor.RED + "[WELCOME]");
         wsl.onSignBreak(e);
         assertFalse(e.isCancelled());
         verify(signSide).getLine(0);
         verify(settings).getWelcomeLine();
-
     }
 
     @Test
     public void testOnSignNotRealWelcomeSign() {
-        // Right text, but not in the right position
         WarpSignsListener wsl = new WarpSignsListener(addon);
         BlockBreakEvent e = new BlockBreakEvent(block, player);
         when(s.getLocation()).thenReturn(mock(Location.class));
@@ -308,9 +207,8 @@ public class WarpSignsListenerTest {
         BlockBreakEvent e = new BlockBreakEvent(block, player);
         when(player.isOp()).thenReturn(true);
         wsl.onSignBreak(e);
-        // Success!
         assertFalse(e.isCancelled());
-        verify(pm).callEvent(any());
+        verify(pim).callEvent(any());
     }
 
     @Test
@@ -320,9 +218,8 @@ public class WarpSignsListenerTest {
         BlockBreakEvent e = new BlockBreakEvent(block, player);
         when(player.hasPermission(anyString())).thenReturn(true);
         wsl.onSignBreak(e);
-        // Success!
         assertFalse(e.isCancelled());
-        verify(pm).callEvent(any());
+        verify(pim).callEvent(any());
     }
 
     @Test
@@ -330,16 +227,10 @@ public class WarpSignsListenerTest {
         WarpSignsListener wsl = new WarpSignsListener(addon);
         BlockBreakEvent e = new BlockBreakEvent(block, player);
         wsl.onSignBreak(e);
-        // Success!
         assertFalse(e.isCancelled());
-        verify(pm).callEvent(any());
+        verify(pim).callEvent(any());
     }
 
-
-
-    /**
-     * Sign create
-     */
     @Test
     public void testOnCreateWrongWorldGameWorld() {
         when(player.hasPermission(anyString())).thenReturn(true);
@@ -378,35 +269,26 @@ public class WarpSignsListenerTest {
     @Test
     public void testOnFlagChangeWhenSettingIsOffNothingHappens() {
         Flag flag = mock(Flag.class);
-
         when(addon.getCreateWarpFlag()).thenReturn(flag);
         when(settings.getRemoveExistingWarpsWhenFlagChanges()).thenReturn(false);
         WarpSignsListener wsl = new WarpSignsListener(addon);
-
         FlagProtectionChangeEvent e = new FlagProtectionChangeEvent(island, player.getUniqueId(), flag, 1000);
-
         wsl.onFlagChange(e);
-
         verifyNoInteractions(island);
     }
 
     @Test
     public void testOnFlagChangeWhenSettingIsOnWarpGetsRemoved() {
         Flag flag = mock(Flag.class);
-
         when(addon.getCreateWarpFlag()).thenReturn(flag);
         when(settings.getRemoveExistingWarpsWhenFlagChanges()).thenReturn(true);
         WarpSignsListener wsl = new WarpSignsListener(addon);
-
         Map<UUID, PlayerWarp> warps = Map.of(
                 player.getUniqueId(), new PlayerWarp(block.getLocation(), true)
-                );
-
+        );
         when(wsm.getWarpMap(any())).thenReturn(warps);
         when(island.inIslandSpace(any(Location.class))).thenReturn(true);
-
         FlagProtectionChangeEvent e = new FlagProtectionChangeEvent(island, player.getUniqueId(), flag, 1000);
-
         wsl.onFlagChange(e);
         verify(addon.getWarpSignsManager()).removeWarp(any(), any());
     }
@@ -444,7 +326,12 @@ public class WarpSignsListenerTest {
         SignChangeEvent e = new SignChangeEvent(block, player, lines);
         wsl.onSignWarpCreate(e);
         verify(settings, times(2)).getWelcomeLine();
-        checkNoSpigotMessages();
+        // Verify no messages sent
+        try {
+            verify(spigot, never()).sendMessage(any(TextComponent.class));
+        } catch (AssertionError ex) {
+            fail("Expected no messages to be sent, but some messages were sent.");
+        }
     }
 
     @Test
@@ -453,7 +340,7 @@ public class WarpSignsListenerTest {
         WarpSignsListener wsl = new WarpSignsListener(addon);
         SignChangeEvent e = new SignChangeEvent(block, player, lines);
         wsl.onSignWarpCreate(e);
-        this.checkSpigotMessage("warps.error.no-permission");
+        checkSpigotMessage("warps.error.no-permission");
     }
 
     @Test
@@ -463,7 +350,7 @@ public class WarpSignsListenerTest {
         WarpSignsListener wsl = new WarpSignsListener(addon);
         SignChangeEvent e = new SignChangeEvent(block, player, lines);
         wsl.onSignWarpCreate(e);
-        this.checkSpigotMessage("warps.error.not-enough-level");
+        checkSpigotMessage("warps.error.not-enough-level");
     }
 
     @Test
@@ -473,7 +360,7 @@ public class WarpSignsListenerTest {
         WarpSignsListener wsl = new WarpSignsListener(addon);
         SignChangeEvent e = new SignChangeEvent(block, player, lines);
         wsl.onSignWarpCreate(e);
-        this.checkSpigotMessage("warps.error.not-on-island");
+        checkSpigotMessage("warps.error.not-on-island");
         assertEquals(ChatColor.RED + "[WELCOME]", e.getLine(0));
     }
 
@@ -484,7 +371,7 @@ public class WarpSignsListenerTest {
         WarpSignsListener wsl = new WarpSignsListener(addon);
         SignChangeEvent e = new SignChangeEvent(block, player, lines);
         wsl.onSignWarpCreate(e);
-        this.checkSpigotMessage("warps.success");
+        checkSpigotMessage("warps.success");
         assertEquals(ChatColor.GREEN + "[WELCOME]", e.getLine(0));
     }
 
@@ -494,10 +381,8 @@ public class WarpSignsListenerTest {
         WarpSignsListener wsl = new WarpSignsListener(addon);
         SignChangeEvent e = new SignChangeEvent(block, player, lines);
         wsl.onSignWarpCreate(e);
-        this.checkSpigotMessage("warps.success");
+        checkSpigotMessage("warps.success");
         assertEquals(ChatColor.GREEN + "[WELCOME]", e.getLine(0));
         verify(signSide).setLine(0, ChatColor.RED + "[WELCOME]");
     }
-
-
 }

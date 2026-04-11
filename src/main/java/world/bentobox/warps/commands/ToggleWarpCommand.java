@@ -50,6 +50,12 @@ public class ToggleWarpCommand extends CompositeCommand {
                 return false;
             }
             warp.toggle();
+            // Update map marker
+            if (warp.isEnabled()) {
+                addon.getWarpSignsManager().addMapMarker(userWorld, userUUID, warp.getLocation());
+            } else {
+                addon.getWarpSignsManager().removeMapMarker(userWorld, userUUID);
+            }
             Bukkit.getPluginManager().callEvent(new WarpToggleEvent(userUUID, warp));
             String message = warp.isEnabled() ? "togglewarp.enabled" : "togglewarp.disabled";
             user.sendMessage(message);
