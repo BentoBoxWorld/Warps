@@ -1,10 +1,10 @@
 package world.bentobox.warps;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -40,19 +40,17 @@ import org.bukkit.entity.Player.Spigot;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.plugin.PluginManager;
 import org.eclipse.jdt.annotation.Nullable;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.MockBukkit;
+import org.mockbukkit.mockbukkit.ServerMock;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import world.bentobox.bentobox.BentoBox;
@@ -79,8 +77,6 @@ import world.bentobox.warps.objects.WarpsData;
  * @author tastybento
  *
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Bukkit.class, Util.class, DatabaseSetup.class})
 public class WarpSignsManagerTest {
 
     @Mock
@@ -89,8 +85,8 @@ public class WarpSignsManagerTest {
     private BentoBox plugin;
     @Mock
     private World world;
-    @Mock
-    private static AbstractDatabaseHandler<Object> handler;
+    @SuppressWarnings("rawtypes")
+    private AbstractDatabaseHandler handler;
 
 
     private WarpSignsManager wsm;
@@ -126,6 +122,12 @@ public class WarpSignsManagerTest {
     @Mock
     private Spigot spigot;
 
+    private AutoCloseable closeable;
+    private ServerMock mockServer;
+    private MockedStatic<Bukkit> mockedBukkit;
+    private MockedStatic<Util> mockedUtil;
+    private MockedStatic<DatabaseSetup> mockedDb;
+
     /**
      * Check that spigot sent the message
      * @param message - message to check
@@ -135,57 +137,54 @@ public class WarpSignsManagerTest {
     }
 
     public void checkSpigotMessage(String expectedMessage, int expectedOccurrences) {
-        // Capture the argument passed to spigot().sendMessage(...) if messages are sent
-        ArgumentCaptor<TextComponent> captor = ArgumentCaptor.forClass(TextComponent.class);
-
-        // Verify that sendMessage() was called at least 0 times (capture any sent messages)
-        verify(spigot, atLeast(0)).sendMessage(captor.capture());
-
-        // Get all captured TextComponents
-        List<TextComponent> capturedMessages = captor.getAllValues();
-
-        // Count the number of occurrences of the expectedMessage in the captured messages
-        long actualOccurrences = capturedMessages.stream().map(component -> component.toLegacyText()) // Convert each TextComponent to plain text
-                .filter(messageText -> messageText.contains(expectedMessage)) // Check if the message contains the expected text
-                .count(); // Count how many times the expected message appears
-
-        // Assert that the number of occurrences matches the expectedOccurrences
-        assertEquals("Expected message occurrence mismatch: " + expectedMessage, expectedOccurrences,
-                actualOccurrences);
+        ArgumentCaptor<net.kyori.adventure.text.Component> captor = ArgumentCaptor
+                .forClass(net.kyori.adventure.text.Component.class);
+        verify(player, atLeast(0)).sendMessage(captor.capture());
+        List<net.kyori.adventure.text.Component> capturedMessages = captor.getAllValues();
+        long actualOccurrences = capturedMessages.stream()
+                .map(c -> net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText().serialize(c))
+                .filter(messageText -> messageText.contains(expectedMessage))
+                .count();
+        assertEquals(expectedOccurrences, actualOccurrences,
+                "Expected message occurrence mismatch: " + expectedMessage);
     }
 
     public void checkNoSpigotMessages() {
         try {
-            // Verify that sendMessage was never called
-            verify(spigot, never()).sendMessage(any(TextComponent.class));
+            verify(player, never()).sendMessage(any(net.kyori.adventure.text.Component.class));
         } catch (AssertionError e) {
             fail("Expected no messages to be sent, but some messages were sent.");
         }
     }
 
-    @SuppressWarnings("unchecked")
-    @BeforeClass
-    public static void beforeClass() {
-        // This has to be done beforeClass otherwise the tests will interfere with each other
-        handler = mock(AbstractDatabaseHandler.class);
-        // Database
-        PowerMockito.mockStatic(DatabaseSetup.class);
-        DatabaseSetup dbSetup = mock(DatabaseSetup.class);
-        when(DatabaseSetup.getDatabase()).thenReturn(dbSetup);
-        when(dbSetup.getHandler(any())).thenReturn(handler);
-    }
-
     /**
      * @throws java.lang.Exception exception
      */
-    @Before
+    @SuppressWarnings("unchecked")
+    @BeforeEach
     public void setUp() throws Exception {
-        Whitebox.setInternalState(BentoBox.class, "instance", plugin);
+        closeable = MockitoAnnotations.openMocks(this);
+        mockServer = MockBukkit.mock();
+
+        WhiteBox.setInternalState(BentoBox.class, "instance", plugin);
+
+        // Eagerly init Tag constants under real MockBukkit before we stub Bukkit statically
+        @SuppressWarnings("unused")
+        var unusedTagRef = Tag.STANDING_SIGNS;
+
+        // Database setup static mock
+        handler = mock(AbstractDatabaseHandler.class);
+        mockedDb = Mockito.mockStatic(DatabaseSetup.class);
+        DatabaseSetup dbSetup = mock(DatabaseSetup.class);
+        mockedDb.when(DatabaseSetup::getDatabase).thenReturn(dbSetup);
+        when(dbSetup.getHandler(any())).thenReturn(handler);
+
         when(addon.getPlugin()).thenReturn(plugin);
         when(addon.getLogger()).thenReturn(logger);
 
         // Player
         when(player.getUniqueId()).thenReturn(uuid);
+        when(player.getWorld()).thenReturn(world);
         when(player.isOnline()).thenReturn(true);
         when(player.canSee(any(Player.class))).thenReturn(true);
         when(player.spigot()).thenReturn(spigot);
@@ -208,10 +207,10 @@ public class WarpSignsManagerTest {
         when(server.getPlayer(any(UUID.class))).thenReturn(player);
 
         // Util
-        PowerMockito.mockStatic(Util.class);
-        when(Util.getWorld(any())).thenAnswer((Answer<World>) invocation -> invocation.getArgument(0, World.class));
-        when(Util.sameWorld(any(), any())).thenReturn(true);
-        when(Util.translateColorCodes(any())).thenAnswer((Answer<String>) invocation -> invocation.getArgument(0, String.class));
+        mockedUtil = Mockito.mockStatic(Util.class, Mockito.CALLS_REAL_METHODS);
+        mockedUtil.when(() -> Util.getWorld(any())).thenAnswer((Answer<World>) invocation -> invocation.getArgument(0, World.class));
+        mockedUtil.when(() -> Util.sameWorld(any(), any())).thenReturn(true);
+        mockedUtil.when(() -> Util.translateColorCodes(any())).thenAnswer((Answer<String>) invocation -> invocation.getArgument(0, String.class));
 
         // Location
         when(location.getWorld()).thenReturn(world);
@@ -249,11 +248,9 @@ public class WarpSignsManagerTest {
         when(settings.getLoreFormat()).thenReturn("&f");
 
         // Bukkit
-        PowerMockito.mockStatic(Bukkit.class, Mockito.RETURNS_MOCKS);
-        when(Bukkit.getPluginManager()).thenReturn(pim);
-
-        // Tags
-        when(Tag.STANDING_SIGNS.isTagged(Material.ACACIA_SIGN)).thenReturn(true);
+        mockedBukkit = Mockito.mockStatic(Bukkit.class, Mockito.RETURNS_DEEP_STUBS);
+        mockedBukkit.when(Bukkit::getPluginManager).thenReturn(pim);
+        mockedBukkit.when(Bukkit::getServer).thenReturn(mockServer);
 
         // Players Manager
         when(plugin.getPlayers()).thenReturn(pm);
@@ -281,9 +278,15 @@ public class WarpSignsManagerTest {
 
     /**
      */
-    @After
-    public void tearDown() {
+    @AfterEach
+    public void tearDown() throws Exception {
+        mockedBukkit.closeOnDemand();
+        mockedUtil.closeOnDemand();
+        mockedDb.closeOnDemand();
+        closeable.close();
+        MockBukkit.unmock();
         User.clearUsers();
+        Mockito.framework().clearInlineMocks();
     }
 
     /**
@@ -291,7 +294,7 @@ public class WarpSignsManagerTest {
      */
     @Test
     public void testGetWarpMap() {
-        assertFalse("Map is empty", wsm.getWarpMap(world).isEmpty());
+        assertFalse(wsm.getWarpMap(world).isEmpty(), "Map is empty");
     }
 
     /**
@@ -301,7 +304,7 @@ public class WarpSignsManagerTest {
     public void testGetWarpMapNullWorld() {
         when(location.getWorld()).thenReturn(null);
         wsm = new WarpSignsManager(addon, plugin);
-        assertTrue("Map is not empty", wsm.getWarpMap(world).isEmpty());
+        assertTrue(wsm.getWarpMap(world).isEmpty(), "Map is not empty");
     }
 
     /**
@@ -311,7 +314,7 @@ public class WarpSignsManagerTest {
     public void testGetWarpMapWrongBlockType() {
         when(block.getType()).thenReturn(Material.COAL_ORE);
         wsm = new WarpSignsManager(addon, plugin);
-        assertTrue("Map is not empty", wsm.getWarpMap(world).isEmpty());
+        assertTrue(wsm.getWarpMap(world).isEmpty(), "Map is not empty");
     }
 
     /**
@@ -323,7 +326,7 @@ public class WarpSignsManagerTest {
         Map<PlayerWarp, UUID> warpMap = Collections.singletonMap(playerWarp, uuid);
         when(load.getWarpSigns()).thenReturn(warpMap);
         wsm = new WarpSignsManager(addon, plugin);
-        assertTrue("Map is not empty", wsm.getWarpMap(world).isEmpty());
+        assertTrue(wsm.getWarpMap(world).isEmpty(), "Map is not empty");
     }
 
     /**
@@ -334,7 +337,7 @@ public class WarpSignsManagerTest {
     public void testGetWarpMapNullDatabaseObject() throws Exception {
         when(handler.loadObject(anyString())).thenReturn(null);
         wsm = new WarpSignsManager(addon, plugin);
-        assertTrue("Map is not empty", wsm.getWarpMap(world).isEmpty());
+        assertTrue(wsm.getWarpMap(world).isEmpty(), "Map is not empty");
     }
 
     /**
@@ -344,7 +347,7 @@ public class WarpSignsManagerTest {
     public void testGetWarpMapNothingInDatabase() {
         when(handler.objectExists("warps")).thenReturn(false);
         wsm = new WarpSignsManager(addon, plugin);
-        assertTrue("Map is not empty", wsm.getWarpMap(world).isEmpty());
+        assertTrue(wsm.getWarpMap(world).isEmpty(), "Map is not empty");
     }
 
     /**
@@ -465,6 +468,7 @@ public class WarpSignsManagerTest {
      * Test method for {@link WarpSignsManager#saveWarpList()}.
      * @throws Exception general exception
      */
+    @SuppressWarnings("unchecked")
     @Test
     public void testSaveWarpList() throws Exception {
         wsm.saveWarpList();
@@ -485,19 +489,18 @@ public class WarpSignsManagerTest {
         when(p.canSee(any(Player.class))).thenReturn(true);
         @Nullable
         User u = User.getInstance(p);
-        PowerMockito.when(Util.teleportAsync(any(), any(), any())).thenReturn(CompletableFuture.completedFuture(true));
+        mockedUtil.when(() -> Util.teleportAsync(any(), any(), any())).thenReturn(CompletableFuture.completedFuture(true));
         wsm.warpPlayer(world, u, uuid);
-        PowerMockito.verifyStatic(Util.class);
-        Util.teleportAsync(eq(p), any(), eq(TeleportCause.COMMAND));
+        mockedUtil.verify(() -> Util.teleportAsync(eq(p), any(), eq(TeleportCause.COMMAND)));
         verify(pim).callEvent(any(WarpInitiateEvent.class));
     }
-    
+
     /**
      * Test method for {@link WarpSignsManager#warpPlayer(org.bukkit.World, world.bentobox.bentobox.api.user.User, java.util.UUID)}.
      */
     @Test
     public void testWarpPlayerEventCancelled() {
-     // Capture the event passed to callEvent
+        // Capture the event passed to callEvent
         ArgumentCaptor<WarpInitiateEvent> eventCaptor = ArgumentCaptor.forClass(WarpInitiateEvent.class);
 
         // Simulate the event being called and cancelled
@@ -506,7 +509,7 @@ public class WarpSignsManagerTest {
             event.setCancelled(true);
             return null;
         }).when(pim).callEvent(eventCaptor.capture());
-        
+
         Player p = mock(Player.class);
         when(p.getUniqueId()).thenReturn(UUID.randomUUID());
         when(p.getWorld()).thenReturn(world);
@@ -516,10 +519,9 @@ public class WarpSignsManagerTest {
         when(p.canSee(any(Player.class))).thenReturn(true);
         @Nullable
         User u = User.getInstance(p);
-        PowerMockito.when(Util.teleportAsync(any(), any(), any())).thenReturn(CompletableFuture.completedFuture(true));
+        mockedUtil.when(() -> Util.teleportAsync(any(), any(), any())).thenReturn(CompletableFuture.completedFuture(true));
         wsm.warpPlayer(world, u, uuid);
-        PowerMockito.verifyStatic(Util.class, never());
-        Util.teleportAsync(eq(p), any(), eq(TeleportCause.COMMAND));
+        mockedUtil.verify(() -> Util.teleportAsync(eq(p), any(), eq(TeleportCause.COMMAND)), never());
         verify(player, never()).sendMessage(anyString());
     }
 

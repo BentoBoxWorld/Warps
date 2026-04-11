@@ -1,8 +1,8 @@
 package world.bentobox.warps.commands;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -19,16 +19,13 @@ import org.bukkit.World;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.eclipse.jdt.annotation.NonNull;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
+import org.mockito.MockitoAnnotations;
 
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.commands.CompositeCommand;
@@ -38,15 +35,14 @@ import world.bentobox.bentobox.managers.CommandsManager;
 import world.bentobox.bentobox.managers.IslandWorldManager;
 import world.bentobox.bentobox.managers.PlayersManager;
 import world.bentobox.warps.Warp;
-import world.bentobox.warps.managers.WarpSignsManager;
+import world.bentobox.warps.WhiteBox;
 import world.bentobox.warps.config.Settings;
+import world.bentobox.warps.managers.WarpSignsManager;
 
 /**
  * @author tastybento
  *
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Bukkit.class, BentoBox.class})
 public class WarpCommandTest {
 
     private static final String WELCOME_LINE = "[Welcome]";
@@ -75,13 +71,15 @@ public class WarpCommandTest {
     @Mock
     private BukkitScheduler sch;
 
-    /**
-     */
-    @Before
+    private AutoCloseable closeable;
+    private MockedStatic<Bukkit> mockedBukkit;
+
+    @BeforeEach
     public void setUp() {
+        closeable = MockitoAnnotations.openMocks(this);
         // Set up plugin
         BentoBox plugin = mock(BentoBox.class);
-        Whitebox.setInternalState(BentoBox.class, "instance", plugin);
+        WhiteBox.setInternalState(BentoBox.class, "instance", plugin);
 
         // Command manager
         CommandsManager cm = mock(CommandsManager.class);
@@ -122,17 +120,19 @@ public class WarpCommandTest {
         when(pm.getName(any())).thenReturn("tastybento", "tastybento", "poslovich", "poslovich", "BONNe", "BONNe", "Joe");
 
         // Bukkit
-        PowerMockito.mockStatic(Bukkit.class);
-        when(Bukkit.getPluginManager()).thenReturn(pim);
-        when(Bukkit.getScheduler()).thenReturn(sch);
+        mockedBukkit = Mockito.mockStatic(Bukkit.class);
+        mockedBukkit.when(Bukkit::getPluginManager).thenReturn(pim);
+        mockedBukkit.when(Bukkit::getScheduler).thenReturn(sch);
 
         // BentoBox settings
         when(plugin.getSettings()).thenReturn(s);
         when(s.getDelayTime()).thenReturn(0);
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    public void tearDown() throws Exception {
+        mockedBukkit.closeOnDemand();
+        closeable.close();
         Mockito.framework().clearInlineMocks();
     }
 

@@ -1,11 +1,11 @@
 package world.bentobox.warps.listeners;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -27,9 +27,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Server;
-import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -40,19 +37,18 @@ import org.bukkit.entity.Player.Spigot;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.plugin.PluginManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.MockBukkit;
+import org.mockbukkit.mockbukkit.ServerMock;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
-import io.papermc.paper.ServerBuildInfo;
 import net.md_5.bungee.api.chat.TextComponent;
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.events.flags.FlagProtectionChangeEvent;
@@ -67,15 +63,12 @@ import world.bentobox.bentobox.util.Util;
 import world.bentobox.warps.Warp;
 import world.bentobox.warps.config.Settings;
 import world.bentobox.warps.managers.WarpSignsManager;
-import world.bentobox.warps.mocks.ServerMocks;
 import world.bentobox.warps.objects.PlayerWarp;
 
 /**
  * @author tastybento
  *
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Bukkit.class, Util.class, NamespacedKey.class, Tag.class, ServerBuildInfo.class})
 public class WarpSignsListenerTest {
 
     @Mock
@@ -107,20 +100,22 @@ public class WarpSignsListenerTest {
     @Mock
     private Spigot spigot;
 
-    @Before
+    private AutoCloseable closeable;
+    private ServerMock mockServer;
+    private MockedStatic<Bukkit> mockedBukkit;
+    private MockedStatic<Util> mockedUtil;
+
+    @BeforeEach
     public void setUp() {
-        ServerMocks.newServer();
+        closeable = MockitoAnnotations.openMocks(this);
+        mockServer = MockBukkit.mock();
 
         // Bukkit
-        PowerMockito.mockStatic(Bukkit.class);
+        mockedBukkit = Mockito.mockStatic(Bukkit.class);
         pm = mock(PluginManager.class);
-        when(Bukkit.getPluginManager()).thenReturn(pm);
+        mockedBukkit.when(Bukkit::getPluginManager).thenReturn(pm);
+        mockedBukkit.when(Bukkit::getServer).thenReturn(mockServer);
 
-        /*
-        PowerMockito.mockStatic(NamespacedKey.class);
-        NamespacedKey keyValue = mock(NamespacedKey.class);
-        when(NamespacedKey.minecraft(anyString())).thenReturn(keyValue);
-         */
         when(addon.inRegisteredWorld(any())).thenReturn(true);
         when(config.getString(anyString())).thenReturn("[WELCOME]");
         when(addon.getConfig()).thenReturn(config);
@@ -138,6 +133,7 @@ public class WarpSignsListenerTest {
         when(player.hasPermission(anyString())).thenReturn(false);
         UUID uuid = UUID.randomUUID();
         when(player.getUniqueId()).thenReturn(uuid);
+        when(player.getWorld()).thenReturn(world);
         when(player.spigot()).thenReturn(spigot);
         when(s.getLine(anyInt())).thenReturn(ChatColor.GREEN + "[WELCOME]");
         when(block.getState()).thenReturn(s);
@@ -162,7 +158,8 @@ public class WarpSignsListenerTest {
         when(addon.getPlugin()).thenReturn(plugin);
         User.setPlugin(plugin);
         LocalesManager lm = mock(LocalesManager.class);
-        when(lm.get(any(), any())).thenReturn(null);
+        when(lm.get(any(), any())).thenAnswer((Answer<String>) invocation -> invocation.getArgument(1, String.class));
+        when(lm.getAvailablePrefixes(any())).thenReturn(java.util.Collections.emptySet());
         when(plugin.getLocalesManager()).thenReturn(lm);
 
         // Lines
@@ -186,14 +183,15 @@ public class WarpSignsListenerTest {
         when(plugin.getIWM()).thenReturn(iwm);
         when(iwm.getAddon(any())).thenReturn(Optional.empty());
         when(iwm.inWorld(any(World.class))).thenReturn(true);
+        when(iwm.getFriendlyName(any())).thenReturn("BSkyBlock");
 
         Answer<String> answer = invocation -> invocation.getArgument(1, String.class);
 
         // Util
-        PowerMockito.mockStatic(Util.class);
-        when(Util.getWorld(any())).thenReturn(world);
-        when(Util.stripSpaceAfterColorCodes(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class));
-        when(Util.translateColorCodes(any())).thenAnswer((Answer<String>) invocation -> invocation.getArgument(0, String.class));
+        mockedUtil = Mockito.mockStatic(Util.class, Mockito.CALLS_REAL_METHODS);
+        mockedUtil.when(() -> Util.getWorld(any())).thenReturn(world);
+        mockedUtil.when(() -> Util.stripSpaceAfterColorCodes(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class));
+        mockedUtil.when(() -> Util.translateColorCodes(any())).thenAnswer((Answer<String>) invocation -> invocation.getArgument(0, String.class));
 
         // Locales
         when(lm.get(any(User.class), anyString())).thenAnswer(answer);
@@ -206,9 +204,12 @@ public class WarpSignsListenerTest {
 
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
-        ServerMocks.unsetBukkitServer();
+        mockedBukkit.closeOnDemand();
+        mockedUtil.closeOnDemand();
+        closeable.close();
+        MockBukkit.unmock();
         User.clearUsers();
         Mockito.framework().clearInlineMocks();
     }
@@ -222,29 +223,21 @@ public class WarpSignsListenerTest {
     }
 
     public void checkSpigotMessage(String expectedMessage, int expectedOccurrences) {
-        // Capture the argument passed to spigot().sendMessage(...) if messages are sent
-        ArgumentCaptor<TextComponent> captor = ArgumentCaptor.forClass(TextComponent.class);
-
-        // Verify that sendMessage() was called at least 0 times (capture any sent messages)
-        verify(spigot, atLeast(0)).sendMessage(captor.capture());
-
-        // Get all captured TextComponents
-        List<TextComponent> capturedMessages = captor.getAllValues();
-
-        // Count the number of occurrences of the expectedMessage in the captured messages
-        long actualOccurrences = capturedMessages.stream().map(component -> component.toLegacyText()) // Convert each TextComponent to plain text
-                .filter(messageText -> messageText.contains(expectedMessage)) // Check if the message contains the expected text
-                .count(); // Count how many times the expected message appears
-
-        // Assert that the number of occurrences matches the expectedOccurrences
-        assertEquals("Expected message occurrence mismatch: " + expectedMessage, expectedOccurrences,
-                actualOccurrences);
+        ArgumentCaptor<net.kyori.adventure.text.Component> captor = ArgumentCaptor
+                .forClass(net.kyori.adventure.text.Component.class);
+        verify(player, atLeast(0)).sendMessage(captor.capture());
+        List<net.kyori.adventure.text.Component> capturedMessages = captor.getAllValues();
+        long actualOccurrences = capturedMessages.stream()
+                .map(c -> net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText().serialize(c))
+                .filter(messageText -> messageText.contains(expectedMessage))
+                .count();
+        assertEquals(expectedOccurrences, actualOccurrences,
+                "Expected message occurrence mismatch: " + expectedMessage);
     }
 
     public void checkNoSpigotMessages() {
         try {
-            // Verify that sendMessage was never called
-            verify(spigot, never()).sendMessage(any(TextComponent.class));
+            verify(player, never()).sendMessage(any(net.kyori.adventure.text.Component.class));
         } catch (AssertionError e) {
             fail("Expected no messages to be sent, but some messages were sent.");
         }

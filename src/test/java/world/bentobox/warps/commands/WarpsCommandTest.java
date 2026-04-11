@@ -1,25 +1,27 @@
 package world.bentobox.warps.commands;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.eclipse.jdt.annotation.NonNull;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import world.bentobox.bentobox.BentoBox;
 import world.bentobox.bentobox.api.commands.CompositeCommand;
@@ -27,17 +29,16 @@ import world.bentobox.bentobox.api.user.User;
 import world.bentobox.bentobox.managers.CommandsManager;
 import world.bentobox.bentobox.managers.IslandWorldManager;
 import world.bentobox.bentobox.managers.PlayersManager;
-import world.bentobox.warps.managers.SignCacheManager;
 import world.bentobox.warps.Warp;
-import world.bentobox.warps.managers.WarpSignsManager;
+import world.bentobox.warps.WhiteBox;
 import world.bentobox.warps.config.Settings;
+import world.bentobox.warps.managers.SignCacheManager;
+import world.bentobox.warps.managers.WarpSignsManager;
 
 /**
  * @author tastybento
  *
  */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Bukkit.class, BentoBox.class})
 public class WarpsCommandTest {
 
     private static final String WELCOME_LINE = "[Welcome]";
@@ -62,13 +63,14 @@ public class WarpsCommandTest {
     @Mock
     private SignCacheManager wpm;
 
-    /**
-     */
-    @Before
+    private AutoCloseable closeable;
+
+    @BeforeEach
     public void setUp() {
+        closeable = MockitoAnnotations.openMocks(this);
         // Set up plugin
         BentoBox plugin = mock(BentoBox.class);
-        Whitebox.setInternalState(BentoBox.class, "instance", plugin);
+        WhiteBox.setInternalState(BentoBox.class, "instance", plugin);
 
         // Command manager
         CommandsManager cm = mock(CommandsManager.class);
@@ -105,6 +107,12 @@ public class WarpsCommandTest {
         // Warp Panel Manager
         when(addon.getSignCacheManager()).thenReturn(wpm);
 
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        closeable.close();
+        Mockito.framework().clearInlineMocks();
     }
 
     public void warpCommandWarpsCompositeCommand() {
