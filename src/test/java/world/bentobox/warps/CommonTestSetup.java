@@ -207,13 +207,21 @@ public abstract class CommonTestSetup {
         checkSpigotMessage(expectedMessage, 1);
     }
 
-    @SuppressWarnings("deprecation")
     public void checkSpigotMessage(String expectedMessage, int expectedOccurrences) {
-        ArgumentCaptor<TextComponent> captor = ArgumentCaptor.forClass(TextComponent.class);
-        verify(spigot, atLeast(0)).sendMessage(captor.capture());
-        List<TextComponent> capturedMessages = captor.getAllValues();
+        checkSpigotMessage(mockPlayer, expectedMessage, expectedOccurrences);
+    }
+
+    public void checkSpigotMessage(Player target, String expectedMessage) {
+        checkSpigotMessage(target, expectedMessage, 1);
+    }
+
+    public void checkSpigotMessage(Player target, String expectedMessage, int expectedOccurrences) {
+        ArgumentCaptor<net.kyori.adventure.text.Component> captor = ArgumentCaptor
+                .forClass(net.kyori.adventure.text.Component.class);
+        verify(target, atLeast(0)).sendMessage(captor.capture());
+        List<net.kyori.adventure.text.Component> capturedMessages = captor.getAllValues();
         long actualOccurrences = capturedMessages.stream()
-                .map(component -> component.toLegacyText())
+                .map(c -> net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText().serialize(c))
                 .filter(messageText -> messageText.contains(expectedMessage))
                 .count();
         assertEquals(expectedOccurrences, actualOccurrences,

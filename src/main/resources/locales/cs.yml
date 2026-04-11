@@ -4,56 +4,55 @@ warp:
     description: Teleportovat se na warp ceduli hráče
     parameters: "<player name>"
 warps:
-  deactivate: "&c Stará warp cedule deaktivována!"
+  deactivate: <red>Stará warp cedule deaktivována!</red>
   error:
-    does-not-exist: "&c Sakra! Tento warp již neexistuje!"
-    no-permission: "&c Na toto nemáš oprávnění!"
-    no-remove: "&c Nemůžeš odstranit tuto ceduli!"
-    no-warps-yet: "&c Nejsou k dispozici žádné warpy"
-    not-enough-level: "&c Úroveň tvého ostrova není dostatečně vysoká!"
-    not-on-island: "&c K tomuto musíš být na svém ostrově!"
-    not-safe: "&c Tento warp není bezpečný!"
-    your-level-is: "&c Úroveň tvého ostrova je jen [level], musí být vyšší než [required].
-      Spusť příkaz pro úroveň."
-    not-correct-rank: "&c Nemáte správnou hodnost pro nastavení warpu!"
+    does-not-exist: <red>Sakra! Tento warp již neexistuje!</red>
+    no-permission: <red>Na toto nemáš oprávnění!</red>
+    no-remove: <red>Nemůžeš odstranit tuto ceduli!</red>
+    no-warps-yet: <red>Nejsou k dispozici žádné warpy</red>
+    not-enough-level: <red>Úroveň tvého ostrova není dostatečně vysoká!</red>
+    not-on-island: <red>K tomuto musíš být na svém ostrově!</red>
+    not-safe: <red>Tento warp není bezpečný!</red>
+    your-level-is: <red>Úroveň tvého ostrova je jen [level], musí být vyšší než [required]. Spusť příkaz pro úroveň.</red>
+    not-correct-rank: <red>Nemáte správnou hodnost pro nastavení warpu!</red>
   help:
     description: otevřít panel warpů
-  player-warped: "&2 [name] se pokřivilo na váš [gamemode] warp znamení!"
-  sign-removed: "&c Warp cedule odstraněna!"
-  success: "&a Úspěch!"
-  warpTip: "&6 Polož warp ceduli s [text] na vrchu"
-  warpToPlayersSign: "&6 Teleportuji tě na ceduli [player]"
+  player-warped: <dark_green>[name] se pokřivilo na váš [gamemode] warp znamení!</dark_green>
+  sign-removed: <red>Warp cedule odstraněna!</red>
+  success: <green>Úspěch!</green>
+  warpTip: <gold>Polož warp ceduli s [text] na vrchu</gold>
+  warpToPlayersSign: <gold>Teleportuji tě na ceduli [player]</gold>
   gui:
     titles:
-      warp-title: "&0&l Warp Signs"
+      warp-title: <black><bold>Warp Signs</bold></black>
     buttons:
       previous:
-        name: "&f&l Předchozí stránka"
-        description: "&7 Přepnout na stránku [number]"
+        name: <white><bold>Předchozí stránka</bold></white>
+        description: <gray>Přepnout na stránku [number]</gray>
       next:
-        name: "&f&l Další stránka"
-        description: "&7 Přepnout na stránku [number]"
+        name: <white><bold>Další stránka</bold></white>
+        description: <gray>Přepnout na stránku [number]</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l Náhodné pokřivení"
-        description: "&7 Hmm, kde se objevím?"
+        name: <white><bold>Náhodné pokřivení</bold></white>
+        description: <gray>Hmm, kde se objevím?</gray>
     tips:
-      click-to-previous: "&e Klepnutím na &7 zobrazíte předchozí stránku."
-      click-to-next: "&e Klepnutím na &7 zobrazíte další stránku."
-      click-to-warp: "&e Klikněte na &7 pro deformaci."
+      click-to-previous: <yellow>Klepnutím na </yellow><gray>zobrazíte předchozí stránku.</gray>
+      click-to-next: <yellow>Klepnutím na </yellow><gray>zobrazíte další stránku.</gray>
+      click-to-warp: <yellow>Klikněte na </yellow><gray>pro deformaci.</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
 togglewarp:
   help:
     description: přepnout znak warp
-  enabled: "&a Vaše warp je nyní viditelný!"
-  disabled: "&c Váš warp je nyní skrytý!"
+  enabled: <green>Vaše warp je nyní viditelný!</green>
+  disabled: <red>Váš warp je nyní skrytý!</red>
   error:
-    no-permission: "&c K tomu nemáte oprávnění!"
-    generic: "&c Při přepínání vašeho warpu došlo k chybě."
-    no-warp: "&c Nemáte warp k přepínání!"
+    no-permission: <red>K tomu nemáte oprávnění!</red>
+    generic: <red>Při přepínání vašeho warpu došlo k chybě.</red>
+    no-warp: <red>Nemáte warp k přepínání!</red>
 protection:
   flags:
     PLACE_WARP:

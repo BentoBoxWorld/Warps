@@ -139,6 +139,11 @@ public class WarpSignsListenerTest extends CommonTestSetup {
         super.tearDown();
     }
 
+    @Override
+    public void checkSpigotMessage(String expectedMessage, int expectedOccurrences) {
+        checkSpigotMessage(player, expectedMessage, expectedOccurrences);
+    }
+
     @Test
     public void testWarpSignsListener() {
         assertNotNull(new WarpSignsListener(addon));

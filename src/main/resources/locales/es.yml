@@ -4,57 +4,55 @@ warp:
     description: Teletransportarte hacia el warp del jugador
     parameters: "<player name>"
 warps:
-  deactivate: "&c ¡Antiguo cartel de teletransportación desactivado!"
+  deactivate: <red>¡Antiguo cartel de teletransportación desactivado!</red>
   error:
-    does-not-exist: "&c ¡Oh, chasquido! ¡Ese teletransporte ya no existe!"
-    no-permission: "&c ¡No tienes permisos para hacer eso!"
-    no-remove: "&c ¡No puedes quitar ese cartel!"
-    no-warps-yet: "&c No hay teletransportes disponibles todavía"
-    not-enough-level: "&c ¡Tu nivel de isla no es lo suficientemente alto!"
-    not-on-island: "&c ¡Debes estar en tu isla para hacer eso!"
-    not-safe: "&c ¡Ese teletransporte no es seguro!"
-    your-level-is: "&c Tu nivel de isla es solo [level] y debe ser mayor que [required].
-      Ejecuta el comando de nivel."
-    not-correct-rank: "&c ¡No tienes el rango correcto para crear un teletransporte!"
+    does-not-exist: <red>¡Oh, chasquido! ¡Ese teletransporte ya no existe!</red>
+    no-permission: <red>¡No tienes permisos para hacer eso!</red>
+    no-remove: <red>¡No puedes quitar ese cartel!</red>
+    no-warps-yet: <red>No hay teletransportes disponibles todavía</red>
+    not-enough-level: <red>¡Tu nivel de isla no es lo suficientemente alto!</red>
+    not-on-island: <red>¡Debes estar en tu isla para hacer eso!</red>
+    not-safe: <red>¡Ese teletransporte no es seguro!</red>
+    your-level-is: <red>Tu nivel de isla es solo [level] y debe ser mayor que [required]. Ejecuta el comando de nivel.</red>
+    not-correct-rank: <red>¡No tienes el rango correcto para crear un teletransporte!</red>
   help:
     description: Abre el panel de warps
-  player-warped: "&2 [name] se ha teletransportado a tu cartel de teletransportación
-    de [gamemode]!"
-  sign-removed: "&c Cartel de teletransportación eliminado!"
-  success: "&a Éxito!"
-  warpTip: "&6 Coloca un cartel con [text] en la parte superior"
-  warpToPlayersSign: "&6 Teletransportandote al cartel del jugador [player]"
+  player-warped: <dark_green>[name] se ha teletransportado a tu cartel de teletransportación de [gamemode]!</dark_green>
+  sign-removed: <red>Cartel de teletransportación eliminado!</red>
+  success: <green>Éxito!</green>
+  warpTip: <gold>Coloca un cartel con [text] en la parte superior</gold>
+  warpToPlayersSign: <gold>Teletransportandote al cartel del jugador [player]</gold>
   gui:
     titles:
-      warp-title: "&0&l Carteles de Teletransporte"
+      warp-title: <black><bold>Carteles de Teletransporte</bold></black>
     buttons:
       previous:
-        name: "&f&l Página Anterior"
-        description: "&7 Ir a la página [number]"
+        name: <white><bold>Página Anterior</bold></white>
+        description: <gray>Ir a la página [number]</gray>
       next:
-        name: "&f&l Siguiente Página"
-        description: "&7 Ir a la página [number]"
+        name: <white><bold>Siguiente Página</bold></white>
+        description: <gray>Ir a la página [number]</gray>
       warp:
-        name: "&f&l [name]"
+        name: <white><bold>[name]</bold></white>
         description: "[sign_text]"
       random:
-        name: "&f&l Teletransporte aleatorio"
-        description: "&7 Hmm, ¿Dónde apareceré?"
+        name: <white><bold>Teletransporte aleatorio</bold></white>
+        description: <gray>Hmm, ¿Dónde apareceré?</gray>
     tips:
-      click-to-previous: "&e Clic &7 para ver la página anterior."
-      click-to-next: "&e Clic &7 para ver la página siguiente."
-      click-to-warp: "&e Clic &7 para teletransportarse."
+      click-to-previous: <yellow>Clic </yellow><gray>para ver la página anterior.</gray>
+      click-to-next: <yellow>Clic </yellow><gray>para ver la página siguiente.</gray>
+      click-to-warp: <yellow>Clic </yellow><gray>para teletransportarse.</gray>
   conversations:
-    prefix: "&l&6 [BentoBox]: &r"
+    prefix: '<gold><bold>[BentoBox]: </bold></gold><reset>'
 togglewarp:
   help:
     description: alternar el cartel de teletransporte
-  enabled: "&a ¡Tu teletransporte ahora es visible!"
-  disabled: "&c ¡Tu teletransporte ahora está oculto!"
+  enabled: <green>¡Tu teletransporte ahora es visible!</green>
+  disabled: <red>¡Tu teletransporte ahora está oculto!</red>
   error:
-    no-permission: "&c ¡No tienes permisos para hacer eso!"
-    generic: "&c Ocurrió un error al alternar tu teletransporte."
-    no-warp: "&c ¡No tienes un teletransporte para alternar!"
+    no-permission: <red>¡No tienes permisos para hacer eso!</red>
+    generic: <red>Ocurrió un error al alternar tu teletransporte.</red>
+    no-warp: <red>¡No tienes un teletransporte para alternar!</red>
 protection:
   flags:
     PLACE_WARP:
