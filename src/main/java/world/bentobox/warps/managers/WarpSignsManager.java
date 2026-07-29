@@ -384,9 +384,10 @@ public class WarpSignsManager {
     }
 
     /**
-     * Warps a player to a spot in front of a sign.
+     * Warps a player to a spot in front of a sign, or to the sign block itself when no
+     * safe spot in front exists.
      * @param user - user who is warping
-     * @param inFront - location in front of sign - previously checked for safety
+     * @param inFront - warp destination - previously checked for safety
      * @param signOwner - warp sign owner
      * @param directionFacing - direction that sign is facing
      * @param pvp - true if this location allowed PVP
@@ -475,9 +476,10 @@ public class WarpSignsManager {
         }
         // Find out which direction the warp is facing
         Block b = warpSpot.getBlock();
+        BlockFace directionFacing;
         if (Tag.WALL_SIGNS.isTagged(b.getType())) {
             org.bukkit.block.data.type.WallSign s = (org.bukkit.block.data.type.WallSign) b.getBlockData();
-            BlockFace directionFacing = s.getFacing();
+            directionFacing = s.getFacing();
             Location inFront = b.getRelative(directionFacing).getLocation();
             Location oneDown = b.getRelative(directionFacing).getRelative(BlockFace.DOWN).getLocation();
             if ((plugin.getIslands().isSafeLocation(inFront))) {
@@ -489,6 +491,7 @@ public class WarpSignsManager {
                 return;
             }
         } else if (Tag.ALL_HANGING_SIGNS.isTagged(b.getType())) {
+            directionFacing = BlockFace.DOWN;
             Location below = b.getRelative(BlockFace.DOWN).getRelative(BlockFace.DOWN).getLocation();
             if ((addon.getIslands().isSafeLocation(below))) {
                 warpPlayer(user, below, owner, BlockFace.DOWN, pvp);
@@ -496,7 +499,7 @@ public class WarpSignsManager {
             }
         } else if (Tag.STANDING_SIGNS.isTagged(b.getType())) {
             org.bukkit.block.data.type.Sign s = (org.bukkit.block.data.type.Sign) b.getBlockData();
-            BlockFace directionFacing = s.getRotation();
+            directionFacing = s.getRotation();
             Location inFront = b.getRelative(directionFacing).getLocation();
             if ((addon.getIslands().isSafeLocation(inFront))) {
                 warpPlayer(user, inFront, owner, directionFacing, pvp);
@@ -511,15 +514,10 @@ public class WarpSignsManager {
         if (!(plugin.getIslands().isSafeLocation(warpSpot))) {
             user.sendMessage("warps.error.not-safe");
         } else {
-            final Location actualWarp = new Location(warpSpot.getWorld(), warpSpot.getBlockX() + 0.5D, warpSpot.getBlockY(),
-                    warpSpot.getBlockZ() + 0.5D);
-            if (pvp) {
-                user.sendMessage("protection.flags.PVP_OVERWORLD.enabled");
-                user.getWorld().playSound(Objects.requireNonNull(user.getLocation()), Sound.ENTITY_ARROW_HIT, 1F, 1F);
-            } else {
-                user.getWorld().playSound(Objects.requireNonNull(user.getLocation()), Sound.ENTITY_BAT_TAKEOFF, 1F, 1F);
-            }
-            Util.teleportAsync(user.getPlayer(), actualWarp, TeleportCause.COMMAND);
+            // Fall back to the sign's own block, but through the same path as a normal
+            // warp so that the initiate event fires, vanished players stay hidden, and
+            // the sign owner is told that someone warped to them
+            warpPlayer(user, warpSpot, owner, directionFacing, pvp);
         }
     }
 
