@@ -1,4 +1,8 @@
 # Warps
+
+<!-- BentoBox stats badges: https://download.bentobox.world/admin (Badges tab) -->
+[![Servers](https://download.bentobox.world/badge/Warps/servers.svg)](https://download.bentobox.world/) [![Popularity](https://download.bentobox.world/badge/Warps/rank.svg)](https://download.bentobox.world/) [![Downloads](https://download.bentobox.world/badge/Warps/downloads.svg)](https://download.bentobox.world/) [![Minecraft](https://download.bentobox.world/badge/Warps/mc.svg)](https://download.bentobox.world/)
+
 Add-on for BentoBox to add personal warp signs for players of BSkyBlock or AcidIsland.
 This add-on will work for all game modes installed on a BentoBox server. Use config settings
 to disable use by gamemode.
